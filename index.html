@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Erun — Errands, Handled.</title>
+<meta name="description" content="Erun is a vetted, professional errand-running marketplace — one app, one wallet, one runner, multiple stops.">
+<meta name="theme-color" content="#122843">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Erun">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --ink:#101B2D; --ink-soft:#5B6472; --ink-faint:#8A93A3;
+  --paper:#F2F4F8; --surface:#FFFFFF;
+  --navy:#1F3A63; --navy-dark:#122843; --navy-deep:#0C1B30; --blue-soft:#E4EAF5;
+  --gold:#A9843F; --gold-soft:#F3EAD3; --gold-deep:#7C5E2A;
+  --green:#2E7D5B; --green-soft:#DFF0E7;
+  --red:#B5502E; --red-soft:#FBE6DC;
+  --line:#E2E6EE; --line-strong:#CDD3DF;
+  --shadow-1:0 1px 2px rgba(16,27,45,.06), 0 8px 20px -14px rgba(16,27,45,.30);
+  --shadow-2:0 10px 24px -14px rgba(16,27,45,.40);
+  --shadow-3:0 20px 40px -18px rgba(16,27,45,.45);
+  --radius-lg:20px; --radius-md:16px; --radius-sm:12px;
+  --font-head:'Sora',sans-serif; --font-body:'Inter',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;background:var(--paper);font-family:var(--font-body);color:var(--ink);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  min-height:100dvh;
+}
+h1,h2,h3,h4{font-family:var(--font-head);margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+button{font:inherit;}
+::selection{background:var(--blue-soft);color:var(--navy-dark);}
+
+/* ============================================================
+   MARKETING SHELL (desktop / tablet presentation)
+   ============================================================ */
+.page{
+  display:flex;flex-direction:column;align-items:center;
+  padding:44px 20px 60px;min-height:100dvh;
+}
+.brand-lockup{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+.logo-mark{width:44px;height:44px;flex:none;display:block;}
+.brand-text h1{font-size:25px;font-weight:800;color:var(--navy-dark);}
+.brand-text .tagline{margin:2px 0 0;font-family:var(--font-mono);font-size:12px;font-weight:500;
+  color:var(--navy);letter-spacing:0.04em;text-transform:uppercase;}
+.hero-sub{color:var(--ink-soft);font-size:13.5px;line-height:1.6;text-align:center;
+  max-width:420px;margin:14px 0 26px;}
+.mode-switch{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);
+  border-radius:100px;padding:4px;box-shadow:var(--shadow-1);}
+.mode-btn{padding:10px 22px;border-radius:100px;border:none;background:transparent;
+  font-family:var(--font-head);font-weight:700;font-size:12.5px;color:var(--ink-soft);cursor:pointer;
+  transition:background .2s ease, color .2s ease;}
+.mode-btn.active{background:var(--navy);color:#fff;box-shadow:0 6px 14px -6px rgba(31,58,99,.5);}
+.install-row{display:flex;gap:8px;align-items:center;margin-top:18px;}
+.install-btn{display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border:none;
+  border-radius:100px;padding:10px 18px;font-family:var(--font-body);font-weight:600;font-size:12.5px;
+  cursor:pointer;box-shadow:var(--shadow-1);}
+.install-btn svg{flex:none;}
+
+/* ============================================================
+   DEVICE FRAME — becomes edge-to-edge full screen on real phones
+   ============================================================ */
+.stage{width:100%;display:flex;justify-content:center;margin-top:30px;}
+.device{
+  width:390px;height:812px;background:var(--navy-deep);border-radius:52px;padding:14px;
+  box-shadow:var(--shadow-3);position:relative;flex:none;
+}
+.device::before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);
+  width:120px;height:28px;background:var(--navy-deep);border-radius:0 0 18px 18px;z-index:5;}
+.device-screen{background:var(--paper);height:100%;border-radius:38px;overflow:hidden;
+  position:relative;display:flex;flex-direction:column;}
+.app-shell{display:none;flex-direction:column;height:100%;position:relative;}
+.app-shell.active{display:flex;}
+.view{display:none;flex-direction:column;height:100%;animation:viewIn .32s cubic-bezier(.22,.8,.32,1);}
+.view.active{display:flex;}
+@keyframes viewIn{from{opacity:0;transform:translateX(18px);}to{opacity:1;transform:translateX(0);}}
+
+/* On an actual phone: shed the bezel, fill the viewport, look like a real installed app.
+   The page itself becomes a column (mode-switch, then the device) so the switch's height
+   is subtracted from the device instead of pushing it below the fold. */
+@media (max-width:760px){
+  html,body{height:100%;overflow:hidden;}
+  .page{padding:0;height:100dvh;display:flex;flex-direction:column;}
+  .brand-lockup,.hero-sub{display:none;}
+  .mode-switch{flex:none;border-radius:0;border:none;border-bottom:1px solid var(--line);width:100%;
+    padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px;background:var(--surface);box-shadow:none;
+    justify-content:center;margin-top:0;}
+  .install-row{display:none;}
+  .stage{flex:1;min-height:0;margin-top:0;}
+  .device{width:100%;height:100%;border-radius:0;padding:0;box-shadow:none;background:var(--paper);}
+  .device::before{display:none;}
+  .device-screen{border-radius:0;height:100%;}
+}
+
+/* ============================================================
+   SHARED SCREEN CHROME
+   ============================================================ */
+.topbar{padding:calc(20px + env(safe-area-inset-top,0px)) 20px 14px;display:flex;align-items:center;
+  justify-content:space-between;flex:none;}
+.topbar .greet p{margin:0;font-size:12px;color:var(--ink-soft);font-weight:500;}
+.topbar .greet h2{margin:3px 0 0;font-size:19px;font-weight:700;}
+.wallet-pill{font-family:var(--font-mono);font-size:12px;font-weight:600;
+  background:var(--navy);color:#fff;padding:8px 14px;border-radius:100px;letter-spacing:0.02em;}
+.content{flex:1;overflow-y:auto;padding:2px 20px 24px;-webkit-overflow-scrolling:touch;}
+.section-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--ink-faint);margin:18px 0 10px;font-weight:600;}
+.section-label:first-child{margin-top:4px;}
+
+.back-row{display:flex;align-items:center;gap:12px;padding:calc(18px + env(safe-area-inset-top,0px)) 20px 8px;flex:none;}
+.back-btn{width:36px;height:36px;border-radius:12px;background:var(--surface);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-1);cursor:pointer;flex:none;}
+.back-row h2{font-size:17.5px;font-weight:700;}
+
+/* ============================================================
+   CARDS / FIELDS / BUTTONS
+   ============================================================ */
+.cat-card{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:15px;margin-bottom:10px;box-shadow:var(--shadow-1);cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease;}
+.cat-card:active{transform:scale(.98);}
+.cat-icon{width:42px;height:42px;flex:none;border-radius:13px;background:var(--blue-soft);
+  display:flex;align-items:center;justify-content:center;}
+.cat-icon.gold{background:var(--gold-soft);}
+.cat-body{min-width:0;}
+.cat-body h3{margin:0 0 2px;font-size:14.5px;font-weight:700;}
+.cat-body p{margin:0;font-size:12.5px;color:var(--ink-soft);}
+.tier-tag{font-family:var(--font-mono);font-size:9.5px;font-weight:600;padding:3px 8px;
+  border-radius:100px;background:var(--gold-soft);color:var(--gold-deep);margin-left:auto;
+  white-space:nowrap;flex:none;}
+
+.field-label{font-size:12px;font-weight:600;color:var(--ink-soft);margin:16px 0 6px;}
+.field{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 15px;
+  font-size:13.5px;box-shadow:var(--shadow-1);color:var(--ink);}
+textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
+
+.price-card{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:16px 17px;box-shadow:var(--shadow-1);}
+.price-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:var(--ink-soft);}
+.price-row.total{border-top:1.5px dashed var(--line-strong);margin-top:6px;padding-top:11px;
+  color:var(--navy-dark);font-weight:700;font-size:15px;font-family:var(--font-head);}
+
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-align:center;
+  background:var(--navy);color:#fff;border:none;border-radius:16px;padding:16px;
+  font-family:var(--font-head);font-weight:700;font-size:14px;margin-top:18px;cursor:pointer;
+  box-shadow:0 14px 24px -10px rgba(31,58,99,.55);transition:transform .12s ease, box-shadow .12s ease;}
+.cta:active{transform:translateY(1px) scale(.99);box-shadow:0 8px 16px -8px rgba(31,58,99,.5);}
+.cta.ghost{background:var(--surface);color:var(--navy);border:1.5px solid var(--navy);box-shadow:none;}
+.btn-secondary{display:block;width:100%;text-align:center;background:transparent;color:var(--ink-soft);
+  border:none;border-radius:16px;padding:13px;font-family:var(--font-body);font-weight:600;font-size:13px;
+  margin-top:8px;cursor:pointer;}
+
+.when-toggle{display:flex;gap:8px;margin-top:6px;}
+.when-btn{flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);
+  font-family:var(--font-body);font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+.when-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.schedule-fields{display:none;gap:10px;margin-top:10px;}
+.schedule-fields .field{flex:1;}
+
+/* Maps */
+.map-block,.pin-map,.finding-map{height:190px;border-radius:var(--radius-md);background:var(--blue-soft);
+  position:relative;overflow:hidden;margin-bottom:16px;}
+.map-block svg,.pin-map svg,.finding-map svg{width:100%;height:100%;}
+.pin-drop{position:absolute;display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-100%);}
+.pin-pulse{width:34px;height:34px;border-radius:50%;background:rgba(31,58,99,0.18);
+  display:flex;align-items:center;justify-content:center;animation:pulse 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(0.85);}50%{transform:scale(1.1);}}
+.search-rings{position:absolute;top:95px;left:160px;}
+.ring{position:absolute;top:0;left:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;
+  border:2px solid var(--navy);opacity:0;animation:ringPulse 2.4s ease-out infinite;}
+.ring:nth-child(2){animation-delay:0.8s;} .ring:nth-child(3){animation-delay:1.6s;}
+@keyframes ringPulse{0%{transform:scale(0.3);opacity:0.55;}100%{transform:scale(2.6);opacity:0;}}
+.runner-pin{position:absolute;transform:translate(-50%,-100%);}
+.finding-status{text-align:center;margin:4px 0 18px;}
+.finding-status h3{font-size:16px;font-weight:700;margin:0 0 5px;}
+.finding-status p{font-size:12.5px;color:var(--ink-soft);}
+
+/* Runner / people */
+.runner-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:15px;
+  display:flex;gap:12px;align-items:center;box-shadow:var(--shadow-1);}
+.avatar{width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:700;
+  font-size:15px;flex:none;}
+.runner-info{min-width:0;}
+.runner-info h3{margin:0 0 3px;font-size:14.5px;font-weight:700;}
+.runner-info .badges{display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap;}
+.badge-verified{font-family:var(--font-mono);font-size:9.5px;font-weight:600;
+  background:var(--green-soft);color:var(--green);padding:3px 8px;border-radius:100px;}
+.rating{font-size:11.5px;color:var(--ink-soft);}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:var(--paper);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer;}
+
+/* Approval / trust moment */
+.approval-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:14px;margin-bottom:16px;box-shadow:var(--shadow-1);}
+.approval-card .ap-top{display:flex;gap:12px;align-items:center;margin-bottom:12px;}
+.approval-thumb{width:52px;height:52px;border-radius:12px;background:var(--navy-dark);flex:none;
+  background-image:linear-gradient(135deg,#1F3A63,#0C1B30);position:relative;overflow:hidden;}
+.approval-thumb::after{content:'';position:absolute;inset:0;background:
+  repeating-linear-gradient(115deg, rgba(255,255,255,.06) 0 6px, transparent 6px 14px);}
+.approval-card h4{margin:0 0 2px;font-size:13px;font-weight:700;}
+.approval-card p{margin:0;font-size:11.5px;color:var(--ink-soft);}
+.approval-actions{display:flex;gap:8px;}
+.approval-actions button{flex:1;border-radius:12px;padding:10px;font-weight:700;font-size:12.5px;
+  font-family:var(--font-body);border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;}
+.approval-actions .approve{background:var(--green);border-color:var(--green);color:#fff;}
+.approval-actions .flag{color:var(--red);}
+
+.timeline{margin-top:20px;}
+.tl-row{display:flex;align-items:center;gap:11px;margin-bottom:4px;}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--line-strong);flex:none;}
+.tl-dot.done{background:var(--green);} .tl-dot.now{background:var(--navy);box-shadow:0 0 0 4px var(--blue-soft);}
+.tl-line{width:1.5px;height:24px;background:var(--line-strong);margin-left:4.5px;}
+.tl-label{font-size:12.5px;color:var(--ink-soft);font-weight:500;}
+.tl-label.now{color:var(--ink);font-weight:700;}
+
+.photo-block{height:150px;border-radius:var(--radius-md);background:linear-gradient(135deg,#16273f,#0C1B30);
+  position:relative;margin-bottom:14px;overflow:hidden;}
+.photo-block::after{content:'';position:absolute;inset:0;background:
+  repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 8px, transparent 8px 18px);}
+.photo-block .geotag{position:absolute;bottom:10px;left:10px;font-family:var(--font-mono);font-size:10.5px;
+  color:#fff;background:rgba(12,27,48,0.65);padding:5px 9px;border-radius:8px;z-index:1;}
+.photo-block .check{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;
+  background:var(--green);display:flex;align-items:center;justify-content:center;z-index:1;}
+
+.window-note{display:flex;align-items:center;gap:9px;background:var(--gold-soft);color:var(--gold-deep);
+  border-radius:12px;padding:11px 13px;font-size:12px;font-weight:700;margin:14px 0;line-height:1.4;}
+.window-note svg{flex:none;}
+
+.receipt{background:var(--surface);border-radius:6px;padding:18px 19px 22px;position:relative;
+  box-shadow:var(--shadow-2);}
+.receipt::after{content:'';display:block;height:10px;margin:14px -19px -22px;
+  background:radial-gradient(circle at 6px 0, var(--paper) 6px, transparent 7px) 0 -5px / 12px 12px repeat-x;}
+.receipt h4{font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;
+  letter-spacing:0.1em;text-align:center;margin:0 0 12px;color:var(--ink-soft);}
+.r-row{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11.5px;
+  padding:3.5px 0;color:var(--ink-soft);}
+.r-row.item{color:var(--ink);}
+.r-div{border-top:1.5px dashed var(--line-strong);margin:9px 0;}
+.r-row.total{color:var(--navy-dark);font-weight:700;font-size:13.5px;}
+.paid-strip,.status-row{margin-top:14px;display:flex;align-items:center;gap:9px;background:var(--green-soft);
+  color:var(--green);padding:10px 13px;border-radius:12px;font-size:12px;font-weight:700;}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none;}
+.stars{display:flex;gap:6px;margin-top:14px;justify-content:center;}
+.stars svg{cursor:pointer;transition:transform .1s ease;}
+.stars svg:active{transform:scale(1.15);}
+
+.search-field{display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--navy);
+  border-radius:14px;padding:13px 15px;box-shadow:var(--shadow-1);}
+.search-field input{border:none;outline:none;flex:1;font-family:var(--font-body);font-size:13.5px;
+  color:var(--ink);background:transparent;min-width:0;}
+.suggest-list{margin-top:8px;}
+.suggest-row{display:flex;align-items:center;gap:12px;padding:12px 6px;border-bottom:1px solid var(--line);cursor:pointer;}
+.suggest-row:last-child{border-bottom:none;}
+.suggest-pin{width:30px;height:30px;border-radius:50%;flex:none;background:var(--paper);
+  display:flex;align-items:center;justify-content:center;}
+.suggest-text{min-width:0;}
+.suggest-text h4{margin:0 0 1px;font-size:13px;font-weight:600;}
+.suggest-text p{margin:0;font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.earn-bar{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,var(--navy),var(--navy-dark));
+  color:#fff;border-radius:var(--radius-md);padding:15px 17px;margin:2px 0 16px;box-shadow:var(--shadow-2);}
+.earn-bar p{margin:0 0 3px;font-size:11px;opacity:0.75;font-weight:500;}
+.earn-bar h3{margin:0;font-size:20px;font-weight:700;}
+.earn-bar .eb-sub{text-align:right;}
+.earn-bar .eb-sub b{font-family:var(--font-mono);font-weight:600;font-size:13px;}
+.job-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:14px 15px;
+  margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow-1);}
+.job-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.job-card h3{margin:0 0 3px;font-size:13.5px;font-weight:700;}
+.job-card p{margin:0;font-size:11.5px;color:var(--ink-soft);}
+.job-payout{font-weight:700;font-size:16px;color:var(--navy-dark);white-space:nowrap;font-family:var(--font-head);}
+.job-meta{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;}
+.chip{font-family:var(--font-mono);font-size:9.5px;font-weight:600;padding:3.5px 9px;border-radius:100px;
+  background:var(--paper);color:var(--ink-soft);}
+.chip.now{background:var(--red-soft);color:var(--red);} .chip.sched{background:var(--blue-soft);color:var(--navy);}
+.chip.dist{background:var(--green-soft);color:var(--green);}
+.chip.rate{background:var(--gold-soft);color:var(--gold-deep);}
+.chip.duration{background:var(--surface);color:var(--ink-soft);border:1px solid var(--line);}
+
+.stage-list{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:6px 15px;margin-bottom:16px;box-shadow:var(--shadow-1);}
+.stage-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;
+  border-bottom:1px solid var(--line);font-size:12.5px;}
+.stage-row:last-child{border-bottom:none;}
+.stage-row .sname{display:flex;align-items:center;gap:9px;color:var(--ink-soft);font-weight:500;}
+.stage-row .sname .sdot{width:7px;height:7px;border-radius:50%;background:var(--navy);flex:none;}
+.stage-row .sval{font-family:var(--font-mono);font-weight:600;color:var(--ink);}
+.stage-row.total{color:var(--navy-dark);}
+.stage-row.total .sname{color:var(--navy-dark);font-weight:700;}
+.stage-row.total .sval{font-weight:700;}
+
+.day-strip{display:flex;gap:6px;margin-bottom:18px;overflow-x:auto;padding-bottom:2px;}
+.day-pill{flex:none;width:44px;padding:9px 0;border-radius:13px;background:var(--surface);border:1px solid var(--line);
+  text-align:center;cursor:pointer;}
+.day-pill.active{background:var(--navy);border-color:var(--navy);}
+.day-pill .dow{font-size:9px;font-weight:600;color:var(--ink-soft);display:block;margin-bottom:3px;
+  text-transform:uppercase;letter-spacing:.03em;}
+.day-pill.active .dow{color:rgba(255,255,255,0.7);}
+.day-pill .num{font-family:var(--font-head);font-weight:700;font-size:14px;color:var(--ink);}
+.day-pill.active .num{color:#fff;}
+.sched-summary{display:flex;justify-content:space-between;align-items:center;background:var(--blue-soft);
+  border-radius:14px;padding:13px 15px;margin-bottom:16px;font-size:12.5px;color:var(--navy-dark);font-weight:600;}
+.sched-block{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:14px 15px;
+  box-shadow:var(--shadow-1);}
+.sched-time{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--navy);margin-bottom:5px;}
+.sched-block h3{margin:0 0 2px;font-size:13.5px;font-weight:700;}
+.sched-block p{margin:0;font-size:11.5px;color:var(--ink-soft);}
+.sched-payout{float:right;font-weight:700;font-size:13.5px;color:var(--navy-dark);font-family:var(--font-head);}
+.buffer-note{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-soft);
+  padding:11px 4px 11px 15px;border-left:1.5px dashed var(--line-strong);margin-left:10px;font-weight:500;}
+.buffer-note.tight{color:var(--red);}
+
+.vcard{width:100%;aspect-ratio:1.586;border-radius:20px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 65%,var(--navy-deep) 100%);
+  color:#fff;padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow-3);margin-bottom:16px;}
+.vcard::before{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(169,132,63,.28),transparent 70%);}
+.vcard .tag{position:absolute;top:18px;right:20px;font-family:var(--font-mono);font-size:9px;
+  background:rgba(255,255,255,0.15);padding:4px 9px;border-radius:100px;}
+.vcard .brand{font-family:var(--font-head);font-weight:800;font-size:15px;display:flex;align-items:center;gap:7px;}
+.vcard .brand .logo-mark{width:20px;height:20px;}
+.vcard .chip2{width:34px;height:25px;border-radius:6px;margin:22px 0 20px;background:linear-gradient(135deg,var(--gold),#8a6a30);}
+.vcard .num{font-family:var(--font-mono);font-size:15px;letter-spacing:0.1em;}
+.vcard .meta{display:flex;justify-content:space-between;margin-top:16px;font-size:9.5px;opacity:0.75;
+  font-family:var(--font-mono);}
+.wallet-btns{display:flex;gap:10px;margin-bottom:16px;}
+.wallet-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--ink);
+  color:#fff;border:none;border-radius:12px;padding:12px;font-family:var(--font-body);
+  font-size:12.5px;font-weight:600;cursor:pointer;}
+
+.txn-row{display:flex;justify-content:space-between;align-items:center;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:9px;}
+.txn-left{display:flex;align-items:center;gap:11px;min-width:0;}
+.txn-icon{width:34px;height:34px;border-radius:10px;background:var(--paper);display:flex;
+  align-items:center;justify-content:center;flex:none;}
+.txn-row h4{margin:0 0 2px;font-size:13px;font-weight:600;}
+.txn-row p{margin:0;font-size:11px;color:var(--ink-soft);}
+.txn-amt{font-family:var(--font-mono);font-size:13px;font-weight:600;flex:none;}
+.txn-amt.pos{color:var(--green);} .txn-amt.neg{color:var(--ink);}
+
+.milestone{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:15px;
+  box-shadow:var(--shadow-1);margin-bottom:16px;}
+.milestone-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px;}
+.milestone-top h4{font-size:13px;font-weight:700;}
+.milestone-top span{font-family:var(--font-mono);font-size:11px;color:var(--gold-deep);font-weight:600;}
+.bar-track{height:8px;border-radius:100px;background:var(--paper);overflow:hidden;}
+.bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--navy));}
+.milestone p{margin-top:8px;font-size:11.5px;color:var(--ink-soft);}
+
+.profile-head{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+.profile-avatar{width:58px;height:58px;border-radius:50%;background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:700;font-size:19px;flex:none;}
+.profile-head h2{margin:0 0 3px;font-size:17px;font-weight:700;}
+.profile-head p{margin:0;font-size:12px;color:var(--ink-soft);}
+.tier-badge{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-family:var(--font-mono);
+  font-size:10px;font-weight:600;background:var(--gold-soft);color:var(--gold-deep);padding:3px 9px;border-radius:100px;}
+.bond-card{display:flex;justify-content:space-between;align-items:center;background:var(--green-soft);
+  border-radius:14px;padding:13px 15px;margin-bottom:16px;}
+.bond-card h4{font-size:13px;font-weight:700;color:var(--green);margin:0 0 2px;}
+.bond-card p{font-size:11px;color:#3f7f65;}
+.bond-card b{font-family:var(--font-mono);color:var(--green);font-size:15px;}
+
+.list-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin-bottom:9px;font-size:13px;font-weight:600;cursor:pointer;}
+.list-row .lr-sub{font-size:11px;color:var(--ink-soft);font-weight:500;margin-top:2px;}
+.list-row .lr-left{display:flex;align-items:center;gap:12px;min-width:0;}
+.list-row .lr-icon{width:34px;height:34px;border-radius:10px;background:var(--paper);flex:none;
+  display:flex;align-items:center;justify-content:center;}
+
+/* Activity list */
+.act-card{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:13px 14px;margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow-1);}
+.act-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none;}
+.act-icon.blue{background:var(--blue-soft);} .act-icon.green{background:var(--green-soft);} .act-icon.gold{background:var(--gold-soft);}
+.act-body{flex:1;min-width:0;}
+.act-body h4{margin:0 0 2px;font-size:13px;font-weight:700;}
+.act-body p{margin:0;font-size:11.5px;color:var(--ink-soft);}
+.act-status{font-family:var(--font-mono);font-size:9.5px;font-weight:600;padding:3px 8px;border-radius:100px;
+  flex:none;white-space:nowrap;}
+.act-status.active{background:var(--blue-soft);color:var(--navy);}
+.act-status.done{background:var(--green-soft);color:var(--green);}
+.act-status.sched{background:var(--gold-soft);color:var(--gold-deep);}
+
+/* ============================================================
+   NAV BAR
+   ============================================================ */
+.navbar{display:flex;justify-content:space-around;align-items:flex-end;padding:10px 10px calc(14px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--line);background:var(--surface);flex:none;position:relative;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-faint);cursor:pointer;
+  padding:4px 10px;border-radius:12px;transition:color .15s ease;}
+.nav-item.active{color:var(--navy);}
+.nav-item span{font-size:9.5px;font-weight:600;}
+
+/* ============================================================
+   MISC
+   ============================================================ */
+.toast{position:fixed;left:50%;bottom:32px;transform:translate(-50%,20px);
+  background:var(--navy-dark);color:#fff;padding:12px 18px;border-radius:100px;
+  font-size:12.5px;font-weight:600;box-shadow:0 14px 26px -10px rgba(16,27,45,0.6);
+  opacity:0;pointer-events:none;transition:all .3s ease;z-index:999;white-space:nowrap;max-width:88vw;
+  overflow:hidden;text-overflow:ellipsis;}
+.toast.show{opacity:1;transform:translate(-50%,0);}
+.issue-chip{display:inline-block;padding:10px 15px;border-radius:100px;border:1.5px solid var(--line);
+  background:var(--surface);font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;margin:0 8px 8px 0;}
+.issue-chip.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+
+/* ============================================================
+   LOGO + SPLASH
+   ============================================================ */
+#splash{position:fixed;inset:0;background:radial-gradient(120% 120% at 50% 10%, #1c3a63 0%, #0c1b30 65%, #08131f 100%);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:2000;
+  transition:opacity .5s ease, visibility .5s ease;}
+#splash.hide{opacity:0;visibility:hidden;pointer-events:none;}
+#splash .splash-logo{width:120px;height:120px;}
+#splash .splash-word{margin-top:20px;font-family:var(--font-head);font-weight:800;font-size:22px;color:#fff;
+  letter-spacing:.02em;opacity:0;animation:wordIn .5s ease forwards .95s;}
+#splash .splash-tag{margin-top:5px;font-family:var(--font-mono);font-size:11px;color:#A9C0DE;
+  letter-spacing:.08em;text-transform:uppercase;opacity:0;animation:wordIn .5s ease forwards 1.1s;}
+@keyframes wordIn{to{opacity:1;}}
+
+.logo-bar{transform-origin:left center;animation:barIn .55s cubic-bezier(.2,.9,.2,1) both;}
+.logo-mark.animated .lb-spine{animation-delay:.05s;}
+.logo-mark.animated .lb-top{animation-delay:.2s;}
+.logo-mark.animated .lb-mid{animation-delay:.35s;}
+.logo-mark.animated .lb-bot{animation-delay:.5s;}
+.logo-mark.animated .logo-bg{animation:bgIn .5s ease both;}
+.logo-mark.animated .logo-dot{opacity:0;animation:dotIn .4s ease both .68s;}
+@keyframes barIn{from{transform:scaleX(0);opacity:0;}to{transform:scaleX(1);opacity:1;}}
+@keyframes bgIn{from{opacity:0;transform:scale(.85);}to{opacity:1;transform:scale(1);}}
+@keyframes dotIn{0%{opacity:0;transform:scale(0);}70%{transform:scale(1.3);}100%{opacity:1;transform:scale(1);}}
+.logo-mark .logo-ring{opacity:0;}
+.logo-mark.animated .logo-ring{animation:logoRing 2.6s ease-out 1.1s infinite;}
+@keyframes logoRing{0%{opacity:0;}5%{opacity:.6;}100%{opacity:0;transform:scale(1) translate(0,0);}}
+
+.header-logo{width:36px;height:36px;flex:none;}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     REUSABLE LOGO SYMBOL
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#28457A"/>
+      <stop offset="1" stop-color="#0C1B30"/>
+    </linearGradient>
+    <symbol id="erun-e" viewBox="0 0 64 64">
+      <rect class="logo-bg" x="1" y="1" width="62" height="62" rx="17" fill="url(#logoGrad)"/>
+      <g fill="#F4F6FA">
+        <rect class="logo-bar lb-spine" x="19" y="15" width="7.5" height="34" rx="3.75"/>
+        <rect class="logo-bar lb-top" x="19" y="15" width="27" height="7.5" rx="3.75"/>
+        <rect class="logo-bar lb-mid" x="19" y="28.25" width="21" height="7.5" rx="3.75"/>
+        <rect class="logo-bar lb-bot" x="19" y="41.5" width="27" height="7.5" rx="3.75"/>
+      </g>
+      <circle class="logo-ring" cx="49" cy="16.5" r="3.4" fill="none" stroke="#C9A25C" stroke-width="2"/>
+      <circle class="logo-dot" cx="49" cy="16.5" r="4.4" fill="#C9A25C"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============================================================
+     SPLASH
+     ============================================================ -->
+<div id="splash" aria-hidden="true">
+  <svg class="splash-logo logo-mark animated"><use href="#erun-e"/></svg>
+  <div class="splash-word">Erun</div>
+  <div class="splash-tag">Errands, Handled.</div>
+</div>
+
+<div class="page">
+
+  <div class="brand-lockup">
+    <svg class="logo-mark header-logo"><use href="#erun-e"/></svg>
+    <div class="brand-text">
+      <h1>Erun</h1>
+      <p class="tagline">Errands, Handled.</p>
+    </div>
+  </div>
+  <p class="hero-sub">A vetted, professional errand-running service — one app, one wallet, one runner, multiple stops. This is a live interactive preview of the product.</p>
+
+  <div class="mode-switch">
+    <button class="mode-btn active" id="mode-customer" onclick="setMode('customer')">Customer app</button>
+    <button class="mode-btn" id="mode-runner" onclick="setMode('runner')">Runner app</button>
+  </div>
+
+  <div class="install-row">
+    <button class="install-btn" id="install-btn" onclick="handleInstall()" hidden>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0-5-5m5 5 5-5"/><path d="M4 18v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+      Add to home screen
+    </button>
+  </div>
+
+  <div class="stage">
+  <div class="device">
+    <div class="device-screen">
+
+      <!-- ============================================================
+           CUSTOMER APP
+           ============================================================ -->
+      <div class="app-shell active" id="customer-app">
+
+        <!-- HOME -->
+        <div class="view active" id="c-home">
+          <div class="topbar">
+            <div class="greet"><p>Good afternoon</p><h2>What do you need done?</h2></div>
+            <div class="wallet-pill" id="c-home-balance">$86.40</div>
+          </div>
+          <div class="content">
+            <p class="section-label">Choose a service</p>
+            <div class="cat-card" onclick="cPush('c-location')">
+              <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg></div>
+              <div class="cat-body"><h3>One-off errand</h3><p>Single stop, sorted fast</p></div>
+            </div>
+            <div class="cat-card" onclick="cPush('c-location')">
+              <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.8 7.2 11 16.2M16.2 7.2 13 16.2"/></svg></div>
+              <div class="cat-body"><h3>Multi-stop errand</h3><p>Bundle a few tasks together</p></div>
+            </div>
+            <div class="cat-card" onclick="cPush('c-location')">
+              <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
+              <div class="cat-body"><h3>Recurring errand</h3><p>Set it, we keep showing up</p></div>
+            </div>
+            <div class="cat-card" onclick="cPush('c-location')">
+              <div class="cat-icon gold"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M12 21s-7-4.4-9.2-9C1.2 8.6 3 5 6.6 5c2 0 3.4 1.2 4.2 2.4C11.6 6.2 13 5 15 5c3.6 0 5.4 3.6 3.8 7-2.2 4.6-9.2 9-9.2 9Z"/></svg></div>
+              <div class="cat-body"><h3>Elderly &amp; disability support</h3><p>Verified doorstep drop-off</p></div>
+              <div class="tier-tag">Tier 2 only</div>
+            </div>
+            <div class="cat-card" onclick="cPush('c-location')">
+              <div class="cat-icon gold"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M3 11 12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></div>
+              <div class="cat-body"><h3>Concierge</h3><p>Errands plus the little home jobs</p></div>
+              <div class="tier-tag">Tier 2 only</div>
+            </div>
+          </div>
+          <div class="navbar">
+            <div class="nav-item active" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
+            <div class="nav-item" data-r="c-activity" onclick="cRoot('c-activity')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Activity</span></div>
+            <div class="nav-item" data-r="c-wallet" onclick="cRoot('c-wallet')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 6V4H8v2"/></svg><span>Wallet</span></div>
+            <div class="nav-item" data-r="c-profile" onclick="cRoot('c-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
+          </div>
+        </div>
+
+        <!-- LOCATION -->
+        <div class="view" id="c-location">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Where's the errand</h2></div>
+          <div class="content">
+            <div class="search-field">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="text" value="Chemist Warehouse, Camberwell" placeholder="Enter an address">
+            </div>
+            <div class="suggest-list">
+              <div class="suggest-row" onclick="cPush('c-book')">
+                <div class="suggest-pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="2"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></div>
+                <div class="suggest-text"><h4>Chemist Warehouse Camberwell</h4><p>566 Riversdale Rd, Camberwell VIC</p></div>
+              </div>
+              <div class="suggest-row" onclick="cPush('c-book')">
+                <div class="suggest-pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5A6472" stroke-width="2"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></div>
+                <div class="suggest-text"><h4>Camberwell Junction</h4><p>Camberwell Rd, Camberwell VIC</p></div>
+              </div>
+            </div>
+            <div class="pin-map">
+              <svg viewBox="0 0 320 190"><path d="M0 40 H320 M0 85 H320 M0 130 H320" stroke="#C7D5E8" stroke-width="1"/><path d="M70 0 V190 M170 0 V190 M260 0 V190" stroke="#C7D5E8" stroke-width="1"/></svg>
+              <div class="pin-drop" style="left:160px;top:95px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="#1F3A63"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/><circle cx="12" cy="9.5" r="2.8" fill="#fff"/></svg><div class="pin-pulse"></div></div>
+            </div>
+            <button class="cta" onclick="cPush('c-book')">Confirm location</button>
+          </div>
+        </div>
+
+        <!-- BOOK -->
+        <div class="view" id="c-book">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>One-off errand</h2></div>
+          <div class="content">
+            <p class="field-label">Where's the task</p>
+            <div class="field">Chemist Warehouse, Camberwell</div>
+            <p class="field-label">What do you need done</p>
+            <textarea class="field" rows="3">Pick up prescription under my name, pay with wallet if there's a gap cover.</textarea>
+            <p class="field-label">When do you need this</p>
+            <div class="when-toggle">
+              <button class="when-btn active" onclick="whenToggle(this,'now')">As soon as possible</button>
+              <button class="when-btn" onclick="whenToggle(this,'schedule')">Schedule</button>
+            </div>
+            <div class="schedule-fields" id="schedule-fields"><div class="field">Sat, 16 Aug</div><div class="field">10:00 AM</div></div>
+            <div class="price-card">
+              <div class="price-row"><span>Base fee</span><span>$7.00</span></div>
+              <div class="price-row"><span>Travel · 2.4 km</span><span>$2.50</span></div>
+              <div class="price-row"><span>Item budget</span><span>$18.00</span></div>
+              <div class="price-row total"><span>Erun wallet total</span><span>$27.50</span></div>
+            </div>
+            <button class="cta" onclick="cPush('c-finding')">Fund Erun wallet — $27.50</button>
+          </div>
+        </div>
+
+        <!-- FINDING -->
+        <div class="view" id="c-finding">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Finding a runner</h2></div>
+          <div class="content">
+            <div class="finding-map">
+              <svg viewBox="0 0 320 190"><path d="M0 40 H320 M0 85 H320 M0 130 H320" stroke="#C7D5E8" stroke-width="1"/><path d="M70 0 V190 M170 0 V190 M260 0 V190" stroke="#C7D5E8" stroke-width="1"/></svg>
+              <div class="search-rings"><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
+              <div class="runner-pin" style="left:160px;top:95px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="#122843"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/></svg></div>
+              <div class="runner-pin" style="left:95px;top:50px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#A9843F"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/></svg></div>
+              <div class="runner-pin" style="left:235px;top:60px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#A9843F"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/></svg></div>
+              <div class="runner-pin" style="left:210px;top:140px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#A9843F"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/></svg></div>
+            </div>
+            <div class="finding-status"><h3>Broadcasting to nearby runners…</h3><p>4 eligible runners can see this job within 2.5 km</p></div>
+            <div class="price-card">
+              <div class="price-row"><span>Base fee</span><span>$7.00</span></div>
+              <div class="price-row"><span>Travel · 2.4 km</span><span>$2.50</span></div>
+              <div class="price-row"><span>Item budget</span><span>$18.00</span></div>
+              <div class="price-row total"><span>Held in Erun wallet</span><span>$27.50</span></div>
+            </div>
+            <button class="cta" onclick="cPush('c-track')">Jordan accepted — view tracking</button>
+            <button class="btn-secondary" onclick="showToast('Request cancelled — full amount refunded to Erun wallet'); cPop();">Cancel request</button>
+          </div>
+        </div>
+
+        <!-- TRACK -->
+        <div class="view" id="c-track">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Runner on the way</h2></div>
+          <div class="content">
+            <div class="map-block">
+              <svg viewBox="0 0 320 190"><path d="M30 150 Q120 40 290 60" stroke="#1F3A63" stroke-width="2.5" stroke-dasharray="6 7" fill="none"/><circle cx="30" cy="150" r="6" fill="#101B2D"/><circle cx="290" cy="60" r="6" fill="#A9843F"/></svg>
+            </div>
+            <div class="runner-card">
+              <div class="avatar">JM</div>
+              <div class="runner-info"><h3>Jordan M.</h3><div class="badges"><span class="badge-verified">Tier 2 verified</span><span class="rating">4.9 rating</span></div></div>
+              <div class="icon-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></div>
+            </div>
+            <div class="approval-card">
+              <div class="ap-top">
+                <div class="approval-thumb"></div>
+                <div><h4>Is this the right item?</h4><p>Jordan found "Panadol Osteo 96pk" — closest match to your request.</p></div>
+              </div>
+              <div class="approval-actions">
+                <button class="approve" onclick="showToast('Item approved — Jordan is completing the purchase')">Approve</button>
+                <button class="flag" onclick="showToast('Flagged — Jordan will confirm an alternative with you')">Wrong item</button>
+              </div>
+            </div>
+            <div class="timeline">
+              <div class="tl-row"><div class="tl-dot done"></div><div class="tl-label">Accepted</div></div>
+              <div class="tl-line"></div>
+              <div class="tl-row"><div class="tl-dot done"></div><div class="tl-label">Shopping</div></div>
+              <div class="tl-line"></div>
+              <div class="tl-row"><div class="tl-dot now"></div><div class="tl-label now">On the way · 6 min</div></div>
+              <div class="tl-line"></div>
+              <div class="tl-row"><div class="tl-dot"></div><div class="tl-label">Delivered</div></div>
+            </div>
+            <button class="cta" onclick="cPush('c-complete')">Simulate delivery</button>
+          </div>
+        </div>
+
+        <!-- COMPLETE -->
+        <div class="view" id="c-complete">
+          <div class="back-row"><div class="back-btn" onclick="cRoot('c-home')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Errand complete</h2></div>
+          <div class="content">
+            <div class="photo-block">
+              <div class="geotag">37.8221°S 145.0648°E · 14:32</div>
+              <div class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg></div>
+            </div>
+            <div class="receipt">
+              <h4>Erun receipt · #ER-48213</h4>
+              <div class="r-row"><span>Base fee</span><span>$7.00</span></div>
+              <div class="r-row"><span>Travel · 2.4 km</span><span>$2.50</span></div>
+              <div class="r-div"></div>
+              <div class="r-row"><span>Item budget (cap)</span><span>$19.80</span></div>
+              <div class="r-row item"><span>Actual spend</span><span>$17.20</span></div>
+              <div class="r-row"><span>Swept back to wallet</span><span>−$2.60</span></div>
+              <div class="r-div"></div>
+              <div class="r-row total"><span>Total charged</span><span>$26.70</span></div>
+            </div>
+            <div class="window-note">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+              You have 2 hours to flag an issue before this settles.
+            </div>
+            <p class="field-label" style="text-align:center;margin-top:22px;">Rate your runner</p>
+            <div class="stars">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="#A9843F" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="#A9843F" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="#A9843F" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="#A9843F" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.6" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
+            </div>
+            <button class="cta" onclick="showToast('Thanks — rating submitted'); cRoot('c-home');">Done</button>
+          </div>
+        </div>
+
+        <!-- ACTIVITY -->
+        <div class="view" id="c-activity">
+          <div class="topbar"><div class="greet"><p>Your errands</p><h2>Activity</h2></div></div>
+          <div class="content">
+            <p class="section-label">In progress</p>
+            <div class="act-card" onclick="cRoot('c-home'); cPush('c-track');">
+              <div class="act-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/></svg></div>
+              <div class="act-body"><h4>Chemist Warehouse pickup</h4><p>Jordan M. · on the way · 6 min</p></div>
+              <div class="act-status active">Live</div>
+            </div>
+            <p class="section-label">Scheduled</p>
+            <div class="act-card">
+              <div class="act-icon gold"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
+              <div class="act-body"><h4>Weekly grocery run</h4><p>Coles Camberwell · every Sat, 9:00 AM</p></div>
+              <div class="act-status sched">Recurring</div>
+            </div>
+            <p class="section-label">Completed</p>
+            <div class="act-card">
+              <div class="act-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.8"><path d="M5 13l4 4L19 7"/></svg></div>
+              <div class="act-body"><h4>Post office &amp; dry cleaning</h4><p>Delivered Tue · $31.20 total</p></div>
+              <div class="act-status done">Done</div>
+            </div>
+            <div class="act-card">
+              <div class="act-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.8"><path d="M5 13l4 4L19 7"/></svg></div>
+              <div class="act-body"><h4>Butcher · lamb order</h4><p>Delivered Mon · $42.00 total</p></div>
+              <div class="act-status done">Done</div>
+            </div>
+          </div>
+          <div class="navbar">
+            <div class="nav-item" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
+            <div class="nav-item active" data-r="c-activity" onclick="cRoot('c-activity')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Activity</span></div>
+            <div class="nav-item" data-r="c-wallet" onclick="cRoot('c-wallet')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 6V4H8v2"/></svg><span>Wallet</span></div>
+            <div class="nav-item" data-r="c-profile" onclick="cRoot('c-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
+          </div>
+        </div>
+
+        <!-- WALLET -->
+        <div class="view" id="c-wallet">
+          <div class="topbar"><div class="greet"><p>Erun wallet</p><h2>Balance &amp; history</h2></div></div>
+          <div class="content">
+            <div class="earn-bar">
+              <div><p>Available balance</p><h3 id="c-wallet-balance">$86.40</h3></div>
+              <div class="eb-sub"><p>&nbsp;</p><b>Job-to-job wallet</b></div>
+            </div>
+            <button class="cta" style="margin-top:0" onclick="topUp()">Top up $50.00</button>
+            <p class="section-label">Recent transactions</p>
+            <div class="txn-row">
+              <div class="txn-left"><div class="txn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/></svg></div><div><h4>Post office &amp; dry cleaning</h4><p>Tue · 2:14 PM</p></div></div>
+              <div class="txn-amt neg">−$31.20</div>
+            </div>
+            <div class="txn-row">
+              <div class="txn-left"><div class="txn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.8"><path d="M12 3v13m0 0-5-5m5 5 5-5"/></svg></div><div><h4>Wallet top-up</h4><p>Mon · 9:02 AM</p></div></div>
+              <div class="txn-amt pos">+$50.00</div>
+            </div>
+            <div class="txn-row">
+              <div class="txn-left"><div class="txn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/></svg></div><div><h4>Butcher · lamb order</h4><p>Mon · 11:40 AM</p></div></div>
+              <div class="txn-amt neg">−$42.00</div>
+            </div>
+          </div>
+          <div class="navbar">
+            <div class="nav-item" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
+            <div class="nav-item" data-r="c-activity" onclick="cRoot('c-activity')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Activity</span></div>
+            <div class="nav-item active" data-r="c-wallet" onclick="cRoot('c-wallet')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 6V4H8v2"/></svg><span>Wallet</span></div>
+            <div class="nav-item" data-r="c-profile" onclick="cRoot('c-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
+          </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="view" id="c-profile">
+          <div class="topbar"><div class="greet"><p>Account</p><h2>Profile</h2></div></div>
+          <div class="content">
+            <div class="profile-head">
+              <div class="profile-avatar">SM</div>
+              <div><h2>Sarah Mitchell</h2><p>Member since Mar 2025</p></div>
+            </div>
+            <p class="section-label">Manage</p>
+            <div class="list-row"><span>Saved addresses</span><span class="lr-sub">3 saved</span></div>
+            <div class="list-row"><span>Payment methods</span><span class="lr-sub">Visa •••• 4471</span></div>
+            <div class="list-row"><span>Recurring errands</span><span class="lr-sub">1 active</span></div>
+            <p class="section-label">Support</p>
+            <div class="list-row"><span>Help centre</span><span class="lr-sub">FAQs &amp; guides</span></div>
+            <div class="list-row"><span>Contact support</span><span class="lr-sub">Avg. reply 4 min</span></div>
+            <div class="list-row" onclick="handleInstall()"><span>Add Erun to home screen</span><span class="lr-sub">Use offline, like a real app</span></div>
+          </div>
+          <div class="navbar">
+            <div class="nav-item" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
+            <div class="nav-item" data-r="c-activity" onclick="cRoot('c-activity')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Activity</span></div>
+            <div class="nav-item" data-r="c-wallet" onclick="cRoot('c-wallet')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 6V4H8v2"/></svg><span>Wallet</span></div>
+            <div class="nav-item active" data-r="c-profile" onclick="cRoot('c-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================================
+           RUNNER APP
+           ============================================================ -->
+      <div class="app-shell" id="runner-app">
+
+        <!-- FEED -->
+        <div class="view active" id="r-feed">
+          <div class="topbar"><div class="greet"><p>Good afternoon, Jordan</p><h2>Jobs near you</h2></div></div>
+          <div class="content">
+            <div class="earn-bar">
+              <div><p>Earned today</p><h3>$118.40</h3></div>
+              <div class="eb-sub"><p>Jobs done</p><b>5</b></div>
+            </div>
+            <p class="section-label">Available now</p>
+            <div class="job-card" onclick="rPush('r-job')">
+              <div class="job-card-top"><div><h3>Chemist Warehouse pickup</h3><p>Camberwell · 2.4 km away</p></div><div class="job-payout">$19.60</div></div>
+              <div class="job-meta"><span class="chip now">ASAP</span><span class="chip dist">2.4 km</span><span class="chip duration">≈24 min total</span><span class="chip rate">≈$49/hr</span></div>
+            </div>
+            <div class="job-card" onclick="rPush('r-job')">
+              <div class="job-card-top"><div><h3>Weekly grocery run</h3><p>Coles Camberwell · 1.1 km away</p></div><div class="job-payout">$24.10</div></div>
+              <div class="job-meta"><span class="chip sched">Sat 9:00 AM</span><span class="chip dist">1.1 km</span><span class="chip duration">≈38 min total</span><span class="chip rate">≈$38/hr</span></div>
+            </div>
+            <div class="job-card" onclick="rPush('r-job')">
+              <div class="job-card-top"><div><h3>Butcher · lamb order</h3><p>Camberwell Junction · 3.0 km away</p></div><div class="job-payout">$16.80</div></div>
+              <div class="job-meta"><span class="chip now">ASAP</span><span class="chip dist">3.0 km</span><span class="chip duration">≈21 min total</span><span class="chip rate">≈$48/hr</span></div>
+            </div>
+          </div>
+          <div class="navbar">
+            <div class="nav-item active" data-r="r-feed" onclick="rRoot('r-feed')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Feed</span></div>
+            <div class="nav-item" data-r="r-calendar" onclick="rRoot('r-calendar')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span>Calendar</span></div>
+            <div class="nav-item" data-r="r-earnings" onclick="rRoot('r-earnings')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg><span>Earnings</span></div>
+            <div class="nav-item" data-r="r-profile" onclick="rRoot('r-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
+          </div>
+        </div>
+
+        <!-- JOB DETAIL -->
+        <div class="view" id="r-job">
+          <div class="back-row"><div class="back-btn" onclick="rPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Job details</h2></div>
+          <div class="content">
+            <div class="map-block">
+              <svg viewBox="0 0 320 190"><path d="M30 150 Q120 40 290 60" stroke="#1F3A63" stroke-width="2.5" stroke-dasharray="6 7" fill="none"/><circle cx="30" cy="150" r="6" fill="#101B2D"/><circle cx="290" cy="60" r="6" fill="#A9843F"/></svg>
+            </div>
+            <p class="field-label">Task notes</p>
+            <div class="field">Pick up prescription under Sarah M., pay with the Erun card if there's a gap cover.</div>
+            <p class="section-label">Duration breakdown</p>
+            <div class="stage-list">
+              <div class="stage-row"><span class="sname"><span class="sdot"></span>Travel to pickup</span><span class="sval">9 min</span></div>
+              <div class="stage-row"><span class="sname"><span class="sdot"></span>In-store</span><span class="sval">10 min</span></div>
+              <div class="stage-row"><span class="sname"><span class="sdot"></span>Travel to drop-off</span><span class="sval">5 min</span></div>
+              <div class="stage-row total"><span class="sname">Total</span><span class="sval">24 min</span></div>
+            </div>
+            <p class="section-label">Earnings breakdown</p>
+            <div class="stage-list">
+              <div class="stage-row"><span class="sname">Base + travel</span><span class="sval">$14.60</span></div>
+              <div class="stage-row"><span class="sname">Time-based</span><span class="sval">$5.00</span></div>
+              <div class="stage-row total"><span class="sname">Payout · ≈$49/hr</span><span class="sval">$19.60</span></div>
+            </div>
+            <button class="cta" onclick="rPush('r-checkout')">Accept job</button>
+          </div>
+        </div>
+
+        <!-- CHECKOUT / VIRTUAL CARD -->
+        <div class="view" id="r-checkout">
+          <div class="back-row"><div class="back-btn" onclick="rPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Erun card</h2></div>
+          <div class="content">
+            <div class="vcard">
+              <div class="tag">Single-use</div>
+              <div class="brand"><svg class="logo-mark"><use href="#erun-e"/></svg>Erun</div>
+              <div class="chip2"></div>
+              <div class="num">5221 •••• •••• 0847</div>
+              <div class="meta"><span>EXPIRES ON JOB CLOSE</span><span>CVC •••</span></div>
+            </div>
+            <div class="wallet-btns">
+              <button class="wallet-btn" onclick="showToast('Added to Apple Pay')"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.2 1.2-.3 2.4-1 3.2-.8.9-2 1.6-3.2 1.5-.2-1.2.4-2.4 1-3.2C14.1 3.6 15.4 3 16.5 3ZM20 16.7c-.5 1.2-.8 1.8-1.5 2.8-1 1.4-2.3 3.2-4 3.2-1.5 0-1.9-1-3.9-1s-2.5 1-4 1c-1.7 0-3-1.6-4-3-2.4-3.4-2.7-7.5-1.2-9.6.9-1.4 2.4-2.3 4-2.3 1.6 0 2.6 1 3.9 1 1.3 0 2.1-1 3.9-1 1.4 0 2.9.8 3.9 2.1-3.4 1.9-2.9 6.6.9 7.8Z"/></svg>Apple Pay</button>
+              <button class="wallet-btn" onclick="showToast('Added to Google Pay')"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 12.2c0-.7-.1-1.4-.2-2.1H12v4h5.4a4.6 4.6 0 0 1-2 3v2.4h3.2c1.9-1.7 3-4.3 3-7.3Z"/><path d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.4c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.5A10 10 0 0 0 12 22Z"/><path d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.5H3.1a10 10 0 0 0 0 9l3.3-2.5Z"/><path d="M12 6c1.5 0 2.8.5 3.8 1.5l2.8-2.8C16.9 3 14.6 2 12 2A10 10 0 0 0 3.1 7.5L6.4 10c.8-2.4 3-4 5.6-4Z"/></svg>Google Pay</button>
+            </div>
+            <div class="price-card">
+              <div class="price-row"><span>Item budget</span><span>$18.00</span></div>
+              <div class="price-row"><span>Buffer (10%)</span><span>$1.80</span></div>
+              <div class="price-row total"><span>Spend cap</span><span>$19.80</span></div>
+            </div>
+            <div class="window-note">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Locked to Chemist Warehouse · expires when this job window closes.
+            </div>
+            <button class="cta" onclick="showToast('Purchase complete — card voided, $2.60 swept back to customer'); rPop();">I've completed the purchase</button>
+          </div>
+        </div>
+
+        <!-- CALENDAR -->
+        <div class="view" id="r-calendar">
+          <div class="topbar"><div class="greet"><p>This week</p><h2>Calendar</h2></div></div>
+          <div class="content">
+            <div class="day-strip">
+              <div class="day-pill"><span class="dow">Mon</span><span class="num">11</span></div>
+              <div class="day-pill"><span class="dow">Tue</span><span class="num">12</span></div>
+              <div class="day-pill active"><span class="dow">Wed</span><span class="num">13</span></div>
+              <div class="day-pill"><span class="dow">Thu</span><span class="num">14</span></div>
+              <div class="day-pill"><span class="dow">Fri</span><span class="num">15</span></div>
+              <div class="day-pill"><span class="dow">Sat</span><span class="num">16</span></div>
+              <div class="day-pill"><span class="dow">Sun</span><span class="num">17</span></div>
+            </div>
+            <div class="sched-summary"><span>3 jobs scheduled today</span><span>≈$61.50</span></div>
+            <div class="sched-block">
+              <div class="sched-time">10:00 – 10:24 AM</div>
+              <div class="sched-payout">$19.60</div>
+              <h3>Chemist Warehouse pickup</h3>
+              <p>Camberwell · Sarah M.</p>
+            </div>
+            <div class="buffer-note">18 min drive buffer to next job</div>
+            <div class="sched-block">
+              <div class="sched-time">11:00 – 11:38 AM</div>
+              <div class="sched-payout">$24.10</div>
+              <h3>Weekly grocery run</h3>
+              <p>Coles Camberwell · Priya K.</p>
+            </div>
+            <div class="buffer-note tight">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+              Only 8 min buffer — tight, live traffic may push this
+            </div>
+            <div class="sched-block">
+              <div class="sched-time">11:46 AM – 12:07 PM</div>
+              <div class="sched-payout">$16.80</div>
+              <h3>Butcher · lamb order</h3>
+              <p>Camberwell Junction · Marcus D.</p>
+            </div>
+          </div>
+          <div class="navbar">
+            <div class="nav-item" data-r="r-feed" onclick="rRoot('r-feed')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Feed</span></div>
+            <div class="nav-item active" data-r="r-calendar" onclick="rRoot('r-calendar')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span>Calendar</span></div>
+            <div class="nav-item" data-r="r-earnings" onclick="rRoot('r-earnings')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg><span>Earnings</span></div>
+            <div class="nav-item" data-r="r-profile" onclick="rRoot('r-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
+          </div>
+        </div>
+
+        <!-- EARNINGS -->
+        <div class="view" id="r-earnings">
+          <div class="topbar"><div class="greet"><p>Payouts</p><h2>Earnings</h2></div></div>
+          <div class="content">
+            <div class="earn-bar">
+              <div><p>Available to withdraw</p><h3 id="r-earnings-balance">$64.20</h3></div>
+              <div class="eb-sub"><p>&nbsp;</p><b>24hr payout</b></div>
+            </div>
+            <button class="cta" style="margin-top:0" onclick="withdraw()">Withdraw now — arrives in 24hrs</button>
+            <div class="milestone">
+              <div class="milestone-top"><h4>Launch bonus</h4><span>14 / 20 errands</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:70%"></div></div>
+              <p>Complete 6 more errands to unlock your $500 early-runner bonus.</p>
+            </div>
+            <p class="section-label">Recent payouts</p>
+            <div class="txn-row">
+              <div class="txn-left"><div class="txn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.8"><path d="M12 3v13m0 0-5-5m5 5 5-5"/></svg></div><div><h4>Weekly payout</h4><p>Mon · to BSB •••• 442</p></div></div>
+              <div class="txn-amt pos">+$212.40</div>
+            </div>
+            <div class="txn-row">
+              <div class="txn-left"><div class="txn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.8"><path d="M12 3v13m0 0-5-5m5 5 5-5"/></svg></div><div><h4>Weekly payout</h4><p>Last Mon · to BSB •••• 442</p></div></div>
+              <div class="txn-amt pos">+$196.80</div>
+            </div>
+          </div>
+          <div class="navbar">
+            <div class="nav-item" data-r="r-feed" onclick="rRoot('r-feed')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Feed</span></div>
+            <div class="nav-item" data-r="r-calendar" onclick="rRoot('r-calendar')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span>Calendar</span></div>
+            <div class="nav-item active" data-r="r-earnings" onclick="rRoot('r-earnings')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg><span>Earnings</span></div>
+            <div class="nav-item" data-r="r-profile" onclick="rRoot('r-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
+          </div>
+        </div>
+
+        <!-- RUNNER PROFILE -->
+        <div class="view" id="r-profile">
+          <div class="topbar"><div class="greet"><p>Account</p><h2>Profile</h2></div></div>
+          <div class="content">
+            <div class="profile-head">
+              <div class="profile-avatar">JM</div>
+              <div><h2>Jordan M.</h2><p>Runner since Feb 2025</p><span class="tier-badge">Tier 2 · Verified</span></div>
+            </div>
+            <div class="bond-card">
+              <div><h4>Daily fraud bond</h4><p>Pre-authorised hold, untouched</p></div>
+              <b>$100.00</b>
+            </div>
+            <p class="section-label">Verification</p>
+            <div class="list-row"><span>ID verification</span><span class="lr-sub">Verified</span></div>
+            <div class="list-row"><span>National Police Check</span><span class="lr-sub">Valid to Nov 2026</span></div>
+            <div class="list-row"><span>Working with Vulnerable People</span><span class="lr-sub">Valid to Nov 2026</span></div>
+            <p class="section-label">Account</p>
+            <div class="list-row"><span>Payout bank account</span><span class="lr-sub">•••• 442</span></div>
+            <div class="list-row"><span>Vehicle &amp; documents</span><span class="lr-sub">Up to date</span></div>
+          </div>
+          <div class="navbar">
+            <div class="nav-item" data-r="r-feed" onclick="rRoot('r-feed')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Feed</span></div>
+            <div class="nav-item" data-r="r-calendar" onclick="rRoot('r-calendar')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg><span>Calendar</span></div>
+            <div class="nav-item" data-r="r-earnings" onclick="rRoot('r-earnings')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg><span>Earnings</span></div>
+            <div class="nav-item active" data-r="r-profile" onclick="rRoot('r-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let custStack = ['c-home'];
+  let runnerStack = ['r-feed'];
+
+  function renderApp(stack, prefix){
+    document.querySelectorAll('#' + prefix + '-app .view').forEach(v => v.classList.remove('active'));
+    document.getElementById(stack[stack.length - 1]).classList.add('active');
+    document.querySelectorAll('#' + prefix + '-app .nav-item').forEach(n => {
+      n.classList.toggle('active', n.dataset.r === stack[0] && stack.length === 1);
+    });
+  }
+  function cPush(id){ custStack.push(id); renderApp(custStack, 'customer'); }
+  function cPop(){ if(custStack.length > 1){ custStack.pop(); renderApp(custStack, 'customer'); } }
+  function cRoot(id){ custStack = [id]; renderApp(custStack, 'customer'); }
+
+  function rPush(id){ runnerStack.push(id); renderApp(runnerStack, 'runner'); }
+  function rPop(){ if(runnerStack.length > 1){ runnerStack.pop(); renderApp(runnerStack, 'runner'); } }
+  function rRoot(id){ runnerStack = [id]; renderApp(runnerStack, 'runner'); }
+
+  function setMode(mode){
+    document.getElementById('mode-customer').classList.toggle('active', mode === 'customer');
+    document.getElementById('mode-runner').classList.toggle('active', mode === 'runner');
+    document.getElementById('customer-app').classList.toggle('active', mode === 'customer');
+    document.getElementById('runner-app').classList.toggle('active', mode === 'runner');
+  }
+
+  function whenToggle(btn, type){
+    document.querySelectorAll('#c-book .when-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('schedule-fields').style.display = type === 'schedule' ? 'flex' : 'none';
+  }
+
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function rate(el){
+    const stars = el.parentElement.querySelectorAll('svg');
+    const idx = Array.from(stars).indexOf(el);
+    stars.forEach((s, i) => {
+      s.setAttribute('fill', i <= idx ? '#A9843F' : 'none');
+      s.setAttribute('stroke', '#A9843F');
+    });
+  }
+
+  let walletBalance = 86.40;
+  function topUp(){
+    walletBalance += 50;
+    document.getElementById('c-wallet-balance').textContent = '$' + walletBalance.toFixed(2);
+    document.getElementById('c-home-balance').textContent = '$' + walletBalance.toFixed(2);
+    showToast('$50.00 added to your Erun wallet');
+  }
+
+  let earningsBalance = 64.20;
+  function withdraw(){
+    showToast('$' + earningsBalance.toFixed(2) + ' withdrawal started — arrives within 24hrs');
+    document.getElementById('r-earnings-balance').textContent = '$0.00';
+  }
+
+  function chipSelect(chip){
+    chip.parentElement.querySelectorAll('.issue-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  }
+
+  renderApp(custStack, 'customer');
+  renderApp(runnerStack, 'runner');
+
+  // -------------------------------------------------------------
+  // Splash screen
+  // -------------------------------------------------------------
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('splash').classList.add('hide');
+    }, 1500);
+  });
+
+  // -------------------------------------------------------------
+  // PWA install prompt
+  // -------------------------------------------------------------
+  let deferredPrompt = null;
+  const installBtn = document.getElementById('install-btn');
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.hidden = false;
+  });
+  function handleInstall(){
+    if (deferredPrompt){
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.finally(() => { deferredPrompt = null; installBtn.hidden = true; });
+      return;
+    }
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (isIOS){
+      showToast('Tap Share, then "Add to Home Screen"');
+    } else {
+      showToast('Open this page in Chrome and use "Install app" in the menu');
+    }
+  }
+  window.addEventListener('appinstalled', () => { installBtn.hidden = true; });
+
+  // -------------------------------------------------------------
+  // Service worker registration (offline support)
+  // -------------------------------------------------------------
+  if ('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
