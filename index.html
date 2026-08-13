@@ -113,8 +113,6 @@ button{font:inherit;}
   justify-content:space-between;flex:none;}
 .topbar .greet p{margin:0;font-size:12px;color:var(--ink-soft);font-weight:500;}
 .topbar .greet h2{margin:3px 0 0;font-size:19px;font-weight:700;}
-.wallet-pill{font-family:var(--font-mono);font-size:12px;font-weight:600;
-  background:var(--navy);color:#fff;padding:8px 14px;border-radius:100px;letter-spacing:0.02em;}
 .content{flex:1;overflow-y:auto;padding:2px 20px 24px;-webkit-overflow-scrolling:touch;}
 .section-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.12em;
   text-transform:uppercase;color:var(--ink-faint);margin:18px 0 10px;font-weight:600;}
@@ -128,19 +126,86 @@ button{font:inherit;}
 /* ============================================================
    CARDS / FIELDS / BUTTONS
    ============================================================ */
-.cat-card{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--radius-md);padding:15px;margin-bottom:10px;box-shadow:var(--shadow-1);cursor:pointer;
-  transition:transform .15s ease, box-shadow .15s ease;}
-.cat-card:active{transform:scale(.98);}
-.cat-icon{width:42px;height:42px;flex:none;border-radius:13px;background:var(--blue-soft);
+/* ============================================================
+   CUSTOMER DASHBOARD (home)
+   A calm header, the live errand if there is one, then the errand
+   types split into two named segments — everyday, and specialist
+   care — so the screen reads as sections rather than one long list.
+   ============================================================ */
+.home-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex:none;
+  padding:calc(26px + env(safe-area-inset-top,0px)) 22px 4px;}
+.home-hello{font-size:12.5px;font-weight:600;color:var(--ink-faint);}
+.home-head h2{margin:7px 0 0;font-size:23px;font-weight:800;line-height:1.22;letter-spacing:-0.02em;}
+.wallet-chip{display:flex;align-items:center;gap:7px;flex:none;margin-top:3px;cursor:pointer;
+  background:var(--navy);color:#fff;border-radius:100px;padding:9px 14px;box-shadow:var(--shadow-2);
+  transition:transform .15s ease;}
+.wallet-chip:active{transform:scale(.96);}
+.wallet-chip svg{flex:none;opacity:.8;}
+.wallet-chip b{font-family:var(--font-mono);font-size:12.5px;font-weight:600;letter-spacing:0.02em;}
+.home-content{padding:20px 22px 30px;}
+
+/* live errand — only rendered while an errand is actually running */
+.live-card{display:flex;align-items:center;gap:13px;cursor:pointer;margin-bottom:26px;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;
+  border-radius:var(--radius-lg);padding:16px 18px;box-shadow:var(--shadow-2);
+  transition:transform .15s ease;}
+.live-card:active{transform:scale(.985);}
+.live-body{flex:1;min-width:0;}
+.live-tag{display:flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:9.5px;
+  font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#9DBCE6;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#6EE7A8;flex:none;
+  box-shadow:0 0 0 0 rgba(110,231,168,.65);animation:livePulse 1.9s ease-out infinite;}
+@keyframes livePulse{70%{box-shadow:0 0 0 7px rgba(110,231,168,0);}100%{box-shadow:0 0 0 0 rgba(110,231,168,0);}}
+.live-card h4{margin:9px 0 3px;font-size:15px;font-weight:700;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.live-card p{font-size:12.5px;color:#B4C5DC;}
+.live-go{width:34px;height:34px;flex:none;border-radius:12px;background:rgba(255,255,255,.14);
   display:flex;align-items:center;justify-content:center;}
-.cat-icon.gold{background:var(--gold-soft);}
-.cat-body{min-width:0;}
-.cat-body h3{margin:0 0 2px;font-size:14.5px;font-weight:700;}
-.cat-body p{margin:0;font-size:12.5px;color:var(--ink-soft);}
-.tier-tag{font-family:var(--font-mono);font-size:9.5px;font-weight:600;padding:3px 8px;
-  border-radius:100px;background:var(--gold-soft);color:var(--gold-deep);margin-left:auto;
-  white-space:nowrap;flex:none;}
+
+/* segments */
+.seg{margin-bottom:26px;}
+.seg:last-child{margin-bottom:0;}
+.seg-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 13px;}
+.seg-head h3{font-size:16.5px;font-weight:800;letter-spacing:-0.015em;}
+.seg-note{font-size:11.5px;color:var(--ink-faint);font-weight:500;white-space:nowrap;}
+.seg-badge{font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:0.08em;
+  text-transform:uppercase;padding:4px 9px;border-radius:100px;flex:none;
+  background:var(--gold-soft);color:var(--gold-deep);}
+.seg-panel{background:rgba(169,132,63,.06);border:1px solid rgba(169,132,63,.22);
+  border-radius:var(--radius-lg);padding:15px 14px;}
+.seg-panel .seg-head{margin-bottom:12px;}
+
+/* service tiles */
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.svc{display:flex;flex-direction:column;cursor:pointer;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius-md);padding:16px 15px;
+  box-shadow:var(--shadow-1);transition:transform .15s ease, box-shadow .15s ease;}
+.svc:active{transform:scale(.97);}
+.svc-ic{width:44px;height:44px;flex:none;border-radius:14px;background:var(--blue-soft);
+  display:flex;align-items:center;justify-content:center;}
+.svc.gold .svc-ic{background:var(--gold-soft);}
+.svc-txt{min-width:0;}
+.svc h4{margin:12px 0 0;font-size:14.5px;font-weight:700;letter-spacing:-0.01em;}
+.svc p{margin-top:4px;font-size:12px;line-height:1.45;color:var(--ink-soft);}
+.svc-from{margin-top:10px;font-family:var(--font-mono);font-size:10px;font-weight:600;
+  letter-spacing:0.05em;color:var(--ink-faint);}
+/* In the two-up row the copy can run to different line counts, so the price
+   line is pinned to the bottom of each tile and stays on one baseline. */
+.svc:not(.wide) .svc-txt{display:flex;flex-direction:column;flex:1;}
+.svc:not(.wide) .svc-from{margin-top:auto;padding-top:10px;}
+/* the wide variant carries the lead action, and every specialist row */
+.svc.wide{flex-direction:row;align-items:center;gap:15px;grid-column:1 / -1;padding:17px 16px;}
+.svc.wide .svc-ic{width:48px;height:48px;border-radius:15px;}
+.svc.wide .svc-txt{flex:1;}
+.svc.wide h4{margin:0;font-size:15.5px;}
+.svc.wide .svc-from{margin-top:7px;}
+.svc-go{width:26px;height:26px;flex:none;border-radius:9px;background:var(--paper);
+  display:flex;align-items:center;justify-content:center;}
+
+.trust-note{display:flex;align-items:center;gap:10px;padding:12px 14px;
+  border-radius:var(--radius-md);background:var(--surface);border:1px dashed var(--line-strong);}
+.trust-note p{font-size:11.5px;line-height:1.5;color:var(--ink-soft);}
+.trust-note svg{flex:none;}
 
 .field-label{font-size:12px;font-weight:600;color:var(--ink-soft);margin:16px 0 6px;}
 .field{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 15px;
@@ -592,33 +657,86 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
 
         <!-- HOME -->
         <div class="view active" id="c-home">
-          <div class="topbar">
-            <div class="greet"><p>Good afternoon</p><h2>What do you need done?</h2></div>
-            <div class="wallet-pill" id="c-home-balance">$86.40</div>
+          <div class="home-head">
+            <div>
+              <p class="home-hello">Good afternoon, Sarah</p>
+              <h2>What do you need done?</h2>
+            </div>
+            <div class="wallet-chip" onclick="cRoot('c-wallet')" role="button" tabindex="0" aria-label="Open your Erun wallet">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 6V4H8v2"/></svg>
+              <b id="c-home-balance">$86.40</b>
+            </div>
           </div>
-          <div class="content">
-            <p class="section-label">Choose a service</p>
-            <div class="cat-card" onclick="pickCategory('one-off')">
-              <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg></div>
-              <div class="cat-body"><h3>One-off errand</h3><p>Single stop, sorted fast</p></div>
-            </div>
-            <div class="cat-card" onclick="pickCategory('multi')">
-              <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.8 7.2 11 16.2M16.2 7.2 13 16.2"/></svg></div>
-              <div class="cat-body"><h3>Multi-stop errand</h3><p>Bundle a few tasks together</p></div>
-            </div>
-            <div class="cat-card" onclick="pickCategory('recurring')">
-              <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
-              <div class="cat-body"><h3>Recurring errand</h3><p>Set it, we keep showing up</p></div>
-            </div>
-            <div class="cat-card" onclick="pickCategory('care')">
-              <div class="cat-icon gold"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M12 21s-7-4.4-9.2-9C1.2 8.6 3 5 6.6 5c2 0 3.4 1.2 4.2 2.4C11.6 6.2 13 5 15 5c3.6 0 5.4 3.6 3.8 7-2.2 4.6-9.2 9-9.2 9Z"/></svg></div>
-              <div class="cat-body"><h3>Elderly &amp; disability support</h3><p>Verified doorstep drop-off</p></div>
-              <div class="tier-tag">Tier 2 only</div>
-            </div>
-            <div class="cat-card" onclick="pickCategory('concierge')">
-              <div class="cat-icon gold"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M3 11 12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></div>
-              <div class="cat-body"><h3>Concierge</h3><p>Errands plus the little home jobs</p></div>
-              <div class="tier-tag">Tier 2 only</div>
+          <div class="content home-content">
+
+            <div id="c-home-live" hidden></div>
+
+            <section class="seg">
+              <div class="seg-head">
+                <h3>Everyday errands</h3>
+                <span class="seg-note">Booked in under a minute</span>
+              </div>
+              <div class="svc-grid">
+                <div class="svc wide" onclick="pickCategory('one-off')">
+                  <div class="svc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg></div>
+                  <div class="svc-txt">
+                    <h4>One-off errand</h4>
+                    <p>A single stop, sorted fast</p>
+                    <div class="svc-from">FROM $7.00 + TRAVEL</div>
+                  </div>
+                  <div class="svc-go"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5B6472" stroke-width="2.4"><path d="m9 5 7 7-7 7"/></svg></div>
+                </div>
+                <div class="svc" onclick="pickCategory('multi')">
+                  <div class="svc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.8 7.2 11 16.2M16.2 7.2 13 16.2"/></svg></div>
+                  <div class="svc-txt">
+                    <h4>Multi-stop</h4>
+                    <p>Bundle a few tasks into one run</p>
+                    <div class="svc-from">FROM $11.00</div>
+                  </div>
+                </div>
+                <div class="svc" onclick="pickCategory('recurring')">
+                  <div class="svc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
+                  <div class="svc-txt">
+                    <h4>Recurring</h4>
+                    <p>Set it once, we keep showing up</p>
+                    <div class="svc-from">FROM $7.00</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="seg">
+              <div class="seg-panel">
+                <div class="seg-head">
+                  <h3>Specialist care</h3>
+                  <span class="seg-badge">Tier 2 runners</span>
+                </div>
+                <div class="svc-grid">
+                  <div class="svc wide gold" onclick="pickCategory('care')">
+                    <div class="svc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M12 21s-7-4.4-9.2-9C1.2 8.6 3 5 6.6 5c2 0 3.4 1.2 4.2 2.4C11.6 6.2 13 5 15 5c3.6 0 5.4 3.6 3.8 7-2.2 4.6-9.2 9-9.2 9Z"/></svg></div>
+                    <div class="svc-txt">
+                      <h4>Elderly &amp; disability</h4>
+                      <p>Verified doorstep hand-over</p>
+                      <div class="svc-from">FROM $9.50</div>
+                    </div>
+                    <div class="svc-go"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5B6472" stroke-width="2.4"><path d="m9 5 7 7-7 7"/></svg></div>
+                  </div>
+                  <div class="svc wide gold" onclick="pickCategory('concierge')">
+                    <div class="svc-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M3 11 12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></div>
+                    <div class="svc-txt">
+                      <h4>Concierge</h4>
+                      <p>Errands plus the little home jobs</p>
+                      <div class="svc-from">FROM $14.00</div>
+                    </div>
+                    <div class="svc-go"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5B6472" stroke-width="2.4"><path d="m9 5 7 7-7 7"/></svg></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <div class="trust-note">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.9"><path d="M12 3l7 3v6c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+              <p>Every runner is ID-checked and background-screened before their first errand.</p>
             </div>
           </div>
           <div class="navbar">
@@ -1660,7 +1778,25 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
 
   // Each customer screen refreshes from state as it becomes visible, so
   // nothing on screen can drift out of sync with the booking or the wallet.
+  // The dashboard surfaces a running errand itself, so the customer doesn't
+  // have to go looking for it in Activity to see where their runner is.
+  function renderHome(){
+    const live = el('c-home-live');
+    if (!booking.id){ live.hidden = true; live.innerHTML = ''; return; }
+    live.hidden = false;
+    live.innerHTML =
+      '<div class="live-card" onclick="cPush(\'c-track\')" role="button" aria-label="Track your errand">' +
+        '<div class="live-body">' +
+          '<div class="live-tag"><span class="live-dot"></span>Errand in progress</div>' +
+          '<h4>' + escapeHtml(booking.place.name) + '</h4>' +
+          '<p>Jordan M. · ' + STAGES[booking.stage].toLowerCase() + '</p>' +
+        '</div>' +
+        '<div class="live-go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="m9 5 7 7-7 7"/></svg></div>' +
+      '</div>';
+  }
+
   function refreshCustomer(id){
+    if (id === 'c-home') renderHome();
     if (id === 'c-home' || id === 'c-wallet') renderWallet();
     if (id === 'c-location') renderSuggestions();
     if (id === 'c-book') renderBook();
