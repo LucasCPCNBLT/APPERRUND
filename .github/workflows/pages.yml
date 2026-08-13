@@ -12,10 +12,62 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
+  # This job deliberately has no `environment:` block. A job bound to the
+  # github-pages environment is rejected before it is ever assigned a runner if
+  # Pages is off or its source is set to "Deploy from a branch" — the run then
+  # fails in about a second with no logs at all, which is impossible to debug.
+  # This job always runs, prints the live Pages configuration, and repairs it to
+  # build_type=workflow so the deploy job below is allowed to proceed.
+  configure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report and repair Pages configuration
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages"
+          auth=(-H "Authorization: Bearer ${GH_TOKEN}"
+                -H "Accept: application/vnd.github+json"
+                -H "X-GitHub-Api-Version: 2022-11-28")
+
+          echo "::group::Pages configuration before"
+          code=$(curl -sS -o /tmp/pages.json -w '%{http_code}' "${auth[@]}" "$api")
+          echo "GET /pages -> HTTP $code"
+          cat /tmp/pages.json || true
+          echo
+          echo "::endgroup::"
+
+          if [ "$code" = "404" ]; then
+            echo "Pages is not enabled. Enabling it with source = GitHub Actions."
+            curl -sS -o /tmp/out.json -w 'POST /pages -> HTTP %{http_code}\n' \
+              -X POST "${auth[@]}" "$api" -d '{"build_type":"workflow"}'
+            cat /tmp/out.json || true
+            echo
+          else
+            build_type=$(python3 -c "import json;print(json.load(open('/tmp/pages.json')).get('build_type') or '')")
+            echo "Current build_type: '${build_type}'"
+            if [ "$build_type" != "workflow" ]; then
+              echo "Source is not GitHub Actions. Switching it over."
+              curl -sS -o /tmp/out.json -w 'PUT /pages -> HTTP %{http_code}\n' \
+                -X PUT "${auth[@]}" "$api" -d '{"build_type":"workflow"}'
+              cat /tmp/out.json || true
+              echo
+            else
+              echo "Source is already GitHub Actions. Nothing to change."
+            fi
+          fi
+
+          echo "::group::Pages configuration after"
+          curl -sS "${auth[@]}" "$api"
+          echo
+          echo "::endgroup::"
+
   deploy:
+    needs: configure
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -23,14 +75,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      # enablement: true switches GitHub Pages on (Source = GitHub Actions) via the
-      # API if it has never been configured, so the site can go live without anyone
-      # having to visit Settings -> Pages by hand.
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
