@@ -31,17 +31,18 @@ without a connection:
 3. Open it from your home screen icon from now on — after the first load it
    works with no signal, on a plane, in a basement car park, anywhere.
 
-## Turning on the live link (one-time, repo owner only)
+## How the live link is published
 
-GitHub Pages needs to be pointed at this repo once:
+Every push to `main` runs `.github/workflows/pages.yml`, which publishes the
+repo to GitHub Pages. The workflow calls `actions/configure-pages` with
+`enablement: true`, so it switches Pages on by itself the first time it runs —
+there is no manual **Settings → Pages** step. After that, every push to `main`
+redeploys the live link within about a minute; nothing is uploaded by hand.
 
-1. Go to **Settings → Pages** in this repository.
-2. Under **Build and deployment → Source**, choose **GitHub Actions**.
-3. Merge this branch into `main` (or push to `main` directly) — the
-   `Deploy Erun to GitHub Pages` workflow in `.github/workflows/pages.yml`
-   will build and publish automatically.
-4. From then on, every push to `main` redeploys the live link within about a
-   minute — nothing to re-upload by hand.
+The repo must be **public** for Pages to serve on a free GitHub plan.
+
+If a deploy ever fails at the "Deploy to GitHub Pages" step, check
+**Settings → Pages → Build and deployment → Source** reads **GitHub Actions**.
 
 ## Project structure
 
@@ -49,7 +50,7 @@ GitHub Pages needs to be pointed at this repo once:
 index.html       — the entire app (markup, styles, and interaction logic)
 manifest.webmanifest — PWA metadata (name, icons, colors, install behaviour)
 sw.js             — service worker: caches the app shell so it works offline
-icons/            — the Erun "E" mark, source SVGs + generated app icons
+icons/            — the Erun logo (erun-logo.png) + generated app/home-screen icons
 .github/workflows/pages.yml — auto-deploy to GitHub Pages on push to main
 ```
 
@@ -60,10 +61,11 @@ icons/            — the Erun "E" mark, source SVGs + generated app icons
   fintech-grade feel rather than a casual gig-app look.
 - **Palette:** deep navy as the primary trust colour, muted gold reserved for
   Tier 2 / premium signals, green for success/verification states.
-- **Logo:** the "E" mark assembles itself stroke-by-stroke on launch (splash
-  screen), with a gold accent dot that pulses like a live runner ping — then
-  settles into a calm, static mark in-app so day-to-day use stays composed
-  rather than flashy.
+- **Logo:** the real Erun mark is the only logo used anywhere in the app. On the
+  splash screen it pops in, a single light sweep travels across it (masked
+  exactly to the glyph's own pixels), and its accent dot pulses like a live
+  runner ping — then it settles into a calm, static mark in-app so day-to-day
+  use stays composed rather than flashy.
 - Screens follow the customer and runner flows in the product spec: booking →
   finding a runner → live tracking with an in-app purchase-approval step →
   itemised receipt with the spend-cap/actual/swept-back breakdown → rating;

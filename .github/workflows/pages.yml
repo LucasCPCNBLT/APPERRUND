@@ -24,6 +24,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # enablement: true switches GitHub Pages on (Source = GitHub Actions) via the
+      # API if it has never been configured, so the site can go live without anyone
+      # having to visit Settings -> Pages by hand.
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:

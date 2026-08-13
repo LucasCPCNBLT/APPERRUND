@@ -1,12 +1,13 @@
 // Erun service worker — caches the app shell so it works offline once opened once.
 // Bump CACHE_VERSION whenever index.html (or any cached asset) changes so clients
 // pick up the new version instead of serving a stale one forever.
-const CACHE_VERSION = 'erun-v1';
+const CACHE_VERSION = 'erun-v2';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icons/icon.svg',
+  './icons/erun-logo.png',
+  './icons/icon-32.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-180.png',
@@ -14,9 +15,13 @@ const APP_SHELL = [
   './icons/icon-maskable-512.png',
 ];
 
+// Cache each shell entry independently: cache.addAll() rejects the whole install if
+// a single asset 404s, which would silently leave the app with no offline copy at all.
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_VERSION).then((cache) => cache.addAll(APP_SHELL)).then(() => self.skipWaiting())
+    caches.open(CACHE_VERSION).then((cache) =>
+      Promise.all(APP_SHELL.map((url) => cache.add(url).catch(() => {})))
+    ).then(() => self.skipWaiting())
   );
 });
 
