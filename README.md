@@ -33,16 +33,26 @@ without a connection:
 
 ## How the live link is published
 
-Every push to `main` runs `.github/workflows/pages.yml`, which publishes the
-repo to GitHub Pages. The workflow calls `actions/configure-pages` with
-`enablement: true`, so it switches Pages on by itself the first time it runs —
-there is no manual **Settings → Pages** step. After that, every push to `main`
-redeploys the live link within about a minute; nothing is uploaded by hand.
+Pushing to `claude/app-ui-polish-demo-lkcbhs` runs
+`.github/workflows/pages.yml`, which publishes the repo to GitHub Pages. The
+live link refreshes about a minute later. Nothing is uploaded by hand, and no
+other hosting service is involved.
 
-The repo must be **public** for Pages to serve on a free GitHub plan.
+**Why that branch and not `main`:** the `github-pages` environment was created
+while that branch was the repo's only branch, so its deployment branch policy
+permits only it. A deploy job on any other branch is rejected before a runner is
+assigned — the run fails in about a second with no logs and no steps, which
+looks like a broken workflow but is really an environment permission. The
+workflow's `configure` job attempts to clear the policy automatically but
+`GITHUB_TOKEN` is refused with `403 Resource not accessible by integration`.
 
-If a deploy ever fails at the "Deploy to GitHub Pages" step, check
-**Settings → Pages → Build and deployment → Source** reads **GitHub Actions**.
+To deploy from `main` instead: **Settings → Environments → github-pages →
+Deployment branches**, add `main`, then add `main` back to the `branches:` list
+in the workflow.
+
+The repo must also be **public** for Pages to serve on a free GitHub plan, and
+**Settings → Pages → Source** must read **GitHub Actions**. Both are already
+set.
 
 ## Project structure
 

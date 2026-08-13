@@ -2,11 +2,15 @@ name: Deploy Erun to GitHub Pages
 
 on:
   push:
-    # The github-pages environment was created when this repo's only branch was
+    # The github-pages environment was created while this repo's only branch was
     # claude/app-ui-polish-demo-lkcbhs, so its deployment branch policy admits
-    # that branch and rejects main before a runner is even assigned. Build on
-    # both until the policy is relaxed (the configure job below tries to do so).
-    branches: [main, claude/app-ui-polish-demo-lkcbhs]
+    # only that branch. A deploy job on any other branch is rejected before a
+    # runner is assigned, failing in ~1s with no logs. GITHUB_TOKEN cannot edit
+    # the policy (403), so building on the permitted branch is the reliable path
+    # and main is left out rather than failing every push.
+    # To deploy from main instead: Settings -> Environments -> github-pages ->
+    # Deployment branches, add main, then add it back to this list.
+    branches: [claude/app-ui-polish-demo-lkcbhs]
   workflow_dispatch: {}
 
 permissions:
