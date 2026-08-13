@@ -464,7 +464,60 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
    carry an explicit `display`. An author `display` outranks the UA stylesheet's
    [hidden]{display:none}, so without this they would never actually hide. */
 [hidden]{display:none !important;}
-.dist-note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:10px;}
+
+/* ---------------------------------------------------------------
+   Installed-app behaviour
+   Once added to the home screen this runs with no browser chrome, so
+   it has to stop behaving like a document: no text selection on taps,
+   no grey flash on press, no rubber-band scroll past the ends, and no
+   double-tap zoom.
+   --------------------------------------------------------------- */
+html,body{overscroll-behavior:none;}
+body{
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  user-select:none; -webkit-user-select:none;
+  touch-action:manipulation;
+}
+input,textarea,[contenteditable]{user-select:text;-webkit-user-select:text;}
+.receipt,.receipt *{user-select:text;-webkit-user-select:text;}
+button,.cat-card,.suggest-row,.act-card,.list-row,.addr-row,.faq-row,
+.nav-item,.back-btn,.icon-btn,.budget-step,.issue-chip,.when-btn,.stars svg{
+  -webkit-tap-highlight-color:transparent;
+}
+/* Presses need to register physically when there is no cursor to follow. */
+.cat-card:active,.suggest-row:active,.act-card:active,.list-row:active,
+.addr-row:active,.faq-row:active{transform:scale(.985);}
+.cta:active,.btn-secondary:active{transform:scale(.98);}
+.cat-card,.suggest-row,.act-card,.list-row,.addr-row,.faq-row,.cta,.btn-secondary{
+  transition:transform .09s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease;
+}
+.nav-item:active svg{transform:scale(.9);}
+.nav-item svg{transition:transform .1s ease;}
+
+/* Directional screen transitions: pushes come in from the right, backs from
+   the left, so depth reads the way it does in a native app. */
+.view{animation:none;}
+.view.active.nav-fwd{animation:screenFwd .3s cubic-bezier(.32,.72,0,1) both;}
+.view.active.nav-back{animation:screenBack .3s cubic-bezier(.32,.72,0,1) both;}
+.view.active.nav-swap{animation:screenSwap .22s ease both;}
+@keyframes screenFwd{from{opacity:.4;transform:translate3d(28%,0,0);}to{opacity:1;transform:none;}}
+@keyframes screenBack{from{opacity:.4;transform:translate3d(-22%,0,0);}to{opacity:1;transform:none;}}
+@keyframes screenSwap{from{opacity:0;transform:translate3d(0,8px,0);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){
+  .view.active.nav-fwd,.view.active.nav-back,.view.active.nav-swap{animation:none;}
+}
+.again-row{display:flex;align-items:center;gap:12px;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:9px;cursor:pointer;}
+.again-body{flex:1;min-width:0;}
+.again-row h4{font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.again-row p{font-size:12px;color:var(--ink-soft);margin-top:3px;font-family:var(--font-mono);}
+.again-go{color:var(--ink-faint);display:flex;flex:none;}
+
+/* Already installed: nothing left to install. */
+body.installed .install-row,
+body.installed .list-row.install-row-item{display:none;}
+.dist-note{font-size:12.5px;color:var(--ink-soft);text-align:center;margin-top:10px;}
 .tier-note{display:flex;align-items:center;gap:9px;background:rgba(169,132,63,.09);
   border:1px solid rgba(169,132,63,.28);color:#7A5E2B;border-radius:13px;
   padding:11px 13px;font-size:12.5px;line-height:1.45;margin-bottom:6px;}
@@ -478,21 +531,21 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
 .budget-step:active{transform:scale(.94);}
 .budget-value{flex:1;display:flex;align-items:center;justify-content:center;gap:2px;
   background:var(--surface);border:1px solid var(--line);border-radius:14px;height:46px;
-  font-family:var(--mono);font-size:19px;color:var(--ink);font-weight:600;}
+  font-family:var(--font-mono);font-size:19px;color:var(--ink);font-weight:600;}
 .budget-value input{width:88px;border:none;background:none;outline:none;text-align:left;
-  font-family:var(--mono);font-size:19px;color:var(--ink);font-weight:600;padding:0;
+  font-family:var(--font-mono);font-size:19px;color:var(--ink);font-weight:600;padding:0;
   -moz-appearance:textfield;}
 .budget-value input::-webkit-outer-spin-button,
 .budget-value input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-.budget-hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45;}
-.wallet-check{font-size:12.5px;line-height:1.45;margin-top:12px;text-align:center;color:var(--muted);}
+.budget-hint{font-size:12px;color:var(--ink-soft);margin-top:8px;line-height:1.45;}
+.wallet-check{font-size:12.5px;line-height:1.45;margin-top:12px;text-align:center;color:var(--ink-soft);}
 .wallet-check.short{color:#A0392F;}
 .cta[disabled]{opacity:.5;cursor:not-allowed;}
 
 .track-task{background:var(--surface);border:1px solid var(--line);border-radius:14px;
   padding:13px 15px;font-size:13.5px;color:var(--ink);line-height:1.5;margin-bottom:14px;}
 .track-task b{display:block;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--muted);font-weight:600;margin-bottom:5px;}
+  color:var(--ink-soft);font-weight:600;margin-bottom:5px;}
 .icon-btn{position:relative;cursor:pointer;}
 .icon-badge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:100px;
   background:#A0392F;color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;
@@ -504,7 +557,7 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
 .bubble.them{align-self:flex-start;background:var(--surface);border:1px solid var(--line);
   color:var(--ink);border-bottom-left-radius:5px;}
 .bubble.me{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:5px;}
-.bubble .bt{display:block;font-size:10.5px;opacity:.6;margin-top:4px;font-family:var(--mono);}
+.bubble .bt{display:block;font-size:10.5px;opacity:.6;margin-top:4px;font-family:var(--font-mono);}
 .chat-composer{display:flex;gap:9px;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
   border-top:1px solid var(--line);background:var(--surface);}
 .chat-composer input{flex:1;border:1px solid var(--line);border-radius:100px;padding:11px 16px;
@@ -517,28 +570,28 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
 .hold-note{display:flex;align-items:center;justify-content:space-between;gap:10px;
   background:rgba(31,58,99,.06);border:1px solid rgba(31,58,99,.18);border-radius:13px;
   padding:11px 14px;font-size:12.5px;color:var(--navy);margin-bottom:12px;}
-.hold-note b{font-family:var(--mono);font-weight:600;}
-.empty-note{text-align:center;color:var(--muted);font-size:13px;line-height:1.55;padding:26px 20px;}
+.hold-note b{font-family:var(--font-mono);font-weight:600;}
+.empty-note{text-align:center;color:var(--ink-soft);font-size:13px;line-height:1.55;padding:26px 20px;}
 
 .support-head{display:flex;align-items:center;gap:11px;background:var(--surface);
   border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:6px;}
 .support-head h4{font-size:14px;color:var(--ink);}
-.support-head p{font-size:12px;color:var(--muted);margin-top:2px;}
+.support-head p{font-size:12px;color:var(--ink-soft);margin-top:2px;}
 .support-dot{width:9px;height:9px;border-radius:50%;background:var(--green);flex:none;
   box-shadow:0 0 0 4px rgba(46,125,91,.15);}
 .faq-row{background:var(--surface);border:1px solid var(--line);border-radius:14px;
   padding:14px 15px;margin-bottom:9px;cursor:pointer;}
 .faq-row h4{font-size:13.5px;color:var(--ink);display:flex;justify-content:space-between;gap:10px;align-items:center;}
-.faq-row h4 span{color:var(--muted);font-size:18px;line-height:1;transition:transform .2s ease;}
+.faq-row h4 span{color:var(--ink-soft);font-size:18px;line-height:1;transition:transform .2s ease;}
 .faq-row.open h4 span{transform:rotate(45deg);}
-.faq-row p{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:10px;display:none;}
+.faq-row p{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin-top:10px;display:none;}
 .faq-row.open p{display:block;}
 .addr-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);
   border-radius:14px;padding:13px 15px;margin-bottom:9px;cursor:pointer;}
 .addr-row.selected{border-color:var(--navy);box-shadow:0 0 0 1px var(--navy);}
 .addr-row .ar-body{flex:1;min-width:0;}
 .addr-row h4{font-size:13.5px;color:var(--ink);}
-.addr-row p{font-size:12px;color:var(--muted);margin-top:3px;}
+.addr-row p{font-size:12px;color:var(--ink-soft);margin-top:3px;}
 .addr-tag{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;
   color:var(--navy);background:rgba(31,58,99,.09);padding:4px 8px;border-radius:100px;flex:none;}
 </style>
@@ -569,7 +622,10 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
   </div>
   <p class="hero-sub">A vetted, professional errand-running service — one app, one wallet, one runner, multiple stops. This is a live interactive preview of the product.</p>
 
-  <div class="mode-switch">
+  <!-- Erun ships as the customer app. The runner app is still in the repo and
+       stays reachable at ?app=runner for internal demos, but it is not part of
+       the installed customer experience and its switch stays out of the UI. -->
+  <div class="mode-switch" id="mode-switch" hidden>
     <button class="mode-btn active" id="mode-customer" onclick="setMode('customer')">Customer app</button>
     <button class="mode-btn" id="mode-runner" onclick="setMode('runner')">Runner app</button>
   </div>
@@ -620,6 +676,7 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
               <div class="cat-body"><h3>Concierge</h3><p>Errands plus the little home jobs</p></div>
               <div class="tier-tag">Tier 2 only</div>
             </div>
+            <div id="c-home-again"></div>
           </div>
           <div class="navbar">
             <div class="nav-item active" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
@@ -831,7 +888,7 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
             <p class="section-label">Support</p>
             <div class="list-row" onclick="cPush('c-help')"><span>Help centre</span><span class="lr-sub">FAQs &amp; guides</span></div>
             <div class="list-row" onclick="cPush('c-support')"><span>Contact support</span><span class="lr-sub">Avg. reply 4 min</span></div>
-            <div class="list-row" onclick="handleInstall()"><span>Add Erun to home screen</span><span class="lr-sub">Use offline, like a real app</span></div>
+            <div class="list-row install-row-item" onclick="handleInstall()"><span>Add Erun to home screen</span><span class="lr-sub">Use offline, like a real app</span></div>
           </div>
           <div class="navbar">
             <div class="nav-item" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
@@ -1103,23 +1160,47 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
   let custStack = ['c-home'];
   let runnerStack = ['r-feed'];
 
-  function renderApp(stack, prefix){
+  function renderApp(stack, prefix, dir){
     const top = stack[stack.length - 1];
-    document.querySelectorAll('#' + prefix + '-app .view').forEach(v => v.classList.remove('active'));
-    document.getElementById(top).classList.add('active');
+    document.querySelectorAll('#' + prefix + '-app .view').forEach(v => {
+      v.classList.remove('active', 'nav-fwd', 'nav-back', 'nav-swap');
+    });
+    const view = document.getElementById(top);
+    view.classList.add('active');
+    if (dir) view.classList.add(dir);
+    // A pushed screen always starts at the top rather than inheriting the
+    // scroll position of the screen it replaced.
+    const scroller = view.querySelector('.content, .chat-thread');
+    if (scroller) scroller.scrollTop = 0;
     // Keep the tab lit for the section we're in, even a few screens deep.
     document.querySelectorAll('#' + prefix + '-app .nav-item').forEach(n => {
       n.classList.toggle('active', n.dataset.r === stack[0]);
     });
     if (prefix === 'customer') refreshCustomer(top);
   }
-  function cPush(id){ custStack.push(id); renderApp(custStack, 'customer'); }
-  function cPop(){ if(custStack.length > 1){ custStack.pop(); renderApp(custStack, 'customer'); } }
-  function cRoot(id){ custStack = [id]; renderApp(custStack, 'customer'); }
+  function cPush(id){ custStack.push(id); renderApp(custStack, 'customer', 'nav-fwd'); syncHistory(); }
+  function cPop(){ if(custStack.length > 1){ custStack.pop(); renderApp(custStack, 'customer', 'nav-back'); syncHistory(); } }
+  function cRoot(id){ custStack = [id]; renderApp(custStack, 'customer', 'nav-swap'); syncHistory(); }
 
-  function rPush(id){ runnerStack.push(id); renderApp(runnerStack, 'runner'); }
-  function rPop(){ if(runnerStack.length > 1){ runnerStack.pop(); renderApp(runnerStack, 'runner'); } }
-  function rRoot(id){ runnerStack = [id]; renderApp(runnerStack, 'runner'); }
+  function rPush(id){ runnerStack.push(id); renderApp(runnerStack, 'runner', 'nav-fwd'); }
+  function rPop(){ if(runnerStack.length > 1){ runnerStack.pop(); renderApp(runnerStack, 'runner', 'nav-back'); } }
+  function rRoot(id){ runnerStack = [id]; renderApp(runnerStack, 'runner', 'nav-swap'); }
+
+  // Android's hardware/gesture back must pop a screen instead of leaving the
+  // app, which is the single biggest tell that something isn't a real app.
+  let historyDepth = 0;
+  function syncHistory(){
+    const depth = custStack.length - 1;
+    while (historyDepth < depth){ history.pushState({ erun:true }, ''); historyDepth++; }
+    if (historyDepth > depth) historyDepth = depth;
+  }
+  window.addEventListener('popstate', () => {
+    if (custStack.length > 1){
+      custStack.pop();
+      historyDepth = Math.max(0, historyDepth - 1);
+      renderApp(custStack, 'customer', 'nav-back');
+    }
+  });
 
   function setMode(mode){
     document.getElementById('mode-customer').classList.toggle('active', mode === 'customer');
@@ -1387,7 +1468,7 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
   // ---------- tracking ----------
   function renderTrack(){
     el('c-track-task').innerHTML = '<b>' + CATEGORIES[booking.category].title + '</b>' +
-      escapeHtml(booking.task) + '<br><span style="color:var(--muted)">' +
+      escapeHtml(booking.task) + '<br><span style="color:var(--ink-soft)">' +
       escapeHtml(booking.place.name) + '</span>';
 
     el('c-timeline').innerHTML = STAGES.map((s, i) => {
@@ -1574,6 +1655,31 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
     txns.unshift({ label, when:'Today · ' + nowTime(), amt });
   }
 
+  // Repeat bookings are the common case, so the home screen offers the last
+  // couple of errands as one-tap re-books rather than leaving dead space.
+  function renderHomeAgain(){
+    const recent = errands.slice(0, 2);
+    el('c-home-again').innerHTML = !recent.length ? '' :
+      '<p class="section-label">Book again</p>' + recent.map((e, i) =>
+        '<div class="again-row" onclick="bookAgain(' + i + ')">' +
+        '<div class="again-body"><h4>' + escapeHtml(e.title) + '</h4>' +
+        '<p>Last time ' + money(e.base + e.travel + e.actual) + ' · cap ' + money(e.cap) + '</p></div>' +
+        '<span class="again-go"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></span></div>').join('');
+  }
+
+  function bookAgain(i){
+    const e = errands[i];
+    const place = PLACES.find(p => p.name === e.title) ||
+                  { name:e.title, sub:'Saved from a previous errand', km:e.travel / TRAVEL_RATE, x:160, y:95 };
+    booking.category = 'one-off';
+    booking.place = place;
+    booking.budget = e.cap;
+    booking.task = CATEGORIES['one-off'].task;
+    booking.stage = 0; booking.approved = null; booking.rating = 0;
+    renderBook();
+    cPush('c-book');
+  }
+
   function renderWallet(){
     el('c-wallet-balance').textContent = money(wallet.balance);
     el('c-home-balance').textContent = money(wallet.balance);
@@ -1662,6 +1768,7 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
   // nothing on screen can drift out of sync with the booking or the wallet.
   function refreshCustomer(id){
     if (id === 'c-home' || id === 'c-wallet') renderWallet();
+    if (id === 'c-home') renderHomeAgain();
     if (id === 'c-location') renderSuggestions();
     if (id === 'c-book') renderBook();
     if (id === 'c-track') renderTrack();
@@ -1692,8 +1799,31 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
     chip.classList.add('active');
   }
 
-  renderApp(custStack, 'customer');
-  renderApp(runnerStack, 'runner');
+  // The runner app stays in the build for internal demos but is off the
+  // customer path; ?app=runner (or #runner) brings the switcher back.
+  (function initApps(){
+    const params = new URLSearchParams(location.search);
+
+    if (params.get('app') === 'runner' || location.hash === '#runner'){
+      document.getElementById('mode-switch').hidden = false;
+      setMode('runner');
+    }
+
+    // Home-screen shortcuts from the manifest land straight on a screen.
+    const SHORTCUTS = { book:'c-home', activity:'c-activity', wallet:'c-wallet' };
+    const target = SHORTCUTS[params.get('screen')];
+    if (target) custStack = [target];
+
+    // Running installed means no browser chrome, so the in-app "add to home
+    // screen" row has nothing left to offer.
+    if (window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true){
+      document.body.classList.add('installed');
+    }
+
+    renderApp(custStack, 'customer');
+    renderApp(runnerStack, 'runner');
+  })();
 
   // -------------------------------------------------------------
   // Splash screen
