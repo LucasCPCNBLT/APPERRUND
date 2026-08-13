@@ -456,6 +456,91 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
 @keyframes logoPop{from{opacity:0;transform:scale(.82);}to{opacity:1;transform:scale(1);}}
 @keyframes shineSweep{0%,8%{opacity:0;background-position:-140% -140%;}20%{opacity:1;}75%{opacity:1;}100%{opacity:0;background-position:140% 140%;}}
 @keyframes dotPulse{0%{opacity:.75;transform:translate(-50%,-50%) scale(.6);}100%{opacity:0;transform:translate(-50%,-50%) scale(2.6);}}
+
+/* ---------------------------------------------------------------
+   Customer flow — live pricing, tracking, chat and account screens
+   --------------------------------------------------------------- */
+/* Several elements below are toggled with the `hidden` attribute but also
+   carry an explicit `display`. An author `display` outranks the UA stylesheet's
+   [hidden]{display:none}, so without this they would never actually hide. */
+[hidden]{display:none !important;}
+.dist-note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:10px;}
+.tier-note{display:flex;align-items:center;gap:9px;background:rgba(169,132,63,.09);
+  border:1px solid rgba(169,132,63,.28);color:#7A5E2B;border-radius:13px;
+  padding:11px 13px;font-size:12.5px;line-height:1.45;margin-bottom:6px;}
+.tier-note svg{flex:none;}
+
+.budget-row{display:flex;align-items:center;gap:10px;}
+.budget-step{width:46px;height:46px;flex:none;border-radius:14px;border:1px solid var(--line);
+  background:var(--surface);color:var(--navy);font-size:22px;line-height:1;cursor:pointer;
+  font-family:inherit;transition:background .12s ease,border-color .12s ease;}
+.budget-step:hover{background:#EAF0F8;border-color:var(--navy);}
+.budget-step:active{transform:scale(.94);}
+.budget-value{flex:1;display:flex;align-items:center;justify-content:center;gap:2px;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;height:46px;
+  font-family:var(--mono);font-size:19px;color:var(--ink);font-weight:600;}
+.budget-value input{width:88px;border:none;background:none;outline:none;text-align:left;
+  font-family:var(--mono);font-size:19px;color:var(--ink);font-weight:600;padding:0;
+  -moz-appearance:textfield;}
+.budget-value input::-webkit-outer-spin-button,
+.budget-value input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.budget-hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45;}
+.wallet-check{font-size:12.5px;line-height:1.45;margin-top:12px;text-align:center;color:var(--muted);}
+.wallet-check.short{color:#A0392F;}
+.cta[disabled]{opacity:.5;cursor:not-allowed;}
+
+.track-task{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:13px 15px;font-size:13.5px;color:var(--ink);line-height:1.5;margin-bottom:14px;}
+.track-task b{display:block;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;margin-bottom:5px;}
+.icon-btn{position:relative;cursor:pointer;}
+.icon-badge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:100px;
+  background:#A0392F;color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;
+  justify-content:center;padding:0 4px;}
+.timeline .tl-row{transition:opacity .25s ease;}
+
+.chat-thread{flex:1;overflow-y:auto;padding:16px 18px 8px;display:flex;flex-direction:column;gap:9px;}
+.bubble{max-width:78%;padding:10px 14px;border-radius:16px;font-size:13.5px;line-height:1.45;}
+.bubble.them{align-self:flex-start;background:var(--surface);border:1px solid var(--line);
+  color:var(--ink);border-bottom-left-radius:5px;}
+.bubble.me{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:5px;}
+.bubble .bt{display:block;font-size:10.5px;opacity:.6;margin-top:4px;font-family:var(--mono);}
+.chat-composer{display:flex;gap:9px;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--line);background:var(--surface);}
+.chat-composer input{flex:1;border:1px solid var(--line);border-radius:100px;padding:11px 16px;
+  font-family:inherit;font-size:14px;color:var(--ink);outline:none;background:var(--paper);}
+.chat-composer input:focus{border-color:var(--navy);}
+.chat-composer button{width:44px;height:44px;flex:none;border:none;border-radius:50%;
+  background:var(--navy);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.chat-composer button:active{transform:scale(.94);}
+
+.hold-note{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:rgba(31,58,99,.06);border:1px solid rgba(31,58,99,.18);border-radius:13px;
+  padding:11px 14px;font-size:12.5px;color:var(--navy);margin-bottom:12px;}
+.hold-note b{font-family:var(--mono);font-weight:600;}
+.empty-note{text-align:center;color:var(--muted);font-size:13px;line-height:1.55;padding:26px 20px;}
+
+.support-head{display:flex;align-items:center;gap:11px;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:6px;}
+.support-head h4{font-size:14px;color:var(--ink);}
+.support-head p{font-size:12px;color:var(--muted);margin-top:2px;}
+.support-dot{width:9px;height:9px;border-radius:50%;background:var(--green);flex:none;
+  box-shadow:0 0 0 4px rgba(46,125,91,.15);}
+.faq-row{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:14px 15px;margin-bottom:9px;cursor:pointer;}
+.faq-row h4{font-size:13.5px;color:var(--ink);display:flex;justify-content:space-between;gap:10px;align-items:center;}
+.faq-row h4 span{color:var(--muted);font-size:18px;line-height:1;transition:transform .2s ease;}
+.faq-row.open h4 span{transform:rotate(45deg);}
+.faq-row p{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:10px;display:none;}
+.faq-row.open p{display:block;}
+.addr-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);
+  border-radius:14px;padding:13px 15px;margin-bottom:9px;cursor:pointer;}
+.addr-row.selected{border-color:var(--navy);box-shadow:0 0 0 1px var(--navy);}
+.addr-row .ar-body{flex:1;min-width:0;}
+.addr-row h4{font-size:13.5px;color:var(--ink);}
+.addr-row p{font-size:12px;color:var(--muted);margin-top:3px;}
+.addr-tag{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;
+  color:var(--navy);background:rgba(31,58,99,.09);padding:4px 8px;border-radius:100px;flex:none;}
 </style>
 </head>
 <body>
@@ -513,24 +598,24 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
           </div>
           <div class="content">
             <p class="section-label">Choose a service</p>
-            <div class="cat-card" onclick="cPush('c-location')">
+            <div class="cat-card" onclick="pickCategory('one-off')">
               <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg></div>
               <div class="cat-body"><h3>One-off errand</h3><p>Single stop, sorted fast</p></div>
             </div>
-            <div class="cat-card" onclick="cPush('c-location')">
+            <div class="cat-card" onclick="pickCategory('multi')">
               <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.8 7.2 11 16.2M16.2 7.2 13 16.2"/></svg></div>
               <div class="cat-body"><h3>Multi-stop errand</h3><p>Bundle a few tasks together</p></div>
             </div>
-            <div class="cat-card" onclick="cPush('c-location')">
+            <div class="cat-card" onclick="pickCategory('recurring')">
               <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
               <div class="cat-body"><h3>Recurring errand</h3><p>Set it, we keep showing up</p></div>
             </div>
-            <div class="cat-card" onclick="cPush('c-location')">
+            <div class="cat-card" onclick="pickCategory('care')">
               <div class="cat-icon gold"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M12 21s-7-4.4-9.2-9C1.2 8.6 3 5 6.6 5c2 0 3.4 1.2 4.2 2.4C11.6 6.2 13 5 15 5c3.6 0 5.4 3.6 3.8 7-2.2 4.6-9.2 9-9.2 9Z"/></svg></div>
               <div class="cat-body"><h3>Elderly &amp; disability support</h3><p>Verified doorstep drop-off</p></div>
               <div class="tier-tag">Tier 2 only</div>
             </div>
-            <div class="cat-card" onclick="cPush('c-location')">
+            <div class="cat-card" onclick="pickCategory('concierge')">
               <div class="cat-icon gold"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M3 11 12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></div>
               <div class="cat-body"><h3>Concierge</h3><p>Errands plus the little home jobs</p></div>
               <div class="tier-tag">Tier 2 only</div>
@@ -546,51 +631,58 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
 
         <!-- LOCATION -->
         <div class="view" id="c-location">
-          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Where's the errand</h2></div>
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2 id="c-location-title">Where's the errand</h2></div>
           <div class="content">
             <div class="search-field">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-              <input type="text" value="Chemist Warehouse, Camberwell" placeholder="Enter an address">
+              <input type="text" id="c-address-input" placeholder="Search a shop, suburb or address" autocomplete="off" oninput="renderSuggestions()">
             </div>
-            <div class="suggest-list">
-              <div class="suggest-row" onclick="cPush('c-book')">
-                <div class="suggest-pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="2"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></div>
-                <div class="suggest-text"><h4>Chemist Warehouse Camberwell</h4><p>566 Riversdale Rd, Camberwell VIC</p></div>
-              </div>
-              <div class="suggest-row" onclick="cPush('c-book')">
-                <div class="suggest-pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5A6472" stroke-width="2"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></div>
-                <div class="suggest-text"><h4>Camberwell Junction</h4><p>Camberwell Rd, Camberwell VIC</p></div>
-              </div>
-            </div>
+            <div class="suggest-list" id="c-suggest-list"></div>
             <div class="pin-map">
               <svg viewBox="0 0 320 190"><path d="M0 40 H320 M0 85 H320 M0 130 H320" stroke="#C7D5E8" stroke-width="1"/><path d="M70 0 V190 M170 0 V190 M260 0 V190" stroke="#C7D5E8" stroke-width="1"/></svg>
-              <div class="pin-drop" style="left:160px;top:95px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="#1F3A63"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/><circle cx="12" cy="9.5" r="2.8" fill="#fff"/></svg><div class="pin-pulse"></div></div>
+              <div class="pin-drop" id="c-pin" style="left:160px;top:95px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="#1F3A63"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/><circle cx="12" cy="9.5" r="2.8" fill="#fff"/></svg><div class="pin-pulse"></div></div>
             </div>
-            <button class="cta" onclick="cPush('c-book')">Confirm location</button>
+            <p class="dist-note" id="c-dist-note">Pick a destination to see the travel distance.</p>
+            <button class="cta" onclick="confirmLocation()">Confirm location</button>
           </div>
         </div>
 
         <!-- BOOK -->
         <div class="view" id="c-book">
-          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>One-off errand</h2></div>
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2 id="c-book-title">One-off errand</h2></div>
           <div class="content">
+            <div class="tier-note" id="c-book-tier" hidden>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7.5 3.4v5.2c0 4.4-3.1 8-7.5 9.4-4.4-1.4-7.5-5-7.5-9.4V6.4L12 3Z"/><path d="M9 12l2 2 4-4"/></svg>
+              <span id="c-book-tier-text"></span>
+            </div>
             <p class="field-label">Where's the task</p>
-            <div class="field">Chemist Warehouse, Camberwell</div>
+            <div class="field" id="c-book-address">Chemist Warehouse, Camberwell</div>
             <p class="field-label">What do you need done</p>
-            <textarea class="field" rows="3">Pick up prescription under my name, pay with wallet if there's a gap cover.</textarea>
+            <textarea class="field" id="c-book-task" rows="3" placeholder="Describe the errand — the more detail, the better the match" oninput="syncTask()">Pick up prescription under my name, pay with wallet if there's a gap cover.</textarea>
             <p class="field-label">When do you need this</p>
             <div class="when-toggle">
               <button class="when-btn active" onclick="whenToggle(this,'now')">As soon as possible</button>
               <button class="when-btn" onclick="whenToggle(this,'schedule')">Schedule</button>
             </div>
-            <div class="schedule-fields" id="schedule-fields"><div class="field">Sat, 16 Aug</div><div class="field">10:00 AM</div></div>
-            <div class="price-card">
-              <div class="price-row"><span>Base fee</span><span>$7.00</span></div>
-              <div class="price-row"><span>Travel · 2.4 km</span><span>$2.50</span></div>
-              <div class="price-row"><span>Item budget</span><span>$18.00</span></div>
-              <div class="price-row total"><span>Erun wallet total</span><span>$27.50</span></div>
+            <div class="schedule-fields" id="schedule-fields">
+              <input class="field" type="date" id="c-book-date" onchange="syncSchedule()">
+              <input class="field" type="time" id="c-book-time" onchange="syncSchedule()">
             </div>
-            <button class="cta" onclick="cPush('c-finding')">Fund Erun wallet — $27.50</button>
+            <p class="field-label">Item budget · the most a runner can spend</p>
+            <div class="budget-row">
+              <button class="budget-step" onclick="adjustBudget(-5)" aria-label="Decrease budget">−</button>
+              <div class="budget-value"><span>$</span><input type="number" id="c-book-budget" min="0" max="500" step="1" value="18" oninput="syncBudget()"></div>
+              <button class="budget-step" onclick="adjustBudget(5)" aria-label="Increase budget">+</button>
+            </div>
+            <p class="budget-hint">Anything they don't spend is swept straight back to your wallet.</p>
+            <div class="price-card">
+              <div class="price-row"><span>Base fee</span><span id="c-price-base">$7.00</span></div>
+              <div class="price-row"><span id="c-price-travel-label">Travel · 2.4 km</span><span id="c-price-travel">$2.50</span></div>
+              <div class="price-row"><span>Item budget</span><span id="c-price-budget">$18.00</span></div>
+              <div class="price-row total"><span>Erun wallet total</span><span id="c-price-total">$27.50</span></div>
+            </div>
+            <p class="wallet-check" id="c-wallet-check"></p>
+            <button class="cta" id="c-book-cta" onclick="submitBooking()">Fund Erun wallet — $27.50</button>
           </div>
         </div>
 
@@ -606,15 +698,15 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
               <div class="runner-pin" style="left:235px;top:60px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#A9843F"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/></svg></div>
               <div class="runner-pin" style="left:210px;top:140px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#A9843F"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/></svg></div>
             </div>
-            <div class="finding-status"><h3>Broadcasting to nearby runners…</h3><p>4 eligible runners can see this job within 2.5 km</p></div>
+            <div class="finding-status"><h3 id="c-finding-head">Broadcasting to nearby runners…</h3><p id="c-finding-sub">4 eligible runners can see this job within 2.5 km</p></div>
             <div class="price-card">
-              <div class="price-row"><span>Base fee</span><span>$7.00</span></div>
-              <div class="price-row"><span>Travel · 2.4 km</span><span>$2.50</span></div>
-              <div class="price-row"><span>Item budget</span><span>$18.00</span></div>
-              <div class="price-row total"><span>Held in Erun wallet</span><span>$27.50</span></div>
+              <div class="price-row"><span>Base fee</span><span id="c-find-base">$7.00</span></div>
+              <div class="price-row"><span id="c-find-travel-label">Travel · 2.4 km</span><span id="c-find-travel">$2.50</span></div>
+              <div class="price-row"><span>Item budget</span><span id="c-find-budget">$18.00</span></div>
+              <div class="price-row total"><span>Held in Erun wallet</span><span id="c-find-total">$27.50</span></div>
             </div>
-            <button class="cta" onclick="cPush('c-track')">Jordan accepted — view tracking</button>
-            <button class="btn-secondary" onclick="showToast('Request cancelled — full amount refunded to Erun wallet'); cPop();">Cancel request</button>
+            <button class="cta" id="c-finding-cta" onclick="cPush('c-track')" disabled>Waiting for a runner…</button>
+            <button class="btn-secondary" onclick="cancelRequest()">Cancel request</button>
           </div>
         </div>
 
@@ -628,29 +720,32 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
             <div class="runner-card">
               <div class="avatar">JM</div>
               <div class="runner-info"><h3>Jordan M.</h3><div class="badges"><span class="badge-verified">Tier 2 verified</span><span class="rating">4.9 rating</span></div></div>
-              <div class="icon-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></div>
+              <div class="icon-btn" onclick="cPush('c-chat')" role="button" aria-label="Message Jordan"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg><span class="icon-badge" id="c-chat-badge" hidden>1</span></div>
             </div>
-            <div class="approval-card">
+            <div class="track-task" id="c-track-task"></div>
+            <div class="approval-card" id="c-approval">
               <div class="ap-top">
                 <div class="approval-thumb"></div>
-                <div><h4>Is this the right item?</h4><p>Jordan found "Panadol Osteo 96pk" — closest match to your request.</p></div>
+                <div><h4>Is this the right item?</h4><p id="c-approval-text">Jordan found "Panadol Osteo 96pk" — closest match to your request.</p></div>
               </div>
               <div class="approval-actions">
-                <button class="approve" onclick="showToast('Item approved — Jordan is completing the purchase')">Approve</button>
-                <button class="flag" onclick="showToast('Flagged — Jordan will confirm an alternative with you')">Wrong item</button>
+                <button class="approve" onclick="resolveApproval(true)">Approve</button>
+                <button class="flag" onclick="resolveApproval(false)">Wrong item</button>
               </div>
             </div>
-            <div class="timeline">
-              <div class="tl-row"><div class="tl-dot done"></div><div class="tl-label">Accepted</div></div>
-              <div class="tl-line"></div>
-              <div class="tl-row"><div class="tl-dot done"></div><div class="tl-label">Shopping</div></div>
-              <div class="tl-line"></div>
-              <div class="tl-row"><div class="tl-dot now"></div><div class="tl-label now">On the way · 6 min</div></div>
-              <div class="tl-line"></div>
-              <div class="tl-row"><div class="tl-dot"></div><div class="tl-label">Delivered</div></div>
-            </div>
-            <button class="cta" onclick="cPush('c-complete')">Simulate delivery</button>
+            <div class="timeline" id="c-timeline"></div>
+            <button class="cta" id="c-track-cta" onclick="advanceStage()">Runner is shopping — next step</button>
           </div>
+        </div>
+
+        <!-- CHAT -->
+        <div class="view" id="c-chat">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Jordan M.</h2></div>
+          <div class="chat-thread" id="c-chat-thread"></div>
+          <form class="chat-composer" onsubmit="sendChat(event)">
+            <input type="text" id="c-chat-input" placeholder="Message Jordan…" autocomplete="off">
+            <button type="submit" aria-label="Send"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+          </form>
         </div>
 
         <!-- COMPLETE -->
@@ -662,60 +757,36 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
               <div class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg></div>
             </div>
             <div class="receipt">
-              <h4>Erun receipt · #ER-48213</h4>
-              <div class="r-row"><span>Base fee</span><span>$7.00</span></div>
-              <div class="r-row"><span>Travel · 2.4 km</span><span>$2.50</span></div>
+              <h4 id="c-receipt-id">Erun receipt · #ER-48213</h4>
+              <div class="r-row"><span>Base fee</span><span id="c-r-base">$7.00</span></div>
+              <div class="r-row"><span id="c-r-travel-label">Travel · 2.4 km</span><span id="c-r-travel">$2.50</span></div>
               <div class="r-div"></div>
-              <div class="r-row"><span>Item budget (cap)</span><span>$19.80</span></div>
-              <div class="r-row item"><span>Actual spend</span><span>$17.20</span></div>
-              <div class="r-row"><span>Swept back to wallet</span><span>−$2.60</span></div>
+              <div class="r-row"><span>Item budget (cap)</span><span id="c-r-cap">$18.00</span></div>
+              <div class="r-row item"><span>Actual spend</span><span id="c-r-actual">$15.40</span></div>
+              <div class="r-row"><span>Swept back to wallet</span><span id="c-r-sweep">−$2.60</span></div>
               <div class="r-div"></div>
-              <div class="r-row total"><span>Total charged</span><span>$26.70</span></div>
+              <div class="r-row total"><span>Total charged</span><span id="c-r-total">$24.90</span></div>
             </div>
             <div class="window-note">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
               You have 2 hours to flag an issue before this settles.
             </div>
             <p class="field-label" style="text-align:center;margin-top:22px;">Rate your runner</p>
-            <div class="stars">
+            <div class="stars" id="c-stars">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="#A9843F" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
               <svg width="26" height="26" viewBox="0 0 24 24" fill="#A9843F" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
               <svg width="26" height="26" viewBox="0 0 24 24" fill="#A9843F" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
               <svg width="26" height="26" viewBox="0 0 24 24" fill="#A9843F" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.6" onclick="rate(this)"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z"/></svg>
             </div>
-            <button class="cta" onclick="showToast('Thanks — rating submitted'); cRoot('c-home');">Done</button>
+            <button class="cta" onclick="finishErrand()">Done</button>
           </div>
         </div>
 
         <!-- ACTIVITY -->
         <div class="view" id="c-activity">
           <div class="topbar"><div class="greet"><p>Your errands</p><h2>Activity</h2></div></div>
-          <div class="content">
-            <p class="section-label">In progress</p>
-            <div class="act-card" onclick="cRoot('c-home'); cPush('c-track');">
-              <div class="act-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/></svg></div>
-              <div class="act-body"><h4>Chemist Warehouse pickup</h4><p>Jordan M. · on the way · 6 min</p></div>
-              <div class="act-status active">Live</div>
-            </div>
-            <p class="section-label">Scheduled</p>
-            <div class="act-card">
-              <div class="act-icon gold"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
-              <div class="act-body"><h4>Weekly grocery run</h4><p>Coles Camberwell · every Sat, 9:00 AM</p></div>
-              <div class="act-status sched">Recurring</div>
-            </div>
-            <p class="section-label">Completed</p>
-            <div class="act-card">
-              <div class="act-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.8"><path d="M5 13l4 4L19 7"/></svg></div>
-              <div class="act-body"><h4>Post office &amp; dry cleaning</h4><p>Delivered Tue · $31.20 total</p></div>
-              <div class="act-status done">Done</div>
-            </div>
-            <div class="act-card">
-              <div class="act-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.8"><path d="M5 13l4 4L19 7"/></svg></div>
-              <div class="act-body"><h4>Butcher · lamb order</h4><p>Delivered Mon · $42.00 total</p></div>
-              <div class="act-status done">Done</div>
-            </div>
-          </div>
+          <div class="content" id="c-activity-list"></div>
           <div class="navbar">
             <div class="nav-item" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
             <div class="nav-item active" data-r="c-activity" onclick="cRoot('c-activity')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Activity</span></div>
@@ -732,20 +803,10 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
               <div><p>Available balance</p><h3 id="c-wallet-balance">$86.40</h3></div>
               <div class="eb-sub"><p>&nbsp;</p><b>Job-to-job wallet</b></div>
             </div>
+            <div class="hold-note" id="c-hold-note" hidden></div>
             <button class="cta" style="margin-top:0" onclick="topUp()">Top up $50.00</button>
             <p class="section-label">Recent transactions</p>
-            <div class="txn-row">
-              <div class="txn-left"><div class="txn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/></svg></div><div><h4>Post office &amp; dry cleaning</h4><p>Tue · 2:14 PM</p></div></div>
-              <div class="txn-amt neg">−$31.20</div>
-            </div>
-            <div class="txn-row">
-              <div class="txn-left"><div class="txn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.8"><path d="M12 3v13m0 0-5-5m5 5 5-5"/></svg></div><div><h4>Wallet top-up</h4><p>Mon · 9:02 AM</p></div></div>
-              <div class="txn-amt pos">+$50.00</div>
-            </div>
-            <div class="txn-row">
-              <div class="txn-left"><div class="txn-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/></svg></div><div><h4>Butcher · lamb order</h4><p>Mon · 11:40 AM</p></div></div>
-              <div class="txn-amt neg">−$42.00</div>
-            </div>
+            <div id="c-txn-list"></div>
           </div>
           <div class="navbar">
             <div class="nav-item" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
@@ -764,12 +825,12 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
               <div><h2>Sarah Mitchell</h2><p>Member since Mar 2025</p></div>
             </div>
             <p class="section-label">Manage</p>
-            <div class="list-row"><span>Saved addresses</span><span class="lr-sub">3 saved</span></div>
-            <div class="list-row"><span>Payment methods</span><span class="lr-sub">Visa •••• 4471</span></div>
-            <div class="list-row"><span>Recurring errands</span><span class="lr-sub">1 active</span></div>
+            <div class="list-row" onclick="cPush('c-addresses')"><span>Saved addresses</span><span class="lr-sub" id="c-addr-count">3 saved</span></div>
+            <div class="list-row" onclick="cPush('c-payments')"><span>Payment methods</span><span class="lr-sub" id="c-pay-sub">Visa •••• 4471</span></div>
+            <div class="list-row" onclick="cPush('c-recurring')"><span>Recurring errands</span><span class="lr-sub" id="c-rec-count">1 active</span></div>
             <p class="section-label">Support</p>
-            <div class="list-row"><span>Help centre</span><span class="lr-sub">FAQs &amp; guides</span></div>
-            <div class="list-row"><span>Contact support</span><span class="lr-sub">Avg. reply 4 min</span></div>
+            <div class="list-row" onclick="cPush('c-help')"><span>Help centre</span><span class="lr-sub">FAQs &amp; guides</span></div>
+            <div class="list-row" onclick="cPush('c-support')"><span>Contact support</span><span class="lr-sub">Avg. reply 4 min</span></div>
             <div class="list-row" onclick="handleInstall()"><span>Add Erun to home screen</span><span class="lr-sub">Use offline, like a real app</span></div>
           </div>
           <div class="navbar">
@@ -778,6 +839,57 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
             <div class="nav-item" data-r="c-wallet" onclick="cRoot('c-wallet')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 6V4H8v2"/></svg><span>Wallet</span></div>
             <div class="nav-item active" data-r="c-profile" onclick="cRoot('c-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
           </div>
+        </div>
+
+        <!-- SAVED ADDRESSES -->
+        <div class="view" id="c-addresses">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Saved addresses</h2></div>
+          <div class="content" id="c-address-list"></div>
+        </div>
+
+        <!-- PAYMENT METHODS -->
+        <div class="view" id="c-payments">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Payment methods</h2></div>
+          <div class="content" id="c-payment-list"></div>
+        </div>
+
+        <!-- RECURRING ERRANDS -->
+        <div class="view" id="c-recurring">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Recurring errands</h2></div>
+          <div class="content" id="c-recurring-list"></div>
+        </div>
+
+        <!-- HELP CENTRE -->
+        <div class="view" id="c-help">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Help centre</h2></div>
+          <div class="content" id="c-help-list"></div>
+        </div>
+
+        <!-- CONTACT SUPPORT -->
+        <div class="view" id="c-support">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Contact support</h2></div>
+          <div class="content">
+            <div class="support-head">
+              <div class="support-dot"></div>
+              <div><h4>Support is online</h4><p>Average reply time 4 minutes</p></div>
+            </div>
+            <p class="field-label">What's the issue about</p>
+            <div class="issue-chips" id="c-issue-chips">
+              <span class="issue-chip active" onclick="chipSelect(this)">An errand</span>
+              <span class="issue-chip" onclick="chipSelect(this)">A payment</span>
+              <span class="issue-chip" onclick="chipSelect(this)">A runner</span>
+              <span class="issue-chip" onclick="chipSelect(this)">Something else</span>
+            </div>
+            <p class="field-label">Tell us what happened</p>
+            <textarea class="field" id="c-support-msg" rows="4" placeholder="Describe the issue and we'll come back to you here."></textarea>
+            <button class="cta" onclick="sendSupport()">Send message</button>
+          </div>
+        </div>
+
+        <!-- PAST RECEIPT -->
+        <div class="view" id="c-receipt">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Receipt</h2></div>
+          <div class="content" id="c-receipt-body"></div>
         </div>
 
       </div>
@@ -992,11 +1104,14 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
   let runnerStack = ['r-feed'];
 
   function renderApp(stack, prefix){
+    const top = stack[stack.length - 1];
     document.querySelectorAll('#' + prefix + '-app .view').forEach(v => v.classList.remove('active'));
-    document.getElementById(stack[stack.length - 1]).classList.add('active');
+    document.getElementById(top).classList.add('active');
+    // Keep the tab lit for the section we're in, even a few screens deep.
     document.querySelectorAll('#' + prefix + '-app .nav-item').forEach(n => {
-      n.classList.toggle('active', n.dataset.r === stack[0] && stack.length === 1);
+      n.classList.toggle('active', n.dataset.r === stack[0]);
     });
+    if (prefix === 'customer') refreshCustomer(top);
   }
   function cPush(id){ custStack.push(id); renderApp(custStack, 'customer'); }
   function cPop(){ if(custStack.length > 1){ custStack.pop(); renderApp(custStack, 'customer'); } }
@@ -1013,10 +1128,549 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
     document.getElementById('runner-app').classList.toggle('active', mode === 'runner');
   }
 
+  // =============================================================
+  // CUSTOMER APP STATE
+  // Every customer screen reads from here, so a choice made on one
+  // screen is visible on the next one and in the final receipt.
+  // =============================================================
+  const money = n => '$' + Math.abs(n).toFixed(2);
+  const TRAVEL_RATE = 1.05;          // dollars per km
+  const el = id => document.getElementById(id);
+  // Money must never carry binary-float residue: holding and then releasing the
+  // same amount has to land on exactly zero, or the wallet shows a phantom hold.
+  const cents = n => Math.round(n * 100) / 100;
+
+  const CATEGORIES = {
+    'one-off':   { title:'One-off errand',                base:7.00,  tier2:false,
+                   task:"Pick up prescription under my name, pay with wallet if there's a gap cover." },
+    'multi':     { title:'Multi-stop errand',             base:11.00, tier2:false,
+                   task:"Post office parcel, then collect the dry cleaning on the same block." },
+    'recurring': { title:'Recurring errand',              base:7.00,  tier2:false,
+                   task:"Weekly grocery run — the list is saved in my notes." },
+    'care':      { title:'Elderly & disability support',  base:9.50,  tier2:true,
+                   task:"Collect the script and groceries, hand them to Mum at the door and check she's okay." },
+    'concierge': { title:'Concierge',                     base:14.00, tier2:true,
+                   task:"Collect the parcel, then swap the two hallway lightbulbs." }
+  };
+
+  const PLACES = [
+    { name:'Chemist Warehouse Camberwell', sub:'566 Riversdale Rd, Camberwell VIC', km:2.4, x:160, y:95 },
+    { name:'Camberwell Junction',          sub:'Camberwell Rd, Camberwell VIC',     km:1.1, x:118, y:62 },
+    { name:'Coles Camberwell',             sub:'793 Burke Rd, Camberwell VIC',      km:1.8, x:205, y:78 },
+    { name:'Australia Post Camberwell',    sub:'519 Riversdale Rd, Camberwell VIC', km:2.9, x:240, y:130 },
+    { name:'Woolworths Hawthorn East',     sub:'82 Camberwell Rd, Hawthorn East',   km:3.6, x:78,  y:132 }
+  ];
+
+  const STAGES = ['Accepted', 'Shopping', 'On the way', 'Delivered'];
+
+  const booking = {
+    category:'one-off', place:PLACES[0], task:CATEGORIES['one-off'].task,
+    when:'now', date:'', time:'', budget:18,
+    stage:0, approved:null, rating:0, id:null, actual:0
+  };
+
+  const wallet = { balance:86.40, held:0 };
+
+  let txns = [
+    { label:'Post office & dry cleaning', when:'Tue · 2:14 PM',  amt:-31.20 },
+    { label:'Wallet top-up',              when:'Mon · 9:02 AM',  amt: 50.00 },
+    { label:'Butcher · lamb order',       when:'Mon · 11:40 AM', amt:-42.00 }
+  ];
+
+  let errands = [
+    { title:'Post office & dry cleaning', sub:'Delivered Tue · $31.20 total', state:'done',
+      base:9.00, travel:2.20, cap:22.00, actual:20.00, id:'ER-48119' },
+    { title:'Butcher · lamb order', sub:'Delivered Mon · $42.00 total', state:'done',
+      base:7.00, travel:2.50, cap:35.00, actual:32.50, id:'ER-48042' }
+  ];
+
+  const recurring = [
+    { title:'Weekly grocery run', sub:'Coles Camberwell · every Sat, 9:00 AM', active:true }
+  ];
+
+  const addresses = [
+    { name:'Home',   sub:'14 Fairview Ave, Camberwell VIC', tag:'Default' },
+    { name:'Mum\'s', sub:'8 Bowen St, Hawthorn East VIC',   tag:'' },
+    { name:'Work',   sub:'120 Collins St, Melbourne VIC',   tag:'' }
+  ];
+
+  const payments = [
+    { name:'Visa •••• 4471', sub:'Expires 08/28', tag:'Default' },
+    { name:'Apple Pay',      sub:'Linked to this device', tag:'' }
+  ];
+
+  const FAQS = [
+    { q:'How does the spend cap work?',
+      a:'You set an item budget when you book. The runner is issued a single-use Erun card locked to that exact amount, so they can never spend a cent more. Whatever they don\'t spend is swept straight back into your wallet when the errand settles.' },
+    { q:'What if the runner buys the wrong thing?',
+      a:'You approve the item from the tracking screen before they pay. If it isn\'t right, tap "Wrong item" and the runner confirms an alternative with you first. After delivery you also have a 2-hour window to flag an issue before the errand settles.' },
+    { q:'Who are the runners?',
+      a:'Every runner is ID-checked and background-screened. Tier 2 runners have completed additional vetting including a Working With Children and NDIS-aligned check, and are the only runners eligible for elderly, disability support and concierge errands.' },
+    { q:'When am I actually charged?',
+      a:'The full amount is held in your Erun wallet the moment you book, so the runner can shop without waiting on you. It only converts to a charge once the errand settles — and the unspent portion never leaves your wallet at all.' }
+  ];
+
+  let chatMsgs = [
+    { from:'them', text:"Hi Sarah — heading to the chemist now, should be about 8 minutes.", t:'2:14 PM' }
+  ];
+
+  // ---------- pricing ----------
+  function travelCost(){ return Math.round(booking.place.km * TRAVEL_RATE * 100) / 100; }
+  function baseCost(){ return CATEGORIES[booking.category].base; }
+  function bookingTotal(){ return Math.round((baseCost() + travelCost() + booking.budget) * 100) / 100; }
+
+  // ---------- home / category ----------
+  function pickCategory(key){
+    booking.category = key;
+    booking.task = CATEGORIES[key].task;
+    booking.stage = 0; booking.approved = null; booking.rating = 0;
+    el('c-location-title').textContent = CATEGORIES[key].tier2
+      ? 'Where do we go' : "Where's the errand";
+    el('c-address-input').value = '';
+    renderSuggestions();
+    cPush('c-location');
+  }
+
+  // ---------- location ----------
+  function renderSuggestions(){
+    const q = (el('c-address-input').value || '').trim().toLowerCase();
+    const matches = q
+      ? PLACES.filter(p => (p.name + ' ' + p.sub).toLowerCase().includes(q))
+      : PLACES.slice(0, 3);
+    const list = el('c-suggest-list');
+    if (!matches.length){
+      list.innerHTML = '<p class="empty-note">No saved places match that. Type a full address and tap Confirm location.</p>';
+      return;
+    }
+    list.innerHTML = matches.map(p => {
+      const i = PLACES.indexOf(p);
+      const on = PLACES[i] === booking.place;
+      return '<div class="suggest-row" onclick="selectPlace(' + i + ')">' +
+        '<div class="suggest-pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="' +
+          (on ? '#1F3A63' : '#5A6472') + '" stroke-width="2"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></div>' +
+        '<div class="suggest-text"><h4>' + p.name + '</h4><p>' + p.sub + '</p></div></div>';
+    }).join('');
+  }
+
+  function selectPlace(i){
+    booking.place = PLACES[i];
+    el('c-address-input').value = PLACES[i].name;
+    const pin = el('c-pin');
+    pin.style.left = PLACES[i].x + 'px';
+    pin.style.top  = PLACES[i].y + 'px';
+    el('c-dist-note').textContent = PLACES[i].sub + ' · ' + PLACES[i].km.toFixed(1) + ' km away';
+    renderSuggestions();
+  }
+
+  function confirmLocation(){
+    const typed = (el('c-address-input').value || '').trim();
+    if (!typed){ showToast('Enter or choose a destination first'); return; }
+    if (typed !== booking.place.name){
+      // Honour a freely typed address rather than silently using the last pin.
+      booking.place = { name:typed, sub:'Custom address', km:booking.place.km, x:160, y:95 };
+    }
+    renderBook();
+    cPush('c-book');
+  }
+
+  // ---------- booking ----------
+  function renderBook(){
+    const cat = CATEGORIES[booking.category];
+    el('c-book-title').textContent = cat.title;
+    el('c-book-address').textContent = booking.place.name;
+    el('c-book-task').value = booking.task;
+    el('c-book-budget').value = booking.budget;
+    const tier = el('c-book-tier');
+    tier.hidden = !cat.tier2;
+    if (cat.tier2){
+      el('c-book-tier-text').textContent =
+        'This errand is offered only to Tier 2 runners — additional background and care-sector checks.';
+    }
+    if (!el('c-book-date').value){
+      const d = new Date(Date.now() + 86400000);
+      el('c-book-date').value = d.toISOString().slice(0, 10);
+      el('c-book-time').value = '10:00';
+    }
+    renderPrices();
+  }
+
+  function renderPrices(){
+    const base = baseCost(), travel = travelCost(), total = bookingTotal();
+    el('c-price-base').textContent = money(base);
+    el('c-price-travel-label').textContent = 'Travel · ' + booking.place.km.toFixed(1) + ' km';
+    el('c-price-travel').textContent = money(travel);
+    el('c-price-budget').textContent = money(booking.budget);
+    el('c-price-total').textContent = money(total);
+
+    const cta = el('c-book-cta'), check = el('c-wallet-check');
+    const short = total - wallet.balance;
+    if (short > 0){
+      cta.textContent = 'Top up ' + money(short) + ' to continue';
+      check.className = 'wallet-check short';
+      check.textContent = 'Your wallet holds ' + money(wallet.balance) + ' — ' + money(short) + ' short of this errand.';
+    } else {
+      cta.textContent = 'Fund Erun wallet — ' + money(total);
+      check.className = 'wallet-check';
+      check.textContent = money(wallet.balance) + ' available · ' + money(wallet.balance - total) + ' left after this errand.';
+    }
+  }
+
+  function syncTask(){ booking.task = el('c-book-task').value; }
+  function syncSchedule(){ booking.date = el('c-book-date').value; booking.time = el('c-book-time').value; }
+
+  function syncBudget(){
+    const v = parseFloat(el('c-book-budget').value);
+    booking.budget = isNaN(v) || v < 0 ? 0 : Math.min(v, 500);
+    renderPrices();
+  }
+  function adjustBudget(step){
+    booking.budget = Math.max(0, Math.min(500, booking.budget + step));
+    el('c-book-budget').value = booking.budget;
+    renderPrices();
+  }
+
   function whenToggle(btn, type){
     document.querySelectorAll('#c-book .when-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('schedule-fields').style.display = type === 'schedule' ? 'flex' : 'none';
+    booking.when = type;
+    el('schedule-fields').style.display = type === 'schedule' ? 'flex' : 'none';
+  }
+
+  function submitBooking(){
+    const total = bookingTotal();
+    if (total > wallet.balance){
+      topUp();
+      return;
+    }
+    if (!booking.task.trim()){ showToast('Describe what you need done first'); return; }
+    wallet.balance = cents(wallet.balance - total);
+    wallet.held = cents(wallet.held + total);
+    booking.id = 'ER-' + (48200 + Math.floor(Math.random() * 99));
+    booking.stage = 0; booking.approved = null; booking.rating = 0;
+    chatMsgs = [{ from:'them', text:"Hi Sarah — I've got your job, heading there now.", t:nowTime() }];
+    addTxn('Held — ' + booking.place.name, -total);
+    renderFinding();
+    cPush('c-finding');
+    // A runner accepts a moment later, so the screen resolves on its own.
+    setTimeout(() => {
+      if (custStack[custStack.length - 1] !== 'c-finding') return;
+      el('c-finding-head').textContent = 'Jordan M. accepted your errand';
+      el('c-finding-sub').textContent = 'Tier 2 verified · 4.9 rating · 6 min away';
+      const cta = el('c-finding-cta');
+      cta.disabled = false;
+      cta.textContent = 'View tracking';
+    }, 2200);
+  }
+
+  function renderFinding(){
+    el('c-finding-head').textContent = 'Broadcasting to nearby runners…';
+    el('c-finding-sub').textContent = '4 eligible runners can see this job within 2.5 km';
+    el('c-finding-cta').disabled = true;
+    el('c-finding-cta').textContent = 'Waiting for a runner…';
+    el('c-find-base').textContent = money(baseCost());
+    el('c-find-travel-label').textContent = 'Travel · ' + booking.place.km.toFixed(1) + ' km';
+    el('c-find-travel').textContent = money(travelCost());
+    el('c-find-budget').textContent = money(booking.budget);
+    el('c-find-total').textContent = money(bookingTotal());
+  }
+
+  function cancelRequest(){
+    const total = bookingTotal();
+    wallet.balance = cents(wallet.balance + total);
+    wallet.held = cents(wallet.held - total);
+    addTxn('Refund — request cancelled', total);
+    booking.id = null;
+    showToast('Request cancelled — ' + money(total) + ' refunded to your Erun wallet');
+    cRoot('c-home');
+  }
+
+  // ---------- tracking ----------
+  function renderTrack(){
+    el('c-track-task').innerHTML = '<b>' + CATEGORIES[booking.category].title + '</b>' +
+      escapeHtml(booking.task) + '<br><span style="color:var(--muted)">' +
+      escapeHtml(booking.place.name) + '</span>';
+
+    el('c-timeline').innerHTML = STAGES.map((s, i) => {
+      const cls = i < booking.stage ? 'done' : (i === booking.stage ? 'now' : '');
+      const label = (i === 2 && i === booking.stage) ? 'On the way · 6 min' : s;
+      return '<div class="tl-row"><div class="tl-dot ' + cls + '"></div>' +
+             '<div class="tl-label ' + (i === booking.stage ? 'now' : '') + '">' + label + '</div></div>' +
+             (i < STAGES.length - 1 ? '<div class="tl-line"></div>' : '');
+    }).join('');
+
+    const ap = el('c-approval');
+    const needsApproval = booking.stage === 1 && booking.approved === null;
+    ap.hidden = !needsApproval;
+    if (needsApproval){
+      el('c-approval-text').textContent =
+        'Jordan found "Panadol Osteo 96pk" — closest match to your request. It fits inside your ' +
+        money(booking.budget) + ' cap.';
+    }
+
+    const cta = el('c-track-cta');
+    if (needsApproval){
+      cta.disabled = true;
+      cta.textContent = 'Approve the item to continue';
+    } else {
+      cta.disabled = false;
+      cta.textContent = booking.stage >= STAGES.length - 1
+        ? 'Confirm delivery' : 'Next step — ' + STAGES[booking.stage + 1];
+    }
+    el('c-chat-badge').hidden = chatMsgs.filter(m => m.from === 'them').length === 0 ||
+                               custStack.includes('c-chat');
+  }
+
+  function resolveApproval(ok){
+    booking.approved = ok;
+    if (ok){
+      showToast('Item approved — Jordan is completing the purchase');
+      chatMsgs.push({ from:'them', text:'Thanks — paying for it now.', t:nowTime() });
+    } else {
+      showToast('Flagged — Jordan will confirm an alternative with you');
+      chatMsgs.push({ from:'them', text:"No worries, I'll find an alternative and send you a photo.", t:nowTime() });
+    }
+    renderTrack();
+  }
+
+  function advanceStage(){
+    if (booking.stage >= STAGES.length - 1){ completeErrand(); return; }
+    booking.stage++;
+    if (booking.stage === 2){
+      chatMsgs.push({ from:'them', text:'All done here — on my way to you now.', t:nowTime() });
+    }
+    renderTrack();
+  }
+
+  // ---------- chat ----------
+  function renderChat(){
+    el('c-chat-thread').innerHTML = chatMsgs.map(m =>
+      '<div class="bubble ' + m.from + '">' + escapeHtml(m.text) +
+      '<span class="bt">' + m.t + '</span></div>').join('');
+    const t = el('c-chat-thread');
+    t.scrollTop = t.scrollHeight;
+    el('c-chat-badge').hidden = true;
+  }
+
+  function sendChat(e){
+    e.preventDefault();
+    const input = el('c-chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    chatMsgs.push({ from:'me', text, t:nowTime() });
+    input.value = '';
+    renderChat();
+    setTimeout(() => {
+      chatMsgs.push({ from:'them', text:'Got it — no problem at all.', t:nowTime() });
+      if (custStack[custStack.length - 1] === 'c-chat') renderChat();
+      else el('c-chat-badge').hidden = false;
+    }, 1400);
+  }
+
+  // ---------- completion & settlement ----------
+  function completeErrand(){
+    const base = baseCost(), travel = travelCost(), cap = booking.budget;
+    // Runners rarely spend the cap exactly; the remainder is what gets swept back.
+    booking.actual = Math.round(cap * (0.80 + Math.random() * 0.15) * 100) / 100;
+    const sweep = Math.round((cap - booking.actual) * 100) / 100;
+    const charged = Math.round((base + travel + booking.actual) * 100) / 100;
+    const held = Math.round((base + travel + cap) * 100) / 100;
+
+    wallet.held = cents(wallet.held - held);
+    wallet.balance = cents(wallet.balance + sweep);
+    if (sweep > 0) addTxn('Swept back — unspent item budget', sweep);
+
+    el('c-receipt-id').textContent = 'Erun receipt · #' + booking.id;
+    el('c-r-base').textContent = money(base);
+    el('c-r-travel-label').textContent = 'Travel · ' + booking.place.km.toFixed(1) + ' km';
+    el('c-r-travel').textContent = money(travel);
+    el('c-r-cap').textContent = money(cap);
+    el('c-r-actual').textContent = money(booking.actual);
+    el('c-r-sweep').textContent = '−' + money(sweep);
+    el('c-r-total').textContent = money(charged);
+
+    booking.rating = 0;
+    paintStars(0);
+    cPush('c-complete');
+  }
+
+  function finishErrand(){
+    const charged = Math.round((baseCost() + travelCost() + booking.actual) * 100) / 100;
+    errands.unshift({
+      title: booking.place.name,
+      sub: 'Delivered today · ' + money(charged) + ' total',
+      state:'done', base:baseCost(), travel:travelCost(),
+      cap:booking.budget, actual:booking.actual, id:booking.id
+    });
+    booking.id = null;
+    showToast(booking.rating ? 'Thanks — ' + booking.rating + '-star rating submitted'
+                             : 'Errand closed — you can rate Jordan later from Activity');
+    cRoot('c-home');
+  }
+
+  function rate(elm){
+    const stars = elm.parentElement.querySelectorAll('svg');
+    booking.rating = Array.from(stars).indexOf(elm) + 1;
+    paintStars(booking.rating);
+  }
+  function paintStars(n){
+    el('c-stars').querySelectorAll('svg').forEach((s, i) => {
+      s.setAttribute('fill', i < n ? '#A9843F' : 'none');
+      s.setAttribute('stroke', '#A9843F');
+      s.setAttribute('stroke-width', '1.6');
+    });
+  }
+
+  // ---------- activity ----------
+  function renderActivity(){
+    let html = '';
+    if (booking.id){
+      html += '<p class="section-label">In progress</p>' +
+        '<div class="act-card" onclick="cRoot(\'c-home\'); cPush(\'c-track\');">' +
+        '<div class="act-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/></svg></div>' +
+        '<div class="act-body"><h4>' + escapeHtml(booking.place.name) + '</h4><p>Jordan M. · ' +
+          STAGES[booking.stage].toLowerCase() + '</p></div>' +
+        '<div class="act-status active">Live</div></div>';
+    }
+    const active = recurring.filter(r => r.active);
+    if (active.length){
+      html += '<p class="section-label">Scheduled</p>' + active.map(r =>
+        '<div class="act-card" onclick="cRoot(\'c-profile\'); cPush(\'c-recurring\');">' +
+        '<div class="act-icon gold"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>' +
+        '<div class="act-body"><h4>' + escapeHtml(r.title) + '</h4><p>' + escapeHtml(r.sub) + '</p></div>' +
+        '<div class="act-status sched">Recurring</div></div>').join('');
+    }
+    if (errands.length){
+      html += '<p class="section-label">Completed</p>' + errands.map((e, i) =>
+        '<div class="act-card" onclick="openReceipt(' + i + ')">' +
+        '<div class="act-icon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="1.8"><path d="M5 13l4 4L19 7"/></svg></div>' +
+        '<div class="act-body"><h4>' + escapeHtml(e.title) + '</h4><p>' + escapeHtml(e.sub) + '</p></div>' +
+        '<div class="act-status done">Done</div></div>').join('');
+    }
+    if (!html) html = '<p class="empty-note">No errands yet. Book one from the home screen and it\'ll show up here.</p>';
+    el('c-activity-list').innerHTML = html;
+  }
+
+  function openReceipt(i){
+    const e = errands[i];
+    const sweep = Math.round((e.cap - e.actual) * 100) / 100;
+    const charged = Math.round((e.base + e.travel + e.actual) * 100) / 100;
+    el('c-receipt-body').innerHTML =
+      '<div class="receipt"><h4>Erun receipt · #' + e.id + '</h4>' +
+      '<div class="r-row"><span>Base fee</span><span>' + money(e.base) + '</span></div>' +
+      '<div class="r-row"><span>Travel</span><span>' + money(e.travel) + '</span></div>' +
+      '<div class="r-div"></div>' +
+      '<div class="r-row"><span>Item budget (cap)</span><span>' + money(e.cap) + '</span></div>' +
+      '<div class="r-row item"><span>Actual spend</span><span>' + money(e.actual) + '</span></div>' +
+      '<div class="r-row"><span>Swept back to wallet</span><span>−' + money(sweep) + '</span></div>' +
+      '<div class="r-div"></div>' +
+      '<div class="r-row total"><span>Total charged</span><span>' + money(charged) + '</span></div></div>' +
+      '<p class="budget-hint" style="text-align:center;margin-top:16px;">' +
+      escapeHtml(e.title) + ' · settled</p>';
+    cPush('c-receipt');
+  }
+
+  // ---------- wallet ----------
+  function addTxn(label, amt){
+    txns.unshift({ label, when:'Today · ' + nowTime(), amt });
+  }
+
+  function renderWallet(){
+    el('c-wallet-balance').textContent = money(wallet.balance);
+    el('c-home-balance').textContent = money(wallet.balance);
+    const hold = el('c-hold-note');
+    hold.hidden = wallet.held <= 0;
+    if (wallet.held > 0){
+      hold.innerHTML = '<span>Held for an errand in progress</span><b>' + money(wallet.held) + '</b>';
+    }
+    el('c-txn-list').innerHTML = txns.map(t => {
+      const pos = t.amt >= 0;
+      return '<div class="txn-row"><div class="txn-left"><div class="txn-icon">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="' + (pos ? '#2E7D5B' : '#1F3A63') + '" stroke-width="1.8">' +
+        (pos ? '<path d="M12 3v13m0 0-5-5m5 5 5-5"/>' : '<path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/>') +
+        '</svg></div><div><h4>' + escapeHtml(t.label) + '</h4><p>' + t.when + '</p></div></div>' +
+        '<div class="txn-amt ' + (pos ? 'pos' : 'neg') + '">' + (pos ? '+' : '−') + money(t.amt) + '</div></div>';
+    }).join('');
+  }
+
+  function topUp(){
+    wallet.balance = cents(wallet.balance + 50);
+    addTxn('Wallet top-up', 50);
+    renderWallet();
+    if (custStack[custStack.length - 1] === 'c-book') renderPrices();
+    showToast('$50.00 added to your Erun wallet');
+  }
+
+  // ---------- account screens ----------
+  function renderAddresses(){
+    el('c-address-list').innerHTML = addresses.map(a =>
+      '<div class="addr-row" onclick="showToast(\'' + a.name.replace(/'/g, "\\'") + ' set as the drop-off for your next errand\')">' +
+      '<div class="ar-body"><h4>' + escapeHtml(a.name) + '</h4><p>' + escapeHtml(a.sub) + '</p></div>' +
+      (a.tag ? '<span class="addr-tag">' + a.tag + '</span>' : '') + '</div>').join('');
+    el('c-addr-count').textContent = addresses.length + ' saved';
+  }
+
+  function renderPayments(){
+    el('c-payment-list').innerHTML = payments.map(p =>
+      '<div class="addr-row"><div class="ar-body"><h4>' + escapeHtml(p.name) + '</h4>' +
+      '<p>' + escapeHtml(p.sub) + '</p></div>' +
+      (p.tag ? '<span class="addr-tag">' + p.tag + '</span>' : '') + '</div>').join('') +
+      '<p class="budget-hint" style="text-align:center;margin-top:14px;">' +
+      'Cards are used to top up your Erun wallet. Runners are never given your card.</p>';
+    el('c-pay-sub').textContent = payments[0].name;
+  }
+
+  function renderRecurring(){
+    el('c-recurring-list').innerHTML = recurring.map((r, i) =>
+      '<div class="addr-row" onclick="toggleRecurring(' + i + ')">' +
+      '<div class="ar-body"><h4>' + escapeHtml(r.title) + '</h4><p>' + escapeHtml(r.sub) + '</p></div>' +
+      '<span class="addr-tag">' + (r.active ? 'Active' : 'Paused') + '</span></div>').join('') ||
+      '<p class="empty-note">No recurring errands set up yet.</p>';
+    el('c-rec-count').textContent = recurring.filter(r => r.active).length + ' active';
+  }
+
+  function toggleRecurring(i){
+    recurring[i].active = !recurring[i].active;
+    renderRecurring();
+    showToast(recurring[i].title + (recurring[i].active ? ' resumed' : ' paused'));
+  }
+
+  function renderHelp(){
+    el('c-help-list').innerHTML = FAQS.map((f, i) =>
+      '<div class="faq-row" id="faq-' + i + '" onclick="toggleFaq(' + i + ')">' +
+      '<h4>' + escapeHtml(f.q) + '<span>+</span></h4><p>' + escapeHtml(f.a) + '</p></div>').join('');
+  }
+  function toggleFaq(i){ el('faq-' + i).classList.toggle('open'); }
+
+  function sendSupport(){
+    const msg = el('c-support-msg').value.trim();
+    if (!msg){ showToast('Add a short description so support can help'); return; }
+    el('c-support-msg').value = '';
+    showToast('Message sent — support usually replies within 4 minutes');
+    cPop();
+  }
+
+  // ---------- helpers ----------
+  function nowTime(){
+    return new Date().toLocaleTimeString('en-AU', { hour:'numeric', minute:'2-digit' });
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c =>
+      ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+  }
+
+  // Each customer screen refreshes from state as it becomes visible, so
+  // nothing on screen can drift out of sync with the booking or the wallet.
+  function refreshCustomer(id){
+    if (id === 'c-home' || id === 'c-wallet') renderWallet();
+    if (id === 'c-location') renderSuggestions();
+    if (id === 'c-book') renderBook();
+    if (id === 'c-track') renderTrack();
+    if (id === 'c-chat') renderChat();
+    if (id === 'c-activity') renderActivity();
+    if (id === 'c-addresses') renderAddresses();
+    if (id === 'c-payments') renderPayments();
+    if (id === 'c-recurring') renderRecurring();
+    if (id === 'c-help') renderHelp();
   }
 
   function showToast(msg){
@@ -1025,23 +1679,6 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
     t.classList.add('show');
     clearTimeout(window._toastTimer);
     window._toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
-  }
-
-  function rate(el){
-    const stars = el.parentElement.querySelectorAll('svg');
-    const idx = Array.from(stars).indexOf(el);
-    stars.forEach((s, i) => {
-      s.setAttribute('fill', i <= idx ? '#A9843F' : 'none');
-      s.setAttribute('stroke', '#A9843F');
-    });
-  }
-
-  let walletBalance = 86.40;
-  function topUp(){
-    walletBalance += 50;
-    document.getElementById('c-wallet-balance').textContent = '$' + walletBalance.toFixed(2);
-    document.getElementById('c-home-balance').textContent = '$' + walletBalance.toFixed(2);
-    showToast('$50.00 added to your Erun wallet');
   }
 
   let earningsBalance = 64.20;
