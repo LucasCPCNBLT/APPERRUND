@@ -72,10 +72,15 @@ icons/            — the Erun logo (erun-logo.png) + generated app/home-screen 
 - **Palette:** deep navy as the primary trust colour, muted gold reserved for
   Tier 2 / premium signals, green for success/verification states.
 - **Logo:** the real Erun mark is the only logo used anywhere in the app. On the
-  splash screen it pops in, a single light sweep travels across it (masked
-  exactly to the glyph's own pixels), and its accent dot pulses like a live
-  runner ping — then it settles into a calm, static mark in-app so day-to-day
-  use stays composed rather than flashy.
+  splash screen it pops in on a light plate (the mark is deep navy, and the
+  splash is not), a single light sweep travels across it (masked exactly to the
+  glyph's own pixels), and its accent dot pulses like a live runner ping — then
+  it settles into a calm, static mark in-app so day-to-day use stays composed
+  rather than flashy. The splash holds for 3.2s, timed from `DOMContentLoaded`
+  rather than `load` so a slow font fetch can't stretch it.
+- **Presentation stage:** on desktop the phone sits on a deep navy backdrop
+  rather than flat grey, so the device reads as the lit object in the room. On
+  an actual phone none of that shell renders — the app fills the screen.
 - Screens follow the customer and runner flows in the product spec: booking →
   finding a runner → live tracking with an in-app purchase-approval step →
   itemised receipt with the spend-cap/actual/swept-back breakdown → rating;

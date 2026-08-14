@@ -37,9 +37,17 @@
 *{box-sizing:border-box;}
 html{-webkit-text-size-adjust:100%;}
 body{
-  margin:0;background:var(--paper);font-family:var(--font-body);color:var(--ink);
+  margin:0;font-family:var(--font-body);color:var(--ink);
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   min-height:100dvh;
+  /* The presentation shell sits on a deep navy stage rather than flat grey, so
+     the device reads as the lit object in the room. Fixed, so it doesn't drift
+     as the page scrolls. */
+  background:var(--navy-deep);
+  background-image:
+    radial-gradient(78% 52% at 50% 0%, rgba(53,96,151,.42) 0%, rgba(53,96,151,0) 62%),
+    radial-gradient(120% 100% at 50% 100%, #0A1728 0%, #070F1B 100%);
+  background-attachment:fixed;
 }
 h1,h2,h3,h4{font-family:var(--font-head);margin:0;letter-spacing:-0.01em;}
 p{margin:0;}
@@ -53,22 +61,24 @@ button{font:inherit;}
   display:flex;flex-direction:column;align-items:center;
   padding:44px 20px 60px;min-height:100dvh;
 }
-.brand-lockup{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
-.brand-text h1{font-size:25px;font-weight:800;color:var(--navy-dark);}
+/* Gap allows for the plate, which extends 9px past the logo box on each side. */
+.brand-lockup{display:flex;align-items:center;gap:23px;margin-bottom:6px;}
+.brand-text h1{font-size:25px;font-weight:800;color:#fff;}
 .brand-text .tagline{margin:2px 0 0;font-family:var(--font-mono);font-size:12px;font-weight:500;
-  color:var(--navy);letter-spacing:0.04em;text-transform:uppercase;}
-.hero-sub{color:var(--ink-soft);font-size:13.5px;line-height:1.6;text-align:center;
+  color:#93B2D8;letter-spacing:0.04em;text-transform:uppercase;}
+.hero-sub{color:#9AACC4;font-size:13.5px;line-height:1.6;text-align:center;
   max-width:420px;margin:14px 0 26px;}
-.mode-switch{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);
-  border-radius:100px;padding:4px;box-shadow:var(--shadow-1);}
+.mode-switch{display:flex;gap:4px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
+  border-radius:100px;padding:4px;backdrop-filter:blur(6px);}
 .mode-btn{padding:10px 22px;border-radius:100px;border:none;background:transparent;
-  font-family:var(--font-head);font-weight:700;font-size:12.5px;color:var(--ink-soft);cursor:pointer;
+  font-family:var(--font-head);font-weight:700;font-size:12.5px;color:#A9BDD6;cursor:pointer;
   transition:background .2s ease, color .2s ease;}
-.mode-btn.active{background:var(--navy);color:#fff;box-shadow:0 6px 14px -6px rgba(31,58,99,.5);}
+.mode-btn.active{background:#fff;color:var(--navy-dark);box-shadow:0 8px 18px -8px rgba(0,0,0,.7);}
 .install-row{display:flex;gap:8px;align-items:center;margin-top:18px;}
-.install-btn{display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border:none;
+.install-btn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.09);color:#DCE7F5;
+  border:1px solid rgba(255,255,255,.16);
   border-radius:100px;padding:10px 18px;font-family:var(--font-body);font-weight:600;font-size:12.5px;
-  cursor:pointer;box-shadow:var(--shadow-1);}
+  cursor:pointer;}
 .install-btn svg{flex:none;}
 
 /* ============================================================
@@ -77,7 +87,14 @@ button{font:inherit;}
 .stage{width:100%;display:flex;justify-content:center;margin-top:30px;}
 .device{
   width:390px;height:812px;background:var(--navy-deep);border-radius:52px;padding:14px;
-  box-shadow:var(--shadow-3);position:relative;flex:none;
+  position:relative;flex:none;
+  /* A hairline highlight along the bezel plus a long drop, so the handset reads
+     as a real object against the dark stage instead of a flat cut-out. */
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.08),
+    0 2px 1px rgba(255,255,255,.10) inset,
+    0 50px 90px -34px rgba(0,0,0,.85),
+    0 18px 40px -22px rgba(0,0,0,.7);
 }
 .device::before{content:'';position:absolute;left:50%;top:0;transform:translateX(-50%);
   width:120px;height:28px;background:var(--navy-deep);border-radius:0 0 18px 18px;z-index:5;}
@@ -98,7 +115,10 @@ button{font:inherit;}
   .brand-lockup,.hero-sub{display:none;}
   .mode-switch{flex:none;border-radius:0;border:none;border-bottom:1px solid var(--line);width:100%;
     padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px;background:var(--surface);box-shadow:none;
-    justify-content:center;margin-top:0;}
+    backdrop-filter:none;justify-content:center;margin-top:0;}
+  /* The switch sits on white here, not the dark stage, so the pill inverts back. */
+  .mode-btn{color:var(--ink-soft);}
+  .mode-btn.active{background:var(--navy);color:#fff;box-shadow:0 6px 14px -6px rgba(31,58,99,.5);}
   .install-row{display:none;}
   .stage{flex:1;min-height:0;margin-top:0;}
   .device{width:100%;height:100%;border-radius:0;padding:0;box-shadow:none;background:var(--paper);}
@@ -486,7 +506,7 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
    ============================================================ */
 #splash{position:fixed;inset:0;background:radial-gradient(120% 120% at 50% 10%, #1c3a63 0%, #0c1b30 65%, #08131f 100%);
   display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:2000;
-  transition:opacity .5s ease, visibility .5s ease;}
+  transition:opacity .7s ease, visibility .7s ease;}
 #splash.hide{opacity:0;visibility:hidden;pointer-events:none;}
 #splash .splash-word{margin-top:22px;font-family:var(--font-head);font-weight:800;font-size:22px;color:#fff;
   letter-spacing:.02em;opacity:0;animation:wordIn .5s ease forwards .95s;}
@@ -498,8 +518,21 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
    virtual card. On the splash it pops in, a light catches the E in a single sweep, and its
    accent dot pulses like a live signal; everywhere else it sits calm and static. */
 .logo-wrap{position:relative;display:inline-flex;width:44px;height:44px;flex:none;}
-.logo-wrap .logo-img{display:block;width:100%;height:100%;object-fit:contain;}
+/* Positioned, so it paints over the light plate below rather than under it. */
+.logo-wrap .logo-img{display:block;width:100%;height:100%;object-fit:contain;position:relative;}
 .logo-wrap.header-logo{width:36px;height:36px;}
+
+/* The mark is deep navy, and both the splash and the presentation shell are now
+   dark, so it sits on a light plate — the same way it reads as an installed
+   app icon — instead of going navy-on-navy. */
+.logo-wrap.splash-logo::before,
+.logo-wrap.header-logo::before{
+  content:'';position:absolute;background:linear-gradient(160deg,#FFFFFF 0%,#EBF0F7 100%);
+}
+.logo-wrap.splash-logo::before{inset:-20px;border-radius:34px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.22), 0 30px 60px -22px rgba(0,0,0,.85);}
+.logo-wrap.header-logo::before{inset:-9px;border-radius:15px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.16), 0 12px 26px -14px rgba(0,0,0,.8);}
 .logo-wrap.vcard-logo{width:20px;height:20px;}
 .logo-wrap.splash-logo{width:120px;height:120px;}
 
@@ -516,7 +549,7 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
 .logo-wrap.splash-logo .logo-pulse{
   left:88.5%;top:36.5%;width:15%;height:15%;transform:translate(-50%,-50%);
   border-radius:50%;border:2px solid #C9A25C;
-  animation:dotPulse 2.4s ease-out 1.35s infinite;
+  animation:dotPulse 1.6s ease-out 1.35s infinite;
 }
 @keyframes logoPop{from{opacity:0;transform:scale(.82);}to{opacity:1;transform:scale(1);}}
 @keyframes shineSweep{0%,8%{opacity:0;background-position:-140% -140%;}20%{opacity:1;}75%{opacity:1;}100%{opacity:0;background-position:140% 140%;}}
@@ -1834,11 +1867,22 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
   // -------------------------------------------------------------
   // Splash screen
   // -------------------------------------------------------------
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      document.getElementById('splash').classList.add('hide');
-    }, 1500);
-  });
+  // Long enough for the whole mark to land: the logo pops, the light finishes
+  // its sweep across the E, the wordmark and tagline settle, and the accent dot
+  // gets a couple of live pings before the splash clears.
+  //
+  // Timed from DOMContentLoaded, not `load`. `load` waits on the Google Fonts
+  // stylesheet, so on a slow connection the hold was however long the fonts
+  // took plus the delay — this keeps it the same beat every time.
+  const SPLASH_HOLD = 3200;
+  function dismissSplash(){
+    setTimeout(() => document.getElementById('splash').classList.add('hide'), SPLASH_HOLD);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', dismissSplash);
+  } else {
+    dismissSplash();
+  }
 
   // -------------------------------------------------------------
   // PWA install prompt
