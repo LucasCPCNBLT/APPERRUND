@@ -1569,6 +1569,7 @@ body.installed .list-row.install-row-item{display:none;}
       chatMsgs.push({ from:'them', text:"No worries, I'll find an alternative and send you a photo.", t:nowTime() });
     }
     renderTrack();
+    saveState();
   }
 
   function advanceStage(){
@@ -1578,6 +1579,7 @@ body.installed .list-row.install-row-item{display:none;}
       chatMsgs.push({ from:'them', text:'All done here — on my way to you now.', t:nowTime() });
     }
     renderTrack();
+    saveState();
   }
 
   // ---------- chat ----------
@@ -1602,6 +1604,7 @@ body.installed .list-row.install-row-item{display:none;}
       chatMsgs.push({ from:'them', text:'Got it — no problem at all.', t:nowTime() });
       if (custStack[custStack.length - 1] === 'c-chat') renderChat();
       else el('c-chat-badge').hidden = false;
+      saveState();
     }, 1400);
   }
 
@@ -1761,6 +1764,7 @@ body.installed .list-row.install-row-item{display:none;}
     addTxn('Wallet top-up', 50);
     renderWallet();
     if (custStack[custStack.length - 1] === 'c-book') renderPrices();
+    saveState();
     showToast('$50.00 added to your Erun wallet');
   }
 
@@ -1795,6 +1799,7 @@ body.installed .list-row.install-row-item{display:none;}
   function toggleRecurring(i){
     recurring[i].active = !recurring[i].active;
     renderRecurring();
+    saveState();
     showToast(recurring[i].title + (recurring[i].active ? ' resumed' : ' paused'));
   }
 
@@ -1906,6 +1911,9 @@ body.installed .list-row.install-row-item{display:none;}
   // customer path; ?app=runner (or #runner) brings the switcher back.
   (function initApps(){
     const params = new URLSearchParams(location.search);
+
+    // Restore a demo in progress before anything renders.
+    loadState();
 
     if (params.get('app') === 'runner' || location.hash === '#runner'){
       document.getElementById('mode-switch').hidden = false;
