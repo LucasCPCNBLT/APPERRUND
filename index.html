@@ -668,15 +668,15 @@ body.installed .list-row.install-row-item{display:none;}
 .item-name::placeholder,.item-brand::placeholder{color:var(--ink-faint);font-weight:400;}
 .item-del{background:none;border:none;font-size:20px;line-height:1;color:var(--ink-faint);
   cursor:pointer;padding:6px 2px 0;flex:none;}
-.item-meta{display:flex;gap:7px;margin-top:8px;}
-.item-meta > select{flex:1;min-width:0;}
-.item-meta select,.qty-pair input,.qty-pair select{background:var(--paper);border:1px solid var(--line);
+.item-second{display:flex;gap:7px;align-items:center;}
+.item-second .item-brand{flex:1;min-width:0;}
+.qty-pair input,.qty-pair select{background:var(--paper);border:1px solid var(--line);
   border-radius:10px;padding:9px 10px;font-family:var(--font-body);font-size:12.5px;color:var(--ink);
   outline:none;appearance:none;-webkit-appearance:none;}
-.item-meta select,.qty-pair select{
+.qty-pair select{
   background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B6472' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 8px center;padding-right:26px;}
-.item-meta select:focus,.qty-pair input:focus,.qty-pair select:focus{border-color:var(--navy);}
+.qty-pair input:focus,.qty-pair select:focus{border-color:var(--navy);}
 .qty-pair{display:flex;gap:5px;flex:none;}
 .qty-pair input{width:46px;text-align:center;font-family:var(--font-mono);font-weight:600;
   -moz-appearance:textfield;}
@@ -696,6 +696,42 @@ body.installed .list-row.install-row-item{display:none;}
 .photo-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;
   border:none;background:var(--ink);color:#fff;font-size:14px;line-height:1;cursor:pointer;
   display:flex;align-items:center;justify-content:center;padding:0;}
+
+/* One-line settings: a label and its current value, defaulted so the customer
+   can ignore both and still get a sensible errand. */
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 0;border-top:1px solid var(--line);}
+.setting-label{font-size:13.5px;font-weight:600;color:var(--ink);}
+.setting-row select{background:var(--paper);border:1px solid var(--line);border-radius:10px;
+  padding:9px 28px 9px 11px;font-family:var(--font-body);font-size:12.5px;color:var(--ink);
+  outline:none;appearance:none;-webkit-appearance:none;max-width:60%;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B6472' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;}
+.setting-row select:focus{border-color:var(--navy);}
+.cap-shown{display:flex;align-items:center;gap:8px;}
+.cap-shown b{font-family:var(--font-mono);font-size:16px;font-weight:600;color:var(--ink);}
+.cap-tag{font-size:10.5px;color:var(--ink-faint);}
+.cap-change{background:none;border:none;font-family:var(--font-body);font-size:12.5px;
+  font-weight:600;color:var(--navy);cursor:pointer;padding:4px 0 4px 4px;}
+.cap-edit{padding-bottom:14px;}
+.cap-chips{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
+.cap-chip{flex:1;min-width:70px;background:var(--surface);border:1.5px solid var(--line);
+  border-radius:12px;padding:10px 6px;font-family:var(--font-mono);font-size:13px;font-weight:600;
+  color:var(--ink);cursor:pointer;transition:border-color .12s ease,background .12s ease;}
+.cap-chip i{display:block;font-family:var(--font-body);font-style:normal;font-size:9.5px;
+  font-weight:600;color:var(--ink-faint);margin-top:2px;}
+.cap-chip.on{border-color:var(--navy);background:var(--blue-soft);}
+.cap-chip.on i{color:var(--navy);}
+
+.opt-row{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;
+  font-family:var(--font-body);cursor:pointer;text-align:left;margin-bottom:16px;}
+.opt-sub{flex:1;text-align:right;font-size:12.5px;color:var(--ink-soft);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.opt-chev{color:var(--ink-faint);flex:none;transition:transform .2s ease;}
+.opt-body{padding-bottom:4px;margin-top:-8px;margin-bottom:16px;}
+.opt-body .when-toggle{margin-bottom:10px;}
+.opt-body textarea{margin-top:10px;}
 
 /* Run plan: how long each stop takes and when it all lands. */
 .plan-card{background:var(--navy-dark);color:#fff;border-radius:var(--radius-md);
@@ -992,24 +1028,50 @@ body.installed .list-row.install-row-item{display:none;}
               Add another stop
             </button>
             <div id="c-plan"></div>
-            <p class="field-label">Anything else the runner should know</p>
-            <textarea class="field" id="c-book-notes" rows="2" placeholder="Parking, gate codes, who to ask for — optional" oninput="syncNotes()"></textarea>
-            <p class="field-label">When do you need this</p>
-            <div class="when-toggle">
-              <button class="when-btn active" onclick="whenToggle(this,'now')">As soon as possible</button>
-              <button class="when-btn" onclick="whenToggle(this,'schedule')">Schedule</button>
+            <!-- One rule for the whole errand. Asking this per item meant three
+                 identical dropdowns answering the same question. -->
+            <div class="setting-row">
+              <span class="setting-label">If something's out of stock</span>
+              <select id="c-sub-rule" onchange="setSubRule(this.value)"></select>
             </div>
-            <div class="schedule-fields" id="schedule-fields">
-              <input class="field" type="date" id="c-book-date" onchange="syncSchedule()">
-              <input class="field" type="time" id="c-book-time" onchange="syncSchedule()">
+
+            <!-- The cap is suggested from the items, so nobody has to guess a
+                 dollar ceiling before they know what things cost. -->
+            <div class="setting-row">
+              <span class="setting-label">Spend cap</span>
+              <span class="cap-shown">
+                <b id="c-cap-value">$20</b>
+                <span class="cap-tag" id="c-cap-tag">suggested</span>
+                <button class="cap-change" onclick="toggleCap()">Change</button>
+              </span>
             </div>
-            <p class="field-label">Item budget · the most a runner can spend</p>
-            <div class="budget-row">
-              <button class="budget-step" onclick="adjustBudget(-5)" aria-label="Decrease budget">−</button>
-              <div class="budget-value"><span>$</span><input type="number" id="c-book-budget" min="0" max="500" step="1" value="18" oninput="syncBudget()"></div>
-              <button class="budget-step" onclick="adjustBudget(5)" aria-label="Increase budget">+</button>
+            <div class="cap-edit" id="c-cap-edit" hidden>
+              <div class="cap-chips" id="c-cap-chips"></div>
+              <div class="budget-row">
+                <button class="budget-step" onclick="adjustBudget(-5)" aria-label="Decrease cap">−</button>
+                <div class="budget-value"><span>$</span><input type="number" id="c-book-budget" min="0" max="500" step="1" value="18" oninput="syncBudget()"></div>
+                <button class="budget-step" onclick="adjustBudget(5)" aria-label="Increase cap">+</button>
+              </div>
+              <p class="budget-hint">Anything they don't spend is swept straight back to your wallet.</p>
             </div>
-            <p class="budget-hint">Anything they don't spend is swept straight back to your wallet.</p>
+
+            <!-- Optional for most bookings, so it stays folded away. -->
+            <button class="opt-row" onclick="toggleOptions()">
+              <span class="setting-label">Timing &amp; notes</span>
+              <span class="opt-sub" id="c-opt-sub">As soon as possible</span>
+              <svg class="opt-chev" id="c-opt-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="opt-body" id="c-opt-body" hidden>
+              <div class="when-toggle">
+                <button class="when-btn active" onclick="whenToggle(this,'now')">As soon as possible</button>
+                <button class="when-btn" onclick="whenToggle(this,'schedule')">Schedule</button>
+              </div>
+              <div class="schedule-fields" id="schedule-fields">
+                <input class="field" type="date" id="c-book-date" onchange="syncSchedule()">
+                <input class="field" type="time" id="c-book-time" onchange="syncSchedule()">
+              </div>
+              <textarea class="field" id="c-book-notes" rows="2" placeholder="Parking, gate codes, who to ask for — optional" oninput="syncNotes()"></textarea>
+            </div>
             <div class="price-card">
               <div class="price-row"><span id="c-price-base-label">Base fee</span><span id="c-price-base">$7.00</span></div>
               <div class="price-row"><span id="c-price-travel-label">Travel · 2.4 km</span><span id="c-price-travel">$2.50</span></div>
@@ -1530,19 +1592,19 @@ body.installed .list-row.install-row-item{display:none;}
   // Each category seeds a plausible first stop so the form is never a blank wall.
   const CATEGORIES = {
     'one-off':   { title:'Simple errand',                base:7.00,  tier2:false, multi:false,
-                   items:[{ type:'Pharmacy', brand:'Panadol', name:'Osteo caplets, 96 pack', qty:1, unit:'pack', sub:'ask', photo:null }],
+                   items:[{ type:'Pharmacy', brand:'Panadol', name:'Osteo caplets, 96 pack', qty:1, unit:'pack', photo:null }],
                    notes:'' },
     'multi':     { title:'Multi-stop errand',            base:11.00, tier2:false, multi:true,
-                   items:[{ type:'Post & parcels', brand:'', name:'Parcel collection', qty:1, unit:'ea', sub:'ask', photo:null }],
+                   items:[{ type:'Post & parcels', brand:'', name:'Parcel collection', qty:1, unit:'ea', photo:null }],
                    notes:'' },
     'recurring': { title:'Recurring errand',             base:7.00,  tier2:false, multi:false,
-                   items:[{ type:'Groceries', brand:'', name:'Weekly shop — full list saved', qty:1, unit:'ea', sub:'closest', photo:null }],
+                   items:[{ type:'Groceries', brand:'', name:'Weekly shop — full list saved', qty:1, unit:'ea', photo:null }],
                    notes:'' },
     'care':      { title:'Elderly & disability support', base:9.50,  tier2:true,  multi:false,
-                   items:[{ type:'Pharmacy',  brand:'', name:'Repeat script for Mum', qty:1, unit:'ea', sub:'ask', photo:null }],
+                   items:[{ type:'Pharmacy',  brand:'', name:'Repeat script for Mum', qty:1, unit:'ea', photo:null }],
                    notes:"Hand to Mum at the door and check she's okay." },
     'concierge': { title:'Concierge',                    base:14.00, tier2:true,  multi:false,
-                   items:[{ type:'Hardware', brand:'Philips', name:'Warm white bulbs, bayonet', qty:2, unit:'ea', sub:'closest', photo:null }],
+                   items:[{ type:'Hardware', brand:'Philips', name:'Warm white bulbs, bayonet', qty:2, unit:'ea', photo:null }],
                    notes:'Swap the two hallway bulbs while you are here.' }
   };
 
@@ -1554,7 +1616,34 @@ body.installed .list-row.install-row-item{display:none;}
   const ITEM_TYPES = ['Groceries','Pharmacy','Bakery','Meat & seafood','Fruit & veg',
                       'Hardware','Stationery','Post & parcels','Dry cleaning','Pet supplies','Other'];
   const ITEM_UNITS = ['ea','pack','g','kg','ml','L','bunch','box'];
-  const SUB_RULES  = { ask:'Ask first', closest:'Closest', skip:'Skip it' };
+  const SUB_RULES  = { closest:'Buy the closest match', ask:'Ask me first', skip:'Skip that item' };
+
+  // Rough shelf price per unit, used only to suggest a starting cap. The
+  // customer can still set whatever they like; this just means they are not
+  // asked to name a dollar ceiling before knowing what anything costs.
+  const TYPICAL_SPEND = {
+    'Pharmacy':22, 'Groceries':14, 'Bakery':10, 'Meat & seafood':24, 'Fruit & veg':10,
+    'Hardware':20, 'Stationery':14, 'Post & parcels':0, 'Dry cleaning':24, 'Pet supplies':20,
+    'Other':15
+  };
+  // The shop already says what kind of errand this is, so the customer is not
+  // asked to classify the item as well.
+  const TYPE_HINTS = [
+    [/chemist|pharmac|priceline/i, 'Pharmacy'],
+    [/coles|woolworth|aldi|iga|grocer|supermarket/i, 'Groceries'],
+    [/bakery|baker/i, 'Bakery'],
+    [/butcher|seafood|fish/i, 'Meat & seafood'],
+    [/post|parcel/i, 'Post & parcels'],
+    [/clean|laundr/i, 'Dry cleaning'],
+    [/bunnings|hardware|mitre/i, 'Hardware'],
+    [/officeworks|station/i, 'Stationery'],
+    [/pet|vet/i, 'Pet supplies']
+  ];
+  function inferType(place){
+    const hay = (place.name || '') + ' ' + (place.sub || '');
+    for (const [re, type] of TYPE_HINTS) if (re.test(hay)) return type;
+    return 'Groceries';
+  }
 
   const PLACES = [
     { name:'Chemist Warehouse Camberwell', sub:'566 Riversdale Rd, Camberwell VIC', km:2.4, x:160, y:95 },
@@ -1567,7 +1656,7 @@ body.installed .list-row.install-row-item{display:none;}
   const STAGES = ['Accepted', 'Shopping', 'On the way', 'Delivered'];
 
   function blankItem(){
-    return { type:'Groceries', brand:'', name:'', qty:1, unit:'ea', sub:'ask', photo:null };
+    return { type:'Groceries', brand:'', name:'', qty:1, unit:'ea', photo:null };
   }
   // A stop always carries at least one item row, otherwise it renders with
   // nothing to type into and the stop cannot be filled in at all.
@@ -1580,7 +1669,7 @@ body.installed .list-row.install-row-item{display:none;}
     category:'one-off',
     stops:[ newStop(PLACES[0], CATEGORIES['one-off'].items) ],
     notes:'',
-    when:'now', date:'', time:'', budget:18,
+    when:'now', date:'', time:'', budget:18, capManual:false,
     stage:0, approved:null, rating:0, id:null, actual:0
   };
   // Which stop the location screen is currently choosing an address for.
@@ -1660,6 +1749,7 @@ body.installed .list-row.install-row-item{display:none;}
     booking.category = key;
     booking.stops = [ newStop(PLACES[0], CATEGORIES[key].items) ];
     booking.notes = CATEGORIES[key].notes || '';
+    booking.capManual = false;
     booking.stage = 0; booking.approved = null; booking.rating = 0;
     editingStop = 0;
     el('c-address-input').value = '';
@@ -1737,6 +1827,8 @@ body.installed .list-row.install-row-item{display:none;}
       el('c-book-time').value = '10:00';
     }
     renderStops();
+    refreshCap();
+    renderSettings();
     renderPrices();
   }
 
@@ -1755,7 +1847,7 @@ body.installed .list-row.install-row-item{display:none;}
   }
 
   function collapsedStop(st, si){
-    const lines = liveItems(st).map(itemLine);
+    const lines = liveItems(st).map(it => itemLine(it, st));
     return '' +
       '<div class="stop-card done" onclick="reopenStop(' + si + ')">' +
         '<div class="stop-head">' +
@@ -1789,10 +1881,8 @@ body.installed .list-row.install-row-item{display:none;}
   }
 
   function itemCard(it, si, i, count){
-    const opts = (list, val) => list.map(o =>
-      '<option value="' + o + '"' + (o === val ? ' selected' : '') + '>' + o + '</option>').join('');
-    const subs = Object.keys(SUB_RULES).map(k =>
-      '<option value="' + k + '"' + (k === it.sub ? ' selected' : '') + '>' + SUB_RULES[k] + '</option>').join('');
+    const units = ITEM_UNITS.map(o =>
+      '<option value="' + o + '"' + (o === it.unit ? ' selected' : '') + '>' + o + '</option>').join('');
     const photo = it.photo
       ? '<div class="photo-tile filled" style="background-image:url(' + it.photo + ')">' +
           '<button class="photo-x" onclick="clearPhoto(' + si + ',' + i + ')" aria-label="Remove photo">&times;</button></div>'
@@ -1807,19 +1897,17 @@ body.installed .list-row.install-row-item{display:none;}
           '<div class="item-fields">' +
             '<input class="item-name" type="text" value="' + escapeAttr(it.name) + '" placeholder="What is it? e.g. Osteo caplets 96pk" ' +
               'oninput="setItem(' + si + ',' + i + ',\'name\',this.value)">' +
-            '<input class="item-brand" type="text" value="' + escapeAttr(it.brand) + '" placeholder="Brand (optional)" ' +
-              'oninput="setItem(' + si + ',' + i + ',\'brand\',this.value)">' +
+            '<div class="item-second">' +
+              '<input class="item-brand" type="text" value="' + escapeAttr(it.brand) + '" placeholder="Brand (optional)" ' +
+                'oninput="setItem(' + si + ',' + i + ',\'brand\',this.value)">' +
+              '<div class="qty-pair">' +
+                '<input type="number" min="1" max="99" value="' + it.qty + '" aria-label="Quantity" ' +
+                  'oninput="setItem(' + si + ',' + i + ',\'qty\',this.value)">' +
+                '<select aria-label="Unit" onchange="setItem(' + si + ',' + i + ',\'unit\',this.value)">' + units + '</select>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
           (count > 1 ? '<button class="item-del" onclick="removeItem(' + si + ',' + i + ')" aria-label="Remove item">&times;</button>' : '') +
-        '</div>' +
-        '<div class="item-meta">' +
-          '<div class="qty-pair">' +
-            '<input type="number" min="1" max="99" value="' + it.qty + '" aria-label="Quantity" ' +
-              'oninput="setItem(' + si + ',' + i + ',\'qty\',this.value)">' +
-            '<select aria-label="Unit" onchange="setItem(' + si + ',' + i + ',\'unit\',this.value)">' + opts(ITEM_UNITS, it.unit) + '</select>' +
-          '</div>' +
-          '<select aria-label="Item type" onchange="setItem(' + si + ',' + i + ',\'type\',this.value)">' + opts(ITEM_TYPES, it.type) + '</select>' +
-          '<select aria-label="If out of stock" onchange="setItem(' + si + ',' + i + ',\'sub\',this.value)">' + subs + '</select>' +
         '</div>' +
       '</div>';
   }
@@ -1829,6 +1917,7 @@ body.installed .list-row.install-row-item{display:none;}
     booking.stops[si].items[i][key] = key === 'qty'
       ? Math.max(1, Math.min(99, parseInt(value, 10) || 1)) : value;
     renderPlan();
+    refreshCap();
     renderPrices();
     saveState();
   }
@@ -1836,18 +1925,18 @@ body.installed .list-row.install-row-item{display:none;}
     const items = booking.stops[si].items;
     if (items.length >= 8){ showToast('Eight items is the most for one stop'); return; }
     items.push(blankItem());
-    renderStops(); saveState();
+    renderStops(); refreshCap(); saveState();
   }
   function removeItem(si, i){
     booking.stops[si].items.splice(i, 1);
-    renderStops(); renderPrices(); saveState();
+    renderStops(); refreshCap(); renderPrices(); saveState();
   }
   function completeStop(si){
     if (!liveItems(booking.stops[si]).length){
       showToast('Add at least one item for this stop'); return;
     }
     booking.stops[si].done = true;
-    renderStops(); renderPrices(); saveState();
+    renderStops(); refreshCap(); renderPrices(); saveState();
   }
   function reopenStop(si){
     booking.stops[si].done = false;
@@ -1856,7 +1945,7 @@ body.installed .list-row.install-row-item{display:none;}
   function removeStop(si){
     booking.stops.splice(si, 1);
     if (editingStop >= booking.stops.length) editingStop = booking.stops.length - 1;
-    renderStops(); renderPrices(); saveState();
+    renderStops(); refreshCap(); renderPrices(); saveState();
   }
   function addStop(){
     if (booking.stops.length >= 6){ showToast('Six stops is the most for one errand'); return; }
@@ -1931,6 +2020,62 @@ body.installed .list-row.install-row-item{display:none;}
       '</div>';
   }
 
+  // ---------- spend cap ----------
+  function suggestedCap(){
+    let total = 0;
+    booking.stops.forEach(st => {
+      const type = inferType(st.place);
+      liveItems(st).forEach(it => { total += (TYPICAL_SPEND[type] != null ? TYPICAL_SPEND[type] : 15) * (it.qty || 1); });
+    });
+    if (!total) return 20;
+    return Math.max(10, Math.ceil(total / 5) * 5);   // round up to a clean $5
+  }
+
+  // The cap follows the items until the customer sets one themselves, after
+  // which it is theirs and is left alone.
+  function refreshCap(){
+    if (!booking.capManual) booking.budget = suggestedCap();
+    renderCap();
+  }
+
+  function renderCap(){
+    el('c-cap-value').textContent = money(booking.budget);
+    el('c-cap-tag').textContent = booking.capManual ? 'your cap' : 'suggested';
+    el('c-book-budget').value = booking.budget;
+    const s = suggestedCap();
+    const presets = [...new Set([s, 20, 50, 100])].sort((a, b) => a - b);
+    el('c-cap-chips').innerHTML = presets.map(v =>
+      '<button class="cap-chip' + (v === booking.budget ? ' on' : '') + '" onclick="setCap(' + v + ')">' +
+      money(v) + (v === s ? '<i>suggested</i>' : '') + '</button>').join('');
+  }
+
+  function setCap(v){
+    booking.budget = v;
+    booking.capManual = true;
+    renderCap(); renderPrices(); saveState();
+  }
+  function toggleCap(){
+    const box = el('c-cap-edit');
+    box.hidden = !box.hidden;
+  }
+
+  function setSubRule(v){ booking.sub = v; saveState(); }
+
+  function renderSettings(){
+    el('c-sub-rule').innerHTML = Object.keys(SUB_RULES).map(k =>
+      '<option value="' + k + '"' + (k === booking.sub ? ' selected' : '') + '>' + SUB_RULES[k] + '</option>').join('');
+    const when = booking.when === 'schedule' && booking.date
+      ? 'Scheduled ' + booking.date + (booking.time ? ' · ' + booking.time : '')
+      : 'As soon as possible';
+    el('c-opt-sub').textContent = booking.notes.trim() ? when + ' · note added' : when;
+  }
+
+  function toggleOptions(){
+    const body = el('c-opt-body');
+    body.hidden = !body.hidden;
+    el('c-opt-chev').style.transform = body.hidden ? '' : 'rotate(180deg)';
+  }
+
   function renderPrices(){
     const base = baseCost(), travel = travelCost(), total = bookingTotal();
     const extra = booking.stops.length - 1;
@@ -1955,18 +2100,19 @@ body.installed .list-row.install-row-item{display:none;}
     }
   }
 
-  function syncNotes(){ booking.notes = el('c-book-notes').value; }
-  function syncSchedule(){ booking.date = el('c-book-date').value; booking.time = el('c-book-time').value; }
+  function syncNotes(){ booking.notes = el('c-book-notes').value; renderSettings(); }
+  function syncSchedule(){ booking.date = el('c-book-date').value; booking.time = el('c-book-time').value; renderSettings(); }
 
   function syncBudget(){
     const v = parseFloat(el('c-book-budget').value);
     booking.budget = isNaN(v) || v < 0 ? 0 : Math.min(v, 500);
-    renderPrices();
+    booking.capManual = true;
+    renderCap(); renderPrices(); saveState();
   }
   function adjustBudget(step){
     booking.budget = Math.max(0, Math.min(500, booking.budget + step));
-    el('c-book-budget').value = booking.budget;
-    renderPrices();
+    booking.capManual = true;
+    renderCap(); renderPrices(); saveState();
   }
 
   function whenToggle(btn, type){
@@ -1974,15 +2120,17 @@ body.installed .list-row.install-row-item{display:none;}
     btn.classList.add('active');
     booking.when = type;
     el('schedule-fields').style.display = type === 'schedule' ? 'flex' : 'none';
+    renderSettings();
   }
 
   // One line per item, used on the tracking screen and by the runner.
-  function itemLine(it){
+  function itemLine(it, st){
     const qty = it.qty + (it.unit === 'ea' ? '' : ' ' + it.unit);
-    return [qty + ' ×', it.brand, it.name || it.type].filter(Boolean).join(' ').trim();
+    const what = it.name || (st ? inferType(st.place) : 'item');
+    return [qty + ' ×', it.brand, what].filter(Boolean).join(' ').trim();
   }
   function itemsSummary(){
-    return booking.stops.flatMap(st => liveItems(st).map(itemLine));
+    return booking.stops.flatMap(st => liveItems(st).map(it => itemLine(it, st)));
   }
   function stopNames(){
     const names = booking.stops.map(st => st.place.name);
@@ -1998,6 +2146,7 @@ body.installed .list-row.install-row-item{display:none;}
     const total = bookingTotal();
     if (total > wallet.balance){ topUp(); return; }
     if (!itemsSummary().length){ showToast('Add at least one item so the runner knows what to get'); return; }
+    booking.stops.forEach(st => { const type = inferType(st.place); st.items.forEach(it => { it.type = type; }); });
     wallet.balance = cents(wallet.balance - total);
     wallet.held = cents(wallet.held + total);
     booking.id = 'ER-' + (48200 + Math.floor(Math.random() * 99));
