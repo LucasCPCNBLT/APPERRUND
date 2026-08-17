@@ -618,6 +618,48 @@ body.installed .list-row.install-row-item{display:none;}
   padding:11px 13px;font-size:12.5px;line-height:1.45;margin-bottom:6px;}
 .tier-note svg{flex:none;}
 
+/* ---------------------------------------------------------------
+   Item list — a runner can only buy the right thing if the request is
+   specific, so each item is captured as fields rather than free prose.
+   --------------------------------------------------------------- */
+.item-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:14px;margin-bottom:10px;box-shadow:var(--shadow-1);}
+.item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.item-num{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--navy);font-weight:600;}
+.item-del{background:none;border:none;padding:2px 0;font-family:var(--font-body);font-size:11.5px;
+  font-weight:600;color:var(--red);cursor:pointer;}
+.item-del:active{opacity:.6;}
+.item-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ig{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.ig.wide{grid-column:1 / -1;}
+.ig > span{font-size:11px;font-weight:600;color:var(--ink-soft);letter-spacing:.01em;}
+.ig input,.ig select{width:100%;min-width:0;background:var(--paper);border:1px solid var(--line);
+  border-radius:10px;padding:10px 11px;font-family:var(--font-body);font-size:13.5px;color:var(--ink);
+  outline:none;appearance:none;-webkit-appearance:none;transition:border-color .12s ease;}
+.ig input:focus,.ig select:focus{border-color:var(--navy);}
+.ig input::placeholder{color:var(--ink-faint);}
+/* Native select arrow is inconsistent across platforms, so draw our own. */
+.ig select{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B6472' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
+.qty-pair{display:flex;gap:6px;}
+.qty-pair input{flex:1;min-width:0;text-align:center;font-family:var(--font-mono);font-weight:600;
+  -moz-appearance:textfield;}
+.qty-pair input::-webkit-outer-spin-button,
+.qty-pair input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.qty-pair select{flex:none;width:78px;}
+.add-item{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;
+  background:transparent;border:1.5px dashed var(--line-strong);border-radius:var(--radius-md);
+  padding:13px;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--navy);
+  cursor:pointer;transition:background .15s ease,border-color .15s ease;}
+.add-item:hover{background:var(--blue-soft);border-color:var(--navy);}
+.add-item:active{transform:scale(.99);}
+
+.track-items{margin:6px 0 0;padding-left:17px;}
+.track-items li{font-size:13px;line-height:1.55;color:var(--ink);}
+.track-note{display:block;margin-top:7px;font-size:12.5px;color:var(--ink-soft);font-style:italic;}
+.track-where{display:block;margin-top:8px;font-size:12.5px;color:var(--ink-soft);}
+
 .budget-row{display:flex;align-items:center;gap:10px;}
 .budget-step{width:46px;height:46px;flex:none;border-radius:14px;border:1px solid var(--line);
   background:var(--surface);color:var(--navy);font-size:22px;line-height:1;cursor:pointer;
@@ -877,8 +919,14 @@ body.installed .list-row.install-row-item{display:none;}
             </div>
             <p class="field-label">Where's the task</p>
             <div class="field" id="c-book-address">Chemist Warehouse, Camberwell</div>
-            <p class="field-label">What do you need done</p>
-            <textarea class="field" id="c-book-task" rows="3" placeholder="Describe the errand — the more detail, the better the match" oninput="syncTask()">Pick up prescription under my name, pay with wallet if there's a gap cover.</textarea>
+            <p class="field-label">What are we picking up</p>
+            <div id="c-items"></div>
+            <button class="add-item" onclick="addItem()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              Add another item
+            </button>
+            <p class="field-label">Anything else the runner should know</p>
+            <textarea class="field" id="c-book-notes" rows="2" placeholder="Parking, gate codes, who to ask for — optional" oninput="syncNotes()"></textarea>
             <p class="field-label">When do you need this</p>
             <div class="when-toggle">
               <button class="when-btn active" onclick="whenToggle(this,'now')">As soon as possible</button>
@@ -1411,18 +1459,32 @@ body.installed .list-row.install-row-item{display:none;}
   // same amount has to land on exactly zero, or the wallet shows a phantom hold.
   const cents = n => Math.round(n * 100) / 100;
 
+  // Each category opens with a plausible first item so the form is never blank,
+  // and a note where the errand needs one.
   const CATEGORIES = {
-    'one-off':   { title:'Simple errand',                 base:7.00,  tier2:false,
-                   task:"Pick up prescription under my name, pay with wallet if there's a gap cover." },
-    'multi':     { title:'Multi-stop errand',             base:11.00, tier2:false,
-                   task:"Post office parcel, then collect the dry cleaning on the same block." },
-    'recurring': { title:'Recurring errand',              base:7.00,  tier2:false,
-                   task:"Weekly grocery run — the list is saved in my notes." },
-    'care':      { title:'Elderly & disability support',  base:9.50,  tier2:true,
-                   task:"Collect the script and groceries, hand them to Mum at the door and check she's okay." },
-    'concierge': { title:'Concierge',                     base:14.00, tier2:true,
-                   task:"Collect the parcel, then swap the two hallway lightbulbs." }
+    'one-off':   { title:'Simple errand',                base:7.00,  tier2:false,
+                   items:[{ type:'Pharmacy', brand:'Panadol', name:'Osteo caplets', qty:1, unit:'pack', sub:'ask' }],
+                   notes:'' },
+    'multi':     { title:'Multi-stop errand',            base:11.00, tier2:false,
+                   items:[{ type:'Post & parcels', brand:'', name:'Parcel collection', qty:1, unit:'ea', sub:'ask' },
+                          { type:'Dry cleaning',   brand:'', name:'Two shirts, ticket 4471', qty:2, unit:'ea', sub:'ask' }],
+                   notes:'Both are on the same block.' },
+    'recurring': { title:'Recurring errand',             base:7.00,  tier2:false,
+                   items:[{ type:'Groceries', brand:'', name:'Weekly shop — full list saved', qty:1, unit:'ea', sub:'closest' }],
+                   notes:'' },
+    'care':      { title:'Elderly & disability support', base:9.50,  tier2:true,
+                   items:[{ type:'Pharmacy',  brand:'', name:'Repeat script for Mum', qty:1, unit:'ea', sub:'ask' },
+                          { type:'Groceries', brand:'', name:'Milk, bread, eggs',     qty:1, unit:'ea', sub:'closest' }],
+                   notes:'Hand to Mum at the door and check she\'s okay.' },
+    'concierge': { title:'Concierge',                    base:14.00, tier2:true,
+                   items:[{ type:'Hardware', brand:'Philips', name:'Warm white bulbs, bayonet', qty:2, unit:'ea', sub:'closest' }],
+                   notes:'Swap the two hallway bulbs while you are here.' }
   };
+
+  const ITEM_TYPES = ['Groceries','Pharmacy','Bakery','Meat & seafood','Fruit & veg',
+                      'Hardware','Stationery','Post & parcels','Dry cleaning','Pet supplies','Other'];
+  const ITEM_UNITS = ['ea','pack','g','kg','ml','L','bunch','box'];
+  const SUB_RULES  = { ask:'Ask me first', closest:'Closest match', skip:'Skip the item' };
 
   const PLACES = [
     { name:'Chemist Warehouse Camberwell', sub:'566 Riversdale Rd, Camberwell VIC', km:2.4, x:160, y:95 },
@@ -1435,7 +1497,8 @@ body.installed .list-row.install-row-item{display:none;}
   const STAGES = ['Accepted', 'Shopping', 'On the way', 'Delivered'];
 
   const booking = {
-    category:'one-off', place:PLACES[0], task:CATEGORIES['one-off'].task,
+    category:'one-off', place:PLACES[0],
+    items:JSON.parse(JSON.stringify(CATEGORIES['one-off'].items)), notes:'',
     when:'now', date:'', time:'', budget:18,
     stage:0, approved:null, rating:0, id:null, actual:0
   };
@@ -1493,7 +1556,8 @@ body.installed .list-row.install-row-item{display:none;}
   // ---------- home / category ----------
   function pickCategory(key){
     booking.category = key;
-    booking.task = CATEGORIES[key].task;
+    booking.items = JSON.parse(JSON.stringify(CATEGORIES[key].items));
+    booking.notes = CATEGORIES[key].notes || '';
     booking.stage = 0; booking.approved = null; booking.rating = 0;
     el('c-address-input').value = '';
     el('c-dist-note').textContent = 'Pick a destination to see the distance';
@@ -1550,7 +1614,8 @@ body.installed .list-row.install-row-item{display:none;}
     const cat = CATEGORIES[booking.category];
     el('c-book-title').textContent = cat.title;
     el('c-book-address').textContent = booking.place.name;
-    el('c-book-task').value = booking.task;
+    el('c-book-notes').value = booking.notes;
+    renderItems();
     el('c-book-budget').value = booking.budget;
     const tier = el('c-book-tier');
     tier.hidden = !cat.tier2;
@@ -1587,7 +1652,73 @@ body.installed .list-row.install-row-item{display:none;}
     }
   }
 
-  function syncTask(){ booking.task = el('c-book-task').value; }
+  function syncNotes(){ booking.notes = el('c-book-notes').value; }
+
+  // The item list is rebuilt only when a row is added or removed. Typing must
+  // never trigger a re-render, or the field being typed into loses focus and
+  // the caret jumps to the start on every keystroke.
+  function renderItems(){
+    el('c-items').innerHTML = booking.items.map((it, i) => {
+      const types = ITEM_TYPES.map(t =>
+        '<option value="' + t + '"' + (t === it.type ? ' selected' : '') + '>' + t + '</option>').join('');
+      const units = ITEM_UNITS.map(u =>
+        '<option value="' + u + '"' + (u === it.unit ? ' selected' : '') + '>' + u + '</option>').join('');
+      const subs = Object.keys(SUB_RULES).map(k =>
+        '<option value="' + k + '"' + (k === it.sub ? ' selected' : '') + '>' + SUB_RULES[k] + '</option>').join('');
+      return '' +
+        '<div class="item-card">' +
+          '<div class="item-head">' +
+            '<span class="item-num">Item ' + (i + 1) + '</span>' +
+            (booking.items.length > 1
+              ? '<button class="item-del" onclick="removeItem(' + i + ')" aria-label="Remove item ' + (i + 1) + '">Remove</button>'
+              : '') +
+          '</div>' +
+          '<div class="item-grid">' +
+            '<label class="ig wide"><span>Item type</span>' +
+              '<select onchange="setItem(' + i + ',\'type\',this.value)">' + types + '</select></label>' +
+            '<label class="ig"><span>Brand</span>' +
+              '<input type="text" value="' + escapeAttr(it.brand) + '" placeholder="Any brand" ' +
+              'oninput="setItem(' + i + ',\'brand\',this.value)"></label>' +
+            '<label class="ig"><span>Quantity</span>' +
+              '<div class="qty-pair">' +
+                '<input type="number" min="1" max="99" value="' + it.qty + '" ' +
+                'oninput="setItem(' + i + ',\'qty\',this.value)">' +
+                '<select onchange="setItem(' + i + ',\'unit\',this.value)">' + units + '</select>' +
+              '</div></label>' +
+            '<label class="ig wide"><span>Specific item</span>' +
+              '<input type="text" value="' + escapeAttr(it.name) + '" placeholder="e.g. Osteo caplets, 96 pack" ' +
+              'oninput="setItem(' + i + ',\'name\',this.value)"></label>' +
+            '<label class="ig wide"><span>If it is out of stock</span>' +
+              '<select onchange="setItem(' + i + ',\'sub\',this.value)">' + subs + '</select></label>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function setItem(i, key, value){
+    booking.items[i][key] = key === 'qty' ? Math.max(1, Math.min(99, parseInt(value, 10) || 1)) : value;
+    saveState();
+  }
+  function addItem(){
+    if (booking.items.length >= 8){ showToast('Eight items is the most one runner can carry'); return; }
+    booking.items.push({ type:'Groceries', brand:'', name:'', qty:1, unit:'ea', sub:'ask' });
+    renderItems();
+    saveState();
+  }
+  function removeItem(i){
+    booking.items.splice(i, 1);
+    renderItems();
+    saveState();
+  }
+
+  // One line per item, used on the tracking screen and by the runner.
+  function itemLine(it){
+    const bits = [it.qty + (it.unit === 'ea' ? '' : ' ' + it.unit) + ' ×', it.brand, it.name || it.type];
+    return bits.filter(Boolean).join(' ').replace(' ×', ' ×').trim();
+  }
+  function itemsSummary(){
+    return booking.items.filter(it => (it.name || '').trim() || it.brand).map(itemLine);
+  }
   function syncSchedule(){ booking.date = el('c-book-date').value; booking.time = el('c-book-time').value; }
 
   function syncBudget(){
@@ -1614,7 +1745,7 @@ body.installed .list-row.install-row-item{display:none;}
       topUp();
       return;
     }
-    if (!booking.task.trim()){ showToast('Describe what you need done first'); return; }
+    if (!itemsSummary().length){ showToast('Add at least one item so the runner knows what to get'); return; }
     wallet.balance = cents(wallet.balance - total);
     wallet.held = cents(wallet.held + total);
     booking.id = 'ER-' + (48200 + Math.floor(Math.random() * 99));
@@ -1659,8 +1790,10 @@ body.installed .list-row.install-row-item{display:none;}
   // ---------- tracking ----------
   function renderTrack(){
     el('c-track-task').innerHTML = '<b>' + CATEGORIES[booking.category].title + '</b>' +
-      escapeHtml(booking.task) + '<br><span style="color:var(--ink-soft)">' +
-      escapeHtml(booking.place.name) + '</span>';
+      '<ul class="track-items">' +
+      itemsSummary().map(l => '<li>' + escapeHtml(l) + '</li>').join('') + '</ul>' +
+      (booking.notes.trim() ? '<span class="track-note">' + escapeHtml(booking.notes) + '</span>' : '') +
+      '<span class="track-where">' + escapeHtml(booking.place.name) + '</span>';
 
     el('c-timeline').innerHTML = STAGES.map((s, i) => {
       const cls = i < booking.stage ? 'done' : (i === booking.stage ? 'now' : '');
@@ -1674,8 +1807,10 @@ body.installed .list-row.install-row-item{display:none;}
     const needsApproval = booking.stage === 1 && booking.approved === null;
     ap.hidden = !needsApproval;
     if (needsApproval){
+      const first = booking.items.find(it => (it.name || '').trim() || it.brand);
+      const label = first ? [first.brand, first.name].filter(Boolean).join(' ') : 'the item';
       el('c-approval-text').textContent =
-        'Jordan found "Panadol Osteo 96pk" — closest match to your request. It fits inside your ' +
+        'Jordan found "' + label + '" — closest match to your request. It fits inside your ' +
         money(booking.budget) + ' cap.';
     }
 
@@ -1874,7 +2009,8 @@ body.installed .list-row.install-row-item{display:none;}
     booking.category = 'one-off';
     booking.place = place;
     booking.budget = e.cap;
-    booking.task = CATEGORIES['one-off'].task;
+    booking.items = JSON.parse(JSON.stringify(CATEGORIES['one-off'].items));
+    booking.notes = '';
     booking.stage = 0; booking.approved = null; booking.rating = 0;
     renderBook();
     cPush('c-book');
@@ -2006,6 +2142,7 @@ body.installed .list-row.install-row-item{display:none;}
   function nowTime(){
     return new Date().toLocaleTimeString('en-AU', { hour:'numeric', minute:'2-digit' });
   }
+  function escapeAttr(s){ return escapeHtml(s).replace(/\n/g, ' '); }
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g, c =>
       ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
