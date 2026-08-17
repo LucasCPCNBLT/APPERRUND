@@ -224,12 +224,32 @@ textarea.field{width:100%;resize:none;font-family:inherit;line-height:1.5;}
 
 /* Maps */
 .map-block,.pin-map,.finding-map{height:190px;border-radius:var(--radius-md);background:var(--blue-soft);
-  position:relative;overflow:hidden;margin-bottom:16px;}
-.map-block svg,.pin-map svg,.finding-map svg{width:100%;height:100%;}
-.pin-drop{position:absolute;display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-100%);}
-.pin-pulse{width:34px;height:34px;border-radius:50%;background:rgba(31,58,99,0.18);
-  display:flex;align-items:center;justify-content:center;animation:pulse 1.8s ease-in-out infinite;}
-@keyframes pulse{0%,100%{transform:scale(0.85);}50%{transform:scale(1.1);}}
+  position:relative;overflow:hidden;margin-bottom:16px;border:1px solid var(--line);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);}
+.map-block svg,.pin-map svg,.finding-map svg{width:100%;height:100%;display:block;}
+/* Slightly overscaled so panning never exposes an edge. */
+.map-art{transform:scale(1.16);transform-origin:center;
+  transition:transform .5s cubic-bezier(.32,.72,0,1);}
+/* Softens the map so the pin and the chip stay the things you look at. */
+.map-scrim{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 34%,
+    rgba(12,27,48,.05) 78%, rgba(12,27,48,.12) 100%);}
+.map-chip{position:absolute;left:12px;bottom:12px;right:12px;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  border:1px solid var(--line);border-radius:11px;padding:9px 12px;
+  font-size:12px;color:var(--ink);box-shadow:0 4px 14px -8px rgba(12,27,48,.5);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pin-drop svg{filter:drop-shadow(0 4px 6px rgba(12,27,48,.35));}
+/* The pin hangs above its point; the halo sits centred on that point and
+   behind the pin, rather than stacking underneath it as a grey ball. */
+.pin-drop{position:absolute;transform:translate(-50%,-100%);line-height:0;}
+.pin-drop svg{position:relative;z-index:2;}
+.pin-pulse{position:absolute;left:50%;top:100%;width:30px;height:30px;border-radius:50%;
+  background:rgba(31,58,99,0.22);z-index:1;animation:pinHalo 1.9s ease-in-out infinite;}
+@keyframes pinHalo{
+  0%,100%{transform:translate(-50%,-50%) scale(.75);opacity:.55;}
+  50%{transform:translate(-50%,-50%) scale(1.35);opacity:.15;}
+}
 .search-rings{position:absolute;top:95px;left:160px;}
 .ring{position:absolute;top:0;left:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;
   border:2px solid var(--navy);opacity:0;animation:ringPulse 2.4s ease-out infinite;}
@@ -566,6 +586,18 @@ button,.cat-card,.suggest-row,.act-card,.list-row,.addr-row,.faq-row,
 .again-row p{font-size:12px;color:var(--ink-soft);margin-top:3px;font-family:var(--font-mono);}
 .again-go{color:var(--ink-faint);display:flex;flex:none;}
 
+/* A screen whose heading sits under the back button rather than beside it, so
+   the title has room to be a proper greeting instead of a cramped label. */
+.back-row.bare{padding-bottom:0;padding-top:calc(30px + env(safe-area-inset-top,0px));}
+.screen-title{font-size:23px;font-weight:700;line-height:1.3;color:var(--ink);
+  margin:20px 0 22px;max-width:17ch;}
+
+/* Let the map take up the slack so the screen fills to the bottom instead of
+   leaving the action button stranded above a block of empty space. */
+#c-location .content{display:flex;flex-direction:column;}
+#c-location .pin-map{flex:1;min-height:180px;margin-bottom:18px;}
+#c-location .cta{flex:none;margin-top:0;}
+
 /* The home screen is the first thing anyone sees, so it gets real breathing
    room: a tall, quiet header before the greeting and generous space before
    the first card, rather than content starting hard against the status bar. */
@@ -660,6 +692,57 @@ body.installed .list-row.install-row-item{display:none;}
 </style>
 </head>
 <body>
+
+<!-- ============================================================
+     MAP ARTWORK
+     One stylised street map, reused by every screen that shows a
+     location. Roads run at real angles with a proper hierarchy
+     (arterial, secondary, laneway) over blocks, parkland and water,
+     rather than the plain crosshatch grid this replaced.
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="erun-map" viewBox="0 0 320 190">
+      <rect width="320" height="190" fill="#E4EBF4"/>
+      <!-- city blocks -->
+      <g fill="#DCE4EF">
+        <rect x="8" y="10" width="52" height="40" rx="4"/>
+        <rect x="86" y="6" width="66" height="44" rx="4"/>
+        <rect x="10" y="74" width="46" height="42" rx="4"/>
+        <rect x="86" y="72" width="58" height="34" rx="4"/>
+        <rect x="14" y="138" width="44" height="40" rx="4"/>
+        <rect x="196" y="112" width="54" height="36" rx="4"/>
+        <rect x="264" y="106" width="48" height="44" rx="4"/>
+      </g>
+      <!-- parkland -->
+      <path d="M214 8h74a6 6 0 0 1 6 6v50a6 6 0 0 1-6 6h-52c-14 0-24-10-24-24V8Z" fill="#D5E5D8"/>
+      <!-- river -->
+      <path d="M-10 178C40 168 62 150 108 152s72 22 118 12 62-30 114-34v62H-10Z" fill="#CFE0F1"/>
+      <!-- arterial roads -->
+      <g stroke="#FFFFFF" stroke-linecap="round" fill="none">
+        <path d="M-10 62H330" stroke-width="12"/>
+        <path d="M72 -10V200" stroke-width="12"/>
+        <path d="M-10 128H180l84-56 66-38" stroke-width="10"/>
+        <path d="M180 -10v198" stroke-width="8"/>
+      </g>
+      <!-- secondary streets -->
+      <g stroke="#FFFFFF" stroke-linecap="round" fill="none" stroke-width="5">
+        <path d="M-10 24H330"/>
+        <path d="M-10 98H330"/>
+        <path d="M258 -10v130"/>
+        <path d="M124 -10v198"/>
+      </g>
+      <!-- laneways -->
+      <g stroke="#EFF3F9" stroke-linecap="round" fill="none" stroke-width="2.5">
+        <path d="M-10 44H330"/>
+        <path d="M-10 158H176"/>
+        <path d="M36 -10v198"/>
+        <path d="M216 -10v120"/>
+        <path d="M298 66v124"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
 
 <!-- ============================================================
      SPLASH
@@ -766,18 +849,20 @@ body.installed .list-row.install-row-item{display:none;}
 
         <!-- LOCATION -->
         <div class="view" id="c-location">
-          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2 id="c-location-title">Where's the errand</h2></div>
+          <div class="back-row bare"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div></div>
           <div class="content">
+            <h2 class="screen-title" id="c-location-title">What do we need run?</h2>
             <div class="search-field">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
               <input type="text" id="c-address-input" placeholder="Search a shop, suburb or address" autocomplete="off" oninput="renderSuggestions()">
             </div>
             <div class="suggest-list" id="c-suggest-list"></div>
             <div class="pin-map">
-              <svg viewBox="0 0 320 190"><path d="M0 40 H320 M0 85 H320 M0 130 H320" stroke="#C7D5E8" stroke-width="1"/><path d="M70 0 V190 M170 0 V190 M260 0 V190" stroke="#C7D5E8" stroke-width="1"/></svg>
-              <div class="pin-drop" id="c-pin" style="left:160px;top:95px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="#1F3A63"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/><circle cx="12" cy="9.5" r="2.8" fill="#fff"/></svg><div class="pin-pulse"></div></div>
+              <svg class="map-art" id="c-map-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><use href="#erun-map"/></svg>
+              <div class="map-scrim"></div>
+              <div class="pin-drop" id="c-pin" style="left:50%;top:50%;"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z" fill="#1F3A63"/><circle cx="12" cy="9.5" r="2.8" fill="#fff"/></svg><div class="pin-pulse"></div></div>
+              <div class="map-chip" id="c-dist-note">Pick a destination to see the distance</div>
             </div>
-            <p class="dist-note" id="c-dist-note">Pick a destination to see the travel distance.</p>
             <button class="cta" onclick="confirmLocation()">Confirm location</button>
           </div>
         </div>
@@ -826,7 +911,8 @@ body.installed .list-row.install-row-item{display:none;}
           <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Finding a runner</h2></div>
           <div class="content">
             <div class="finding-map">
-              <svg viewBox="0 0 320 190"><path d="M0 40 H320 M0 85 H320 M0 130 H320" stroke="#C7D5E8" stroke-width="1"/><path d="M70 0 V190 M170 0 V190 M260 0 V190" stroke="#C7D5E8" stroke-width="1"/></svg>
+              <svg class="map-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><use href="#erun-map"/></svg>
+              <div class="map-scrim"></div>
               <div class="search-rings"><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
               <div class="runner-pin" style="left:160px;top:95px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="#122843"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/></svg></div>
               <div class="runner-pin" style="left:95px;top:50px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#A9843F"><path d="M12 22s-7.5-6.5-7.5-12.5a7.5 7.5 0 0 1 15 0C19.5 15.5 12 22 12 22Z"/></svg></div>
@@ -850,7 +936,8 @@ body.installed .list-row.install-row-item{display:none;}
           <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Runner on the way</h2></div>
           <div class="content">
             <div class="map-block">
-              <svg viewBox="0 0 320 190"><path d="M30 150 Q120 40 290 60" stroke="#1F3A63" stroke-width="2.5" stroke-dasharray="6 7" fill="none"/><circle cx="30" cy="150" r="6" fill="#101B2D"/><circle cx="290" cy="60" r="6" fill="#A9843F"/></svg>
+              <svg class="map-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><use href="#erun-map"/><path d="M30 150 Q120 40 290 60" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/><path d="M30 150 Q120 40 290 60" stroke="#1F3A63" stroke-width="3" stroke-dasharray="7 8" fill="none" stroke-linecap="round"/><circle cx="30" cy="150" r="7" fill="#fff"/><circle cx="30" cy="150" r="4.5" fill="#101B2D"/><circle cx="290" cy="60" r="7" fill="#fff"/><circle cx="290" cy="60" r="4.5" fill="#A9843F"/></svg>
+              <div class="map-scrim"></div>
             </div>
             <div class="runner-card">
               <div class="avatar">JM</div>
@@ -1093,7 +1180,8 @@ body.installed .list-row.install-row-item{display:none;}
           <div class="back-row"><div class="back-btn" onclick="rPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Job details</h2></div>
           <div class="content">
             <div class="map-block">
-              <svg viewBox="0 0 320 190"><path d="M30 150 Q120 40 290 60" stroke="#1F3A63" stroke-width="2.5" stroke-dasharray="6 7" fill="none"/><circle cx="30" cy="150" r="6" fill="#101B2D"/><circle cx="290" cy="60" r="6" fill="#A9843F"/></svg>
+              <svg class="map-art" viewBox="0 0 320 190" preserveAspectRatio="xMidYMid slice"><use href="#erun-map"/><path d="M30 150 Q120 40 290 60" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".85"/><path d="M30 150 Q120 40 290 60" stroke="#1F3A63" stroke-width="3" stroke-dasharray="7 8" fill="none" stroke-linecap="round"/><circle cx="30" cy="150" r="7" fill="#fff"/><circle cx="30" cy="150" r="4.5" fill="#101B2D"/><circle cx="290" cy="60" r="7" fill="#fff"/><circle cx="290" cy="60" r="4.5" fill="#A9843F"/></svg>
+              <div class="map-scrim"></div>
             </div>
             <p class="field-label">Task notes</p>
             <div class="field">Pick up prescription under Julia M., pay with the Erun card if there's a gap cover.</div>
@@ -1407,9 +1495,8 @@ body.installed .list-row.install-row-item{display:none;}
     booking.category = key;
     booking.task = CATEGORIES[key].task;
     booking.stage = 0; booking.approved = null; booking.rating = 0;
-    el('c-location-title').textContent = CATEGORIES[key].tier2
-      ? 'Where do we go' : "Where's the errand";
     el('c-address-input').value = '';
+    el('c-dist-note').textContent = 'Pick a destination to see the distance';
     renderSuggestions();
     cPush('c-location');
   }
@@ -1438,9 +1525,11 @@ body.installed .list-row.install-row-item{display:none;}
   function selectPlace(i){
     booking.place = PLACES[i];
     el('c-address-input').value = PLACES[i].name;
-    const pin = el('c-pin');
-    pin.style.left = PLACES[i].x + 'px';
-    pin.style.top  = PLACES[i].y + 'px';
+    // The pin stays centred, as it does in a real map app, and the artwork
+    // slides under it so choosing a different place visibly recentres the map.
+    const dx = ((160 - PLACES[i].x) / 320 * 14).toFixed(2);
+    const dy = ((95 - PLACES[i].y) / 190 * 14).toFixed(2);
+    el('c-map-art').style.transform = 'scale(1.16) translate(' + dx + '%,' + dy + '%)';
     el('c-dist-note').textContent = PLACES[i].sub + ' · ' + PLACES[i].km.toFixed(1) + ' km away';
     renderSuggestions();
   }
