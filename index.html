@@ -619,46 +619,115 @@ body.installed .list-row.install-row-item{display:none;}
 .tier-note svg{flex:none;}
 
 /* ---------------------------------------------------------------
-   Item list — a runner can only buy the right thing if the request is
-   specific, so each item is captured as fields rather than free prose.
+   Stops and items
+   A stop groups everything bought in one place. On a multi-stop errand a
+   finished stop collapses to a summary line so a five-stop run still reads
+   at a glance instead of scrolling for a page.
    --------------------------------------------------------------- */
-.item-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);
-  padding:14px;margin-bottom:10px;box-shadow:var(--shadow-1);}
-.item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
-.item-num{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--navy);font-weight:600;}
-.item-del{background:none;border:none;padding:2px 0;font-family:var(--font-body);font-size:11.5px;
-  font-weight:600;color:var(--red);cursor:pointer;}
-.item-del:active{opacity:.6;}
-.item-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.ig{display:flex;flex-direction:column;gap:5px;min-width:0;}
-.ig.wide{grid-column:1 / -1;}
-.ig > span{font-size:11px;font-weight:600;color:var(--ink-soft);letter-spacing:.01em;}
-.ig input,.ig select{width:100%;min-width:0;background:var(--paper);border:1px solid var(--line);
-  border-radius:10px;padding:10px 11px;font-family:var(--font-body);font-size:13.5px;color:var(--ink);
-  outline:none;appearance:none;-webkit-appearance:none;transition:border-color .12s ease;}
-.ig input:focus,.ig select:focus{border-color:var(--navy);}
-.ig input::placeholder{color:var(--ink-faint);}
-/* Native select arrow is inconsistent across platforms, so draw our own. */
-.ig select{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B6472' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
-.qty-pair{display:flex;gap:6px;}
-.qty-pair input{flex:1;min-width:0;text-align:center;font-family:var(--font-mono);font-weight:600;
+.stop-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:14px;margin-bottom:11px;box-shadow:var(--shadow-1);}
+.stop-card.done{cursor:pointer;background:#FAFBFD;}
+.stop-card.done:active{transform:scale(.99);}
+.stop-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.stop-card.done .stop-head{margin-bottom:0;}
+.stop-badge{width:24px;height:24px;flex:none;border-radius:50%;background:var(--blue-soft);
+  color:var(--navy);font-family:var(--font-mono);font-size:11.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;}
+.stop-badge.done{background:var(--green);}
+.stop-title{flex:1;min-width:0;}
+.stop-title h4{margin:0;font-size:14px;font-weight:700;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.stop-title p{margin:2px 0 0;font-size:11.5px;color:var(--ink-soft);font-family:var(--font-mono);}
+.stop-edit{font-size:11.5px;font-weight:600;color:var(--navy);flex:none;cursor:pointer;}
+.stop-del{background:none;border:none;font-size:22px;line-height:1;color:var(--ink-faint);
+  cursor:pointer;padding:0 2px;flex:none;}
+.stop-lines{margin:10px 0 0;padding-left:34px;}
+.stop-lines li{font-size:12.5px;line-height:1.55;color:var(--ink-soft);}
+.stop-done{width:100%;margin-top:4px;background:var(--navy);color:#fff;border:none;
+  border-radius:12px;padding:12px;font-family:var(--font-body);font-size:13px;font-weight:600;
+  cursor:pointer;}
+.stop-done:active{transform:scale(.99);}
+.add-stop{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;
+  background:var(--blue-soft);border:none;border-radius:var(--radius-md);padding:14px;
+  font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;
+  margin-bottom:14px;}
+.add-stop:active{transform:scale(.99);}
+
+/* An item is a photo, a name, a brand and three compact selects — the fewest
+   controls that still tell a runner exactly what to buy. */
+.item-row{border-top:1px solid var(--line);padding:12px 0 2px;}
+.stop-card > .item-row:first-of-type{border-top:none;padding-top:0;}
+.item-top{display:flex;gap:10px;align-items:flex-start;}
+.item-fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+.item-name,.item-brand{width:100%;min-width:0;background:var(--paper);border:1px solid var(--line);
+  border-radius:10px;padding:10px 11px;font-family:var(--font-body);color:var(--ink);outline:none;
+  transition:border-color .12s ease;}
+.item-name{font-size:14px;font-weight:600;}
+.item-brand{font-size:12.5px;}
+.item-name:focus,.item-brand:focus{border-color:var(--navy);}
+.item-name::placeholder,.item-brand::placeholder{color:var(--ink-faint);font-weight:400;}
+.item-del{background:none;border:none;font-size:20px;line-height:1;color:var(--ink-faint);
+  cursor:pointer;padding:6px 2px 0;flex:none;}
+.item-meta{display:flex;gap:7px;margin-top:8px;}
+.item-meta > select{flex:1;min-width:0;}
+.item-meta select,.qty-pair input,.qty-pair select{background:var(--paper);border:1px solid var(--line);
+  border-radius:10px;padding:9px 10px;font-family:var(--font-body);font-size:12.5px;color:var(--ink);
+  outline:none;appearance:none;-webkit-appearance:none;}
+.item-meta select,.qty-pair select{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B6472' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;padding-right:26px;}
+.item-meta select:focus,.qty-pair input:focus,.qty-pair select:focus{border-color:var(--navy);}
+.qty-pair{display:flex;gap:5px;flex:none;}
+.qty-pair input{width:46px;text-align:center;font-family:var(--font-mono);font-weight:600;
   -moz-appearance:textfield;}
 .qty-pair input::-webkit-outer-spin-button,
 .qty-pair input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-.qty-pair select{flex:none;width:78px;}
-.add-item{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;
-  background:transparent;border:1.5px dashed var(--line-strong);border-radius:var(--radius-md);
-  padding:13px;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--navy);
-  cursor:pointer;transition:background .15s ease,border-color .15s ease;}
-.add-item:hover{background:var(--blue-soft);border-color:var(--navy);}
-.add-item:active{transform:scale(.99);}
+.qty-pair select{width:68px;}
+
+/* A photo of the shelf or a screenshot of the listing removes most of the
+   ambiguity a written description leaves behind. */
+.photo-tile{width:58px;height:58px;flex:none;border-radius:12px;border:1.5px dashed var(--line-strong);
+  background:var(--paper);color:var(--ink-soft);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;cursor:pointer;font-family:var(--font-body);font-size:9.5px;
+  font-weight:600;padding:0;transition:border-color .15s ease,background .15s ease;}
+.photo-tile:hover{border-color:var(--navy);background:var(--blue-soft);color:var(--navy);}
+.photo-tile.filled{position:relative;border:1px solid var(--line);background-size:cover;
+  background-position:center;cursor:default;}
+.photo-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;
+  border:none;background:var(--ink);color:#fff;font-size:14px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;}
+
+/* Run plan: how long each stop takes and when it all lands. */
+.plan-card{background:var(--navy-dark);color:#fff;border-radius:var(--radius-md);
+  padding:14px 16px;margin-bottom:16px;}
+.plan-head{display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:rgba(255,255,255,.72);margin-bottom:10px;}
+.plan-head span{font-family:var(--font-mono);letter-spacing:0;text-transform:none;font-weight:600;}
+.plan-row{display:flex;align-items:center;gap:9px;padding:5px 0;font-size:13px;}
+.plan-n{width:18px;height:18px;flex:none;border-radius:50%;background:rgba(255,255,255,.15);
+  font-family:var(--font-mono);font-size:10px;font-weight:700;display:flex;align-items:center;
+  justify-content:center;color:#fff;}
+.plan-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:rgba(255,255,255,.9);}
+.plan-min{font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,.72);flex:none;}
+.plan-total,.plan-eta{display:flex;justify-content:space-between;font-size:13px;
+  padding-top:9px;margin-top:7px;border-top:1px solid rgba(255,255,255,.16);}
+.plan-total span:last-child,.plan-eta span:last-child{font-family:var(--font-mono);font-weight:600;}
+.plan-eta{border-top:none;padding-top:2px;margin-top:0;color:var(--gold);}
+.plan-eta span:first-child{color:rgba(255,255,255,.72);}
 
 .track-items{margin:6px 0 0;padding-left:17px;}
 .track-items li{font-size:13px;line-height:1.55;color:var(--ink);}
 .track-note{display:block;margin-top:7px;font-size:12.5px;color:var(--ink-soft);font-style:italic;}
 .track-where{display:block;margin-top:8px;font-size:12.5px;color:var(--ink-soft);}
+
+.add-item{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;
+  background:transparent;border:1.5px dashed var(--line-strong);border-radius:12px;
+  padding:11px;font-family:var(--font-body);font-size:12.5px;font-weight:600;color:var(--navy);
+  cursor:pointer;margin:12px 0 10px;transition:background .15s ease,border-color .15s ease;}
+.add-item:hover{background:var(--blue-soft);border-color:var(--navy);}
+.add-item:active{transform:scale(.99);}
 
 .budget-row{display:flex;align-items:center;gap:10px;}
 .budget-step{width:46px;height:46px;flex:none;border-radius:14px;border:1px solid var(--line);
@@ -917,14 +986,12 @@ body.installed .list-row.install-row-item{display:none;}
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7.5 3.4v5.2c0 4.4-3.1 8-7.5 9.4-4.4-1.4-7.5-5-7.5-9.4V6.4L12 3Z"/><path d="M9 12l2 2 4-4"/></svg>
               <span id="c-book-tier-text"></span>
             </div>
-            <p class="field-label">Where's the task</p>
-            <div class="field" id="c-book-address">Chemist Warehouse, Camberwell</div>
-            <p class="field-label">What are we picking up</p>
-            <div id="c-items"></div>
-            <button class="add-item" onclick="addItem()">
+            <div id="c-stops"></div>
+            <button class="add-stop" id="c-add-stop" onclick="addStop()" hidden>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-              Add another item
+              Add another stop
             </button>
+            <div id="c-plan"></div>
             <p class="field-label">Anything else the runner should know</p>
             <textarea class="field" id="c-book-notes" rows="2" placeholder="Parking, gate codes, who to ask for — optional" oninput="syncNotes()"></textarea>
             <p class="field-label">When do you need this</p>
@@ -944,7 +1011,7 @@ body.installed .list-row.install-row-item{display:none;}
             </div>
             <p class="budget-hint">Anything they don't spend is swept straight back to your wallet.</p>
             <div class="price-card">
-              <div class="price-row"><span>Base fee</span><span id="c-price-base">$7.00</span></div>
+              <div class="price-row"><span id="c-price-base-label">Base fee</span><span id="c-price-base">$7.00</span></div>
               <div class="price-row"><span id="c-price-travel-label">Travel · 2.4 km</span><span id="c-price-travel">$2.50</span></div>
               <div class="price-row"><span>Item budget</span><span id="c-price-budget">$18.00</span></div>
               <div class="price-row total"><span>Erun wallet total</span><span id="c-price-total">$27.50</span></div>
@@ -1091,8 +1158,8 @@ body.installed .list-row.install-row-item{display:none;}
           <div class="topbar"><div class="greet"><p>Account</p><h2>Profile</h2></div></div>
           <div class="content">
             <div class="profile-head">
-              <div class="profile-avatar">JM</div>
-              <div><h2>Julia Mitchell</h2><p>Member since Mar 2025</p></div>
+              <div class="profile-avatar">JS</div>
+              <div><h2>Julia Sullivan</h2><p>Member since Mar 2025</p></div>
             </div>
             <p class="section-label">Manage</p>
             <div class="list-row" onclick="cPush('c-addresses')"><span>Saved addresses</span><span class="lr-sub" id="c-addr-count">3 saved</span></div>
@@ -1232,7 +1299,7 @@ body.installed .list-row.install-row-item{display:none;}
               <div class="map-scrim"></div>
             </div>
             <p class="field-label">Task notes</p>
-            <div class="field">Pick up prescription under Julia M., pay with the Erun card if there's a gap cover.</div>
+            <div class="field">Pick up prescription under Julia S., pay with the Erun card if there's a gap cover.</div>
             <p class="section-label">Duration breakdown</p>
             <div class="stage-list">
               <div class="stage-row"><span class="sname"><span class="sdot"></span>Travel to pickup</span><span class="sval">9 min</span></div>
@@ -1296,7 +1363,7 @@ body.installed .list-row.install-row-item{display:none;}
               <div class="sched-time">10:00 – 10:24 AM</div>
               <div class="sched-payout">$19.60</div>
               <h3>Chemist Warehouse pickup</h3>
-              <p>Camberwell · Julia M.</p>
+              <p>Camberwell · Julia S.</p>
             </div>
             <div class="buffer-note">18 min drive buffer to next job</div>
             <div class="sched-block">
@@ -1392,6 +1459,7 @@ body.installed .list-row.install-row-item{display:none;}
 
 </div>
 
+<input type="file" id="c-photo-input" accept="image/*" hidden>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1459,32 +1527,34 @@ body.installed .list-row.install-row-item{display:none;}
   // same amount has to land on exactly zero, or the wallet shows a phantom hold.
   const cents = n => Math.round(n * 100) / 100;
 
-  // Each category opens with a plausible first item so the form is never blank,
-  // and a note where the errand needs one.
+  // Each category seeds a plausible first stop so the form is never a blank wall.
   const CATEGORIES = {
-    'one-off':   { title:'Simple errand',                base:7.00,  tier2:false,
-                   items:[{ type:'Pharmacy', brand:'Panadol', name:'Osteo caplets', qty:1, unit:'pack', sub:'ask' }],
+    'one-off':   { title:'Simple errand',                base:7.00,  tier2:false, multi:false,
+                   items:[{ type:'Pharmacy', brand:'Panadol', name:'Osteo caplets, 96 pack', qty:1, unit:'pack', sub:'ask', photo:null }],
                    notes:'' },
-    'multi':     { title:'Multi-stop errand',            base:11.00, tier2:false,
-                   items:[{ type:'Post & parcels', brand:'', name:'Parcel collection', qty:1, unit:'ea', sub:'ask' },
-                          { type:'Dry cleaning',   brand:'', name:'Two shirts, ticket 4471', qty:2, unit:'ea', sub:'ask' }],
-                   notes:'Both are on the same block.' },
-    'recurring': { title:'Recurring errand',             base:7.00,  tier2:false,
-                   items:[{ type:'Groceries', brand:'', name:'Weekly shop — full list saved', qty:1, unit:'ea', sub:'closest' }],
+    'multi':     { title:'Multi-stop errand',            base:11.00, tier2:false, multi:true,
+                   items:[{ type:'Post & parcels', brand:'', name:'Parcel collection', qty:1, unit:'ea', sub:'ask', photo:null }],
                    notes:'' },
-    'care':      { title:'Elderly & disability support', base:9.50,  tier2:true,
-                   items:[{ type:'Pharmacy',  brand:'', name:'Repeat script for Mum', qty:1, unit:'ea', sub:'ask' },
-                          { type:'Groceries', brand:'', name:'Milk, bread, eggs',     qty:1, unit:'ea', sub:'closest' }],
-                   notes:'Hand to Mum at the door and check she\'s okay.' },
-    'concierge': { title:'Concierge',                    base:14.00, tier2:true,
-                   items:[{ type:'Hardware', brand:'Philips', name:'Warm white bulbs, bayonet', qty:2, unit:'ea', sub:'closest' }],
+    'recurring': { title:'Recurring errand',             base:7.00,  tier2:false, multi:false,
+                   items:[{ type:'Groceries', brand:'', name:'Weekly shop — full list saved', qty:1, unit:'ea', sub:'closest', photo:null }],
+                   notes:'' },
+    'care':      { title:'Elderly & disability support', base:9.50,  tier2:true,  multi:false,
+                   items:[{ type:'Pharmacy',  brand:'', name:'Repeat script for Mum', qty:1, unit:'ea', sub:'ask', photo:null }],
+                   notes:"Hand to Mum at the door and check she's okay." },
+    'concierge': { title:'Concierge',                    base:14.00, tier2:true,  multi:false,
+                   items:[{ type:'Hardware', brand:'Philips', name:'Warm white bulbs, bayonet', qty:2, unit:'ea', sub:'closest', photo:null }],
                    notes:'Swap the two hallway bulbs while you are here.' }
   };
+
+  const EXTRA_STOP_FEE = 3.50;   // each stop after the first
+  const AVG_SPEED_KMH  = 26;     // suburban driving, allowing for lights and parking
+  const STOP_SETUP_MIN = 4;      // park, walk in, queue
+  const PER_ITEM_MIN   = 1.5;    // find and pick each item
 
   const ITEM_TYPES = ['Groceries','Pharmacy','Bakery','Meat & seafood','Fruit & veg',
                       'Hardware','Stationery','Post & parcels','Dry cleaning','Pet supplies','Other'];
   const ITEM_UNITS = ['ea','pack','g','kg','ml','L','bunch','box'];
-  const SUB_RULES  = { ask:'Ask me first', closest:'Closest match', skip:'Skip the item' };
+  const SUB_RULES  = { ask:'Ask first', closest:'Closest', skip:'Skip it' };
 
   const PLACES = [
     { name:'Chemist Warehouse Camberwell', sub:'566 Riversdale Rd, Camberwell VIC', km:2.4, x:160, y:95 },
@@ -1496,12 +1566,25 @@ body.installed .list-row.install-row-item{display:none;}
 
   const STAGES = ['Accepted', 'Shopping', 'On the way', 'Delivered'];
 
+  function blankItem(){
+    return { type:'Groceries', brand:'', name:'', qty:1, unit:'ea', sub:'ask', photo:null };
+  }
+  // A stop always carries at least one item row, otherwise it renders with
+  // nothing to type into and the stop cannot be filled in at all.
+  function newStop(place, items){
+    const list = (items && items.length) ? JSON.parse(JSON.stringify(items)) : [ blankItem() ];
+    return { place: place || PLACES[0], items: list, done: false };
+  }
+
   const booking = {
-    category:'one-off', place:PLACES[0],
-    items:JSON.parse(JSON.stringify(CATEGORIES['one-off'].items)), notes:'',
+    category:'one-off',
+    stops:[ newStop(PLACES[0], CATEGORIES['one-off'].items) ],
+    notes:'',
     when:'now', date:'', time:'', budget:18,
     stage:0, approved:null, rating:0, id:null, actual:0
   };
+  // Which stop the location screen is currently choosing an address for.
+  let editingStop = 0;
 
   const wallet = { balance:86.40, held:0 };
 
@@ -1548,17 +1631,37 @@ body.installed .list-row.install-row-item{display:none;}
     { from:'them', text:"Hi Julia — heading to the chemist now, should be about 8 minutes.", t:'2:14 PM' }
   ];
 
-  // ---------- pricing ----------
-  function travelCost(){ return Math.round(booking.place.km * TRAVEL_RATE * 100) / 100; }
-  function baseCost(){ return CATEGORIES[booking.category].base; }
-  function bookingTotal(){ return Math.round((baseCost() + travelCost() + booking.budget) * 100) / 100; }
+  // ---------- pricing, distance and timing ----------
+  function totalKm(){ return booking.stops.reduce((n, st) => n + st.place.km, 0); }
+  function travelCost(){ return cents(totalKm() * TRAVEL_RATE); }
+  function baseCost(){
+    return cents(CATEGORIES[booking.category].base + (booking.stops.length - 1) * EXTRA_STOP_FEE);
+  }
+  function bookingTotal(){ return cents(baseCost() + travelCost() + booking.budget); }
 
-  // ---------- home / category ----------
+  // Minutes for one stop: driving there, plus time on the ground that grows
+  // with how much has to be found once inside.
+  function stopMinutes(st){
+    const drive = st.place.km / AVG_SPEED_KMH * 60;
+    const inStore = STOP_SETUP_MIN + liveItems(st).length * PER_ITEM_MIN;
+    return Math.max(5, Math.round(drive + inStore));
+  }
+  function totalMinutes(){ return booking.stops.reduce((n, st) => n + stopMinutes(st), 0); }
+  function etaText(){
+    const t = new Date(Date.now() + totalMinutes() * 60000);
+    return t.toLocaleTimeString('en-AU', { hour:'numeric', minute:'2-digit' });
+  }
+  function minsText(m){
+    return m >= 60 ? Math.floor(m / 60) + 'h ' + (m % 60) + 'm' : m + ' min';
+  }
+
+  // ---------- category ----------
   function pickCategory(key){
     booking.category = key;
-    booking.items = JSON.parse(JSON.stringify(CATEGORIES[key].items));
+    booking.stops = [ newStop(PLACES[0], CATEGORIES[key].items) ];
     booking.notes = CATEGORIES[key].notes || '';
     booking.stage = 0; booking.approved = null; booking.rating = 0;
+    editingStop = 0;
     el('c-address-input').value = '';
     el('c-dist-note').textContent = 'Pick a destination to see the distance';
     renderSuggestions();
@@ -1566,6 +1669,8 @@ body.installed .list-row.install-row-item{display:none;}
   }
 
   // ---------- location ----------
+  function currentStop(){ return booking.stops[Math.min(editingStop, booking.stops.length - 1)]; }
+
   function renderSuggestions(){
     const q = (el('c-address-input').value || '').trim().toLowerCase();
     const matches = q
@@ -1576,9 +1681,10 @@ body.installed .list-row.install-row-item{display:none;}
       list.innerHTML = '<p class="empty-note">No saved places match that. Type a full address and tap Confirm location.</p>';
       return;
     }
+    const chosen = currentStop() ? currentStop().place : null;
     list.innerHTML = matches.map(p => {
       const i = PLACES.indexOf(p);
-      const on = PLACES[i] === booking.place;
+      const on = chosen && p.name === chosen.name;
       return '<div class="suggest-row" onclick="selectPlace(' + i + ')">' +
         '<div class="suggest-pin"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="' +
           (on ? '#1F3A63' : '#5A6472') + '" stroke-width="2"><path d="M12 21s-7-4.6-7-11a7 7 0 0 1 14 0c0 6.4-7 11-7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></div>' +
@@ -1587,10 +1693,9 @@ body.installed .list-row.install-row-item{display:none;}
   }
 
   function selectPlace(i){
-    booking.place = PLACES[i];
+    if (editingStop >= booking.stops.length) booking.stops.push(newStop(PLACES[i], []));
+    booking.stops[editingStop].place = PLACES[i];
     el('c-address-input').value = PLACES[i].name;
-    // The pin stays centred, as it does in a real map app, and the artwork
-    // slides under it so choosing a different place visibly recentres the map.
     const dx = ((160 - PLACES[i].x) / 320 * 14).toFixed(2);
     const dy = ((95 - PLACES[i].y) / 190 * 14).toFixed(2);
     el('c-map-art').style.transform = 'scale(1.16) translate(' + dx + '%,' + dy + '%)';
@@ -1601,21 +1706,24 @@ body.installed .list-row.install-row-item{display:none;}
   function confirmLocation(){
     const typed = (el('c-address-input').value || '').trim();
     if (!typed){ showToast('Enter or choose a destination first'); return; }
-    if (typed !== booking.place.name){
+    if (editingStop >= booking.stops.length) booking.stops.push(newStop(PLACES[0], []));
+    const st = booking.stops[editingStop];
+    if (typed !== st.place.name){
       // Honour a freely typed address rather than silently using the last pin.
-      booking.place = { name:typed, sub:'Custom address', km:booking.place.km, x:160, y:95 };
+      st.place = { name:typed, sub:'Custom address', km:st.place.km || 2.4, x:160, y:95 };
     }
+    st.done = false;
     renderBook();
-    cPush('c-book');
+    // Adding a later stop returns to the booking screen already open; the first
+    // stop is still pushing forward through the flow.
+    if (custStack[custStack.length - 2] === 'c-book') cPop(); else cPush('c-book');
   }
 
   // ---------- booking ----------
   function renderBook(){
     const cat = CATEGORIES[booking.category];
     el('c-book-title').textContent = cat.title;
-    el('c-book-address').textContent = booking.place.name;
     el('c-book-notes').value = booking.notes;
-    renderItems();
     el('c-book-budget').value = booking.budget;
     const tier = el('c-book-tier');
     tier.hidden = !cat.tier2;
@@ -1628,19 +1736,214 @@ body.installed .list-row.install-row-item{display:none;}
       el('c-book-date').value = d.toISOString().slice(0, 10);
       el('c-book-time').value = '10:00';
     }
+    renderStops();
     renderPrices();
+  }
+
+  function liveItems(st){
+    return st.items.filter(it => (it.name || '').trim() || (it.brand || '').trim());
+  }
+
+  // Rebuilt only when a stop or item is added, removed or collapsed - never
+  // while typing, or the field being edited loses focus on every keystroke.
+  function renderStops(){
+    const multi = CATEGORIES[booking.category].multi;
+    el('c-add-stop').hidden = !multi || booking.stops.some(st => !st.done);
+    el('c-stops').innerHTML = booking.stops.map((st, si) =>
+      st.done ? collapsedStop(st, si) : expandedStop(st, si, multi)).join('');
+    renderPlan();
+  }
+
+  function collapsedStop(st, si){
+    const lines = liveItems(st).map(itemLine);
+    return '' +
+      '<div class="stop-card done" onclick="reopenStop(' + si + ')">' +
+        '<div class="stop-head">' +
+          '<span class="stop-badge done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>' +
+          '<div class="stop-title"><h4>' + escapeHtml(st.place.name) + '</h4>' +
+            '<p>' + lines.length + (lines.length === 1 ? ' item' : ' items') +
+            ' · ' + minsText(stopMinutes(st)) + '</p></div>' +
+          '<span class="stop-edit">Edit</span>' +
+        '</div>' +
+        (lines.length ? '<ul class="stop-lines">' + lines.map(l => '<li>' + escapeHtml(l) + '</li>').join('') + '</ul>' : '') +
+      '</div>';
+  }
+
+  function expandedStop(st, si, multi){
+    return '' +
+      '<div class="stop-card">' +
+        '<div class="stop-head">' +
+          '<span class="stop-badge">' + (si + 1) + '</span>' +
+          '<div class="stop-title"><h4>' + escapeHtml(st.place.name) + '</h4>' +
+            '<p>' + st.place.km.toFixed(1) + ' km away</p></div>' +
+          '<span class="stop-edit" onclick="changeStopPlace(event,' + si + ')">Change</span>' +
+          (booking.stops.length > 1
+            ? '<button class="stop-del" onclick="removeStop(' + si + ')" aria-label="Remove stop">&times;</button>' : '') +
+        '</div>' +
+        st.items.map((it, i) => itemCard(it, si, i, st.items.length)).join('') +
+        '<button class="add-item" onclick="addItem(' + si + ')">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>' +
+          'Add another item</button>' +
+        (multi ? '<button class="stop-done" onclick="completeStop(' + si + ')">Complete order for this location</button>' : '') +
+      '</div>';
+  }
+
+  function itemCard(it, si, i, count){
+    const opts = (list, val) => list.map(o =>
+      '<option value="' + o + '"' + (o === val ? ' selected' : '') + '>' + o + '</option>').join('');
+    const subs = Object.keys(SUB_RULES).map(k =>
+      '<option value="' + k + '"' + (k === it.sub ? ' selected' : '') + '>' + SUB_RULES[k] + '</option>').join('');
+    const photo = it.photo
+      ? '<div class="photo-tile filled" style="background-image:url(' + it.photo + ')">' +
+          '<button class="photo-x" onclick="clearPhoto(' + si + ',' + i + ')" aria-label="Remove photo">&times;</button></div>'
+      : '<button class="photo-tile" onclick="pickPhoto(' + si + ',' + i + ')" aria-label="Add a photo">' +
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' +
+          '<path d="M3 8a2 2 0 0 1 2-2h2.2l1.2-2h6.8l1.2 2H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/>' +
+          '<circle cx="12" cy="12.5" r="3.4"/></svg><span>Photo</span></button>';
+    return '' +
+      '<div class="item-row">' +
+        '<div class="item-top">' +
+          photo +
+          '<div class="item-fields">' +
+            '<input class="item-name" type="text" value="' + escapeAttr(it.name) + '" placeholder="What is it? e.g. Osteo caplets 96pk" ' +
+              'oninput="setItem(' + si + ',' + i + ',\'name\',this.value)">' +
+            '<input class="item-brand" type="text" value="' + escapeAttr(it.brand) + '" placeholder="Brand (optional)" ' +
+              'oninput="setItem(' + si + ',' + i + ',\'brand\',this.value)">' +
+          '</div>' +
+          (count > 1 ? '<button class="item-del" onclick="removeItem(' + si + ',' + i + ')" aria-label="Remove item">&times;</button>' : '') +
+        '</div>' +
+        '<div class="item-meta">' +
+          '<div class="qty-pair">' +
+            '<input type="number" min="1" max="99" value="' + it.qty + '" aria-label="Quantity" ' +
+              'oninput="setItem(' + si + ',' + i + ',\'qty\',this.value)">' +
+            '<select aria-label="Unit" onchange="setItem(' + si + ',' + i + ',\'unit\',this.value)">' + opts(ITEM_UNITS, it.unit) + '</select>' +
+          '</div>' +
+          '<select aria-label="Item type" onchange="setItem(' + si + ',' + i + ',\'type\',this.value)">' + opts(ITEM_TYPES, it.type) + '</select>' +
+          '<select aria-label="If out of stock" onchange="setItem(' + si + ',' + i + ',\'sub\',this.value)">' + subs + '</select>' +
+        '</div>' +
+      '</div>';
+  }
+
+  // ---------- stop and item actions ----------
+  function setItem(si, i, key, value){
+    booking.stops[si].items[i][key] = key === 'qty'
+      ? Math.max(1, Math.min(99, parseInt(value, 10) || 1)) : value;
+    renderPlan();
+    renderPrices();
+    saveState();
+  }
+  function addItem(si){
+    const items = booking.stops[si].items;
+    if (items.length >= 8){ showToast('Eight items is the most for one stop'); return; }
+    items.push(blankItem());
+    renderStops(); saveState();
+  }
+  function removeItem(si, i){
+    booking.stops[si].items.splice(i, 1);
+    renderStops(); renderPrices(); saveState();
+  }
+  function completeStop(si){
+    if (!liveItems(booking.stops[si]).length){
+      showToast('Add at least one item for this stop'); return;
+    }
+    booking.stops[si].done = true;
+    renderStops(); renderPrices(); saveState();
+  }
+  function reopenStop(si){
+    booking.stops[si].done = false;
+    renderStops(); saveState();
+  }
+  function removeStop(si){
+    booking.stops.splice(si, 1);
+    if (editingStop >= booking.stops.length) editingStop = booking.stops.length - 1;
+    renderStops(); renderPrices(); saveState();
+  }
+  function addStop(){
+    if (booking.stops.length >= 6){ showToast('Six stops is the most for one errand'); return; }
+    editingStop = booking.stops.length;
+    el('c-address-input').value = '';
+    el('c-dist-note').textContent = 'Pick a destination to see the distance';
+    renderSuggestions();
+    cPush('c-location');
+  }
+  function changeStopPlace(ev, si){
+    ev.stopPropagation();
+    editingStop = si;
+    el('c-address-input').value = booking.stops[si].place.name;
+    renderSuggestions();
+    cPush('c-location');
+  }
+
+  // ---------- photos ----------
+  // Photos are downscaled before they are kept: full-size camera output would
+  // blow the localStorage quota within a couple of items and lose the demo.
+  function pickPhoto(si, i){
+    const input = el('c-photo-input');
+    input.value = '';
+    input.onchange = () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => shrinkImage(reader.result, 640, data => {
+        booking.stops[si].items[i].photo = data;
+        renderStops(); saveState();
+        showToast('Photo added — the runner will see this');
+      });
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+  function clearPhoto(si, i){
+    booking.stops[si].items[i].photo = null;
+    renderStops(); saveState();
+  }
+  function shrinkImage(dataUrl, maxPx, done){
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * scale);
+      c.height = Math.round(img.height * scale);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      try { done(c.toDataURL('image/jpeg', 0.7)); }
+      catch(e){ done(dataUrl); }
+    };
+    img.onerror = () => done(dataUrl);
+    img.src = dataUrl;
+  }
+
+  // ---------- the plan: per-stop timing and arrival ----------
+  function renderPlan(){
+    const multi = CATEGORIES[booking.category].multi;
+    const ready = booking.stops.length && liveItems(booking.stops[0]).length;
+    if (!ready){ el('c-plan').innerHTML = ''; return; }
+    const rows = booking.stops.map((st, i) =>
+      '<div class="plan-row"><span class="plan-n">' + (i + 1) + '</span>' +
+      '<span class="plan-name">' + escapeHtml(st.place.name) + '</span>' +
+      '<span class="plan-min">' + minsText(stopMinutes(st)) + '</span></div>').join('');
+    el('c-plan').innerHTML =
+      '<div class="plan-card">' +
+        '<div class="plan-head">' + (multi ? 'Run plan' : 'Estimated timing') +
+          '<span>' + totalKm().toFixed(1) + ' km</span></div>' +
+        rows +
+        '<div class="plan-total"><span>Total time</span><span>' + minsText(totalMinutes()) + '</span></div>' +
+        '<div class="plan-eta"><span>Estimated arrival</span><span>' + etaText() + '</span></div>' +
+      '</div>';
   }
 
   function renderPrices(){
     const base = baseCost(), travel = travelCost(), total = bookingTotal();
+    const extra = booking.stops.length - 1;
     el('c-price-base').textContent = money(base);
-    el('c-price-travel-label').textContent = 'Travel · ' + booking.place.km.toFixed(1) + ' km';
+    el('c-price-base-label').textContent = extra > 0
+      ? 'Base fee · ' + booking.stops.length + ' stops' : 'Base fee';
+    el('c-price-travel-label').textContent = 'Travel · ' + totalKm().toFixed(1) + ' km';
     el('c-price-travel').textContent = money(travel);
     el('c-price-budget').textContent = money(booking.budget);
     el('c-price-total').textContent = money(total);
 
     const cta = el('c-book-cta'), check = el('c-wallet-check');
-    const short = total - wallet.balance;
+    const short = cents(total - wallet.balance);
     if (short > 0){
       cta.textContent = 'Top up ' + money(short) + ' to continue';
       check.className = 'wallet-check short';
@@ -1648,77 +1951,11 @@ body.installed .list-row.install-row-item{display:none;}
     } else {
       cta.textContent = 'Fund Erun wallet — ' + money(total);
       check.className = 'wallet-check';
-      check.textContent = money(wallet.balance) + ' available · ' + money(wallet.balance - total) + ' left after this errand.';
+      check.textContent = money(wallet.balance) + ' available · ' + money(cents(wallet.balance - total)) + ' left after this errand.';
     }
   }
 
   function syncNotes(){ booking.notes = el('c-book-notes').value; }
-
-  // The item list is rebuilt only when a row is added or removed. Typing must
-  // never trigger a re-render, or the field being typed into loses focus and
-  // the caret jumps to the start on every keystroke.
-  function renderItems(){
-    el('c-items').innerHTML = booking.items.map((it, i) => {
-      const types = ITEM_TYPES.map(t =>
-        '<option value="' + t + '"' + (t === it.type ? ' selected' : '') + '>' + t + '</option>').join('');
-      const units = ITEM_UNITS.map(u =>
-        '<option value="' + u + '"' + (u === it.unit ? ' selected' : '') + '>' + u + '</option>').join('');
-      const subs = Object.keys(SUB_RULES).map(k =>
-        '<option value="' + k + '"' + (k === it.sub ? ' selected' : '') + '>' + SUB_RULES[k] + '</option>').join('');
-      return '' +
-        '<div class="item-card">' +
-          '<div class="item-head">' +
-            '<span class="item-num">Item ' + (i + 1) + '</span>' +
-            (booking.items.length > 1
-              ? '<button class="item-del" onclick="removeItem(' + i + ')" aria-label="Remove item ' + (i + 1) + '">Remove</button>'
-              : '') +
-          '</div>' +
-          '<div class="item-grid">' +
-            '<label class="ig wide"><span>Item type</span>' +
-              '<select onchange="setItem(' + i + ',\'type\',this.value)">' + types + '</select></label>' +
-            '<label class="ig"><span>Brand</span>' +
-              '<input type="text" value="' + escapeAttr(it.brand) + '" placeholder="Any brand" ' +
-              'oninput="setItem(' + i + ',\'brand\',this.value)"></label>' +
-            '<label class="ig"><span>Quantity</span>' +
-              '<div class="qty-pair">' +
-                '<input type="number" min="1" max="99" value="' + it.qty + '" ' +
-                'oninput="setItem(' + i + ',\'qty\',this.value)">' +
-                '<select onchange="setItem(' + i + ',\'unit\',this.value)">' + units + '</select>' +
-              '</div></label>' +
-            '<label class="ig wide"><span>Specific item</span>' +
-              '<input type="text" value="' + escapeAttr(it.name) + '" placeholder="e.g. Osteo caplets, 96 pack" ' +
-              'oninput="setItem(' + i + ',\'name\',this.value)"></label>' +
-            '<label class="ig wide"><span>If it is out of stock</span>' +
-              '<select onchange="setItem(' + i + ',\'sub\',this.value)">' + subs + '</select></label>' +
-          '</div>' +
-        '</div>';
-    }).join('');
-  }
-
-  function setItem(i, key, value){
-    booking.items[i][key] = key === 'qty' ? Math.max(1, Math.min(99, parseInt(value, 10) || 1)) : value;
-    saveState();
-  }
-  function addItem(){
-    if (booking.items.length >= 8){ showToast('Eight items is the most one runner can carry'); return; }
-    booking.items.push({ type:'Groceries', brand:'', name:'', qty:1, unit:'ea', sub:'ask' });
-    renderItems();
-    saveState();
-  }
-  function removeItem(i){
-    booking.items.splice(i, 1);
-    renderItems();
-    saveState();
-  }
-
-  // One line per item, used on the tracking screen and by the runner.
-  function itemLine(it){
-    const bits = [it.qty + (it.unit === 'ea' ? '' : ' ' + it.unit) + ' ×', it.brand, it.name || it.type];
-    return bits.filter(Boolean).join(' ').replace(' ×', ' ×').trim();
-  }
-  function itemsSummary(){
-    return booking.items.filter(it => (it.name || '').trim() || it.brand).map(itemLine);
-  }
   function syncSchedule(){ booking.date = el('c-book-date').value; booking.time = el('c-book-time').value; }
 
   function syncBudget(){
@@ -1739,22 +1976,36 @@ body.installed .list-row.install-row-item{display:none;}
     el('schedule-fields').style.display = type === 'schedule' ? 'flex' : 'none';
   }
 
+  // One line per item, used on the tracking screen and by the runner.
+  function itemLine(it){
+    const qty = it.qty + (it.unit === 'ea' ? '' : ' ' + it.unit);
+    return [qty + ' ×', it.brand, it.name || it.type].filter(Boolean).join(' ').trim();
+  }
+  function itemsSummary(){
+    return booking.stops.flatMap(st => liveItems(st).map(itemLine));
+  }
+  function stopNames(){
+    const names = booking.stops.map(st => st.place.name);
+    return names.length <= 1 ? (names[0] || 'Errand')
+         : names[0] + ' + ' + (names.length - 1) + ' more';
+  }
+  function firstItem(){
+    for (const st of booking.stops){ const l = liveItems(st); if (l.length) return l[0]; }
+    return null;
+  }
+
   function submitBooking(){
     const total = bookingTotal();
-    if (total > wallet.balance){
-      topUp();
-      return;
-    }
+    if (total > wallet.balance){ topUp(); return; }
     if (!itemsSummary().length){ showToast('Add at least one item so the runner knows what to get'); return; }
     wallet.balance = cents(wallet.balance - total);
     wallet.held = cents(wallet.held + total);
     booking.id = 'ER-' + (48200 + Math.floor(Math.random() * 99));
     booking.stage = 0; booking.approved = null; booking.rating = 0;
     chatMsgs = [{ from:'them', text:"Hi Julia — I've got your job, heading there now.", t:nowTime() }];
-    addTxn('Held — ' + booking.place.name, -total);
+    addTxn('Held — ' + booking.stops[0].place.name, -total);
     renderFinding();
     cPush('c-finding');
-    // A runner accepts a moment later, so the screen resolves on its own.
     setTimeout(() => {
       if (custStack[custStack.length - 1] !== 'c-finding') return;
       el('c-finding-head').textContent = 'Jordan M. accepted your errand';
@@ -1771,7 +2022,7 @@ body.installed .list-row.install-row-item{display:none;}
     el('c-finding-cta').disabled = true;
     el('c-finding-cta').textContent = 'Waiting for a runner…';
     el('c-find-base').textContent = money(baseCost());
-    el('c-find-travel-label').textContent = 'Travel · ' + booking.place.km.toFixed(1) + ' km';
+    el('c-find-travel-label').textContent = 'Travel · ' + totalKm().toFixed(1) + ' km';
     el('c-find-travel').textContent = money(travelCost());
     el('c-find-budget').textContent = money(booking.budget);
     el('c-find-total').textContent = money(bookingTotal());
@@ -1793,7 +2044,7 @@ body.installed .list-row.install-row-item{display:none;}
       '<ul class="track-items">' +
       itemsSummary().map(l => '<li>' + escapeHtml(l) + '</li>').join('') + '</ul>' +
       (booking.notes.trim() ? '<span class="track-note">' + escapeHtml(booking.notes) + '</span>' : '') +
-      '<span class="track-where">' + escapeHtml(booking.place.name) + '</span>';
+      '<span class="track-where">' + escapeHtml(stopNames()) + '</span>';
 
     el('c-timeline').innerHTML = STAGES.map((s, i) => {
       const cls = i < booking.stage ? 'done' : (i === booking.stage ? 'now' : '');
@@ -1807,7 +2058,7 @@ body.installed .list-row.install-row-item{display:none;}
     const needsApproval = booking.stage === 1 && booking.approved === null;
     ap.hidden = !needsApproval;
     if (needsApproval){
-      const first = booking.items.find(it => (it.name || '').trim() || it.brand);
+      const first = firstItem();
       const label = first ? [first.brand, first.name].filter(Boolean).join(' ') : 'the item';
       el('c-approval-text').textContent =
         'Jordan found "' + label + '" — closest match to your request. It fits inside your ' +
@@ -1891,7 +2142,7 @@ body.installed .list-row.install-row-item{display:none;}
 
     el('c-receipt-id').textContent = 'Erun receipt · #' + booking.id;
     el('c-r-base').textContent = money(base);
-    el('c-r-travel-label').textContent = 'Travel · ' + booking.place.km.toFixed(1) + ' km';
+    el('c-r-travel-label').textContent = 'Travel · ' + totalKm().toFixed(1) + ' km';
     el('c-r-travel').textContent = money(travel);
     el('c-r-cap').textContent = money(cap);
     el('c-r-actual').textContent = money(booking.actual);
@@ -1906,7 +2157,7 @@ body.installed .list-row.install-row-item{display:none;}
   function finishErrand(){
     const charged = Math.round((baseCost() + travelCost() + booking.actual) * 100) / 100;
     errands.unshift({
-      title: booking.place.name,
+      title: stopNames(),
       sub: 'Delivered today · ' + money(charged) + ' total',
       state:'done', base:baseCost(), travel:travelCost(),
       cap:booking.budget, actual:booking.actual, id:booking.id
@@ -1937,7 +2188,7 @@ body.installed .list-row.install-row-item{display:none;}
       html += '<p class="section-label">In progress</p>' +
         '<div class="act-card" onclick="cRoot(\'c-home\'); cPush(\'c-track\');">' +
         '<div class="act-icon blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/></svg></div>' +
-        '<div class="act-body"><h4>' + escapeHtml(booking.place.name) + '</h4><p>Jordan M. · ' +
+        '<div class="act-body"><h4>' + escapeHtml(stopNames()) + '</h4><p>Jordan M. · ' +
           STAGES[booking.stage].toLowerCase() + '</p></div>' +
         '<div class="act-status active">Live</div></div>';
     }
@@ -2007,10 +2258,10 @@ body.installed .list-row.install-row-item{display:none;}
     const place = PLACES.find(p => p.name === e.title) ||
                   { name:e.title, sub:'Saved from a previous errand', km:e.travel / TRAVEL_RATE, x:160, y:95 };
     booking.category = 'one-off';
-    booking.place = place;
+    booking.stops = [ newStop(place, CATEGORIES['one-off'].items) ];
     booking.budget = e.cap;
-    booking.items = JSON.parse(JSON.stringify(CATEGORIES['one-off'].items));
     booking.notes = '';
+    editingStop = 0;
     booking.stage = 0; booking.approved = null; booking.rating = 0;
     renderBook();
     cPush('c-book');
@@ -2112,7 +2363,7 @@ body.installed .list-row.install-row-item{display:none;}
   function saveState(){
     try{
       localStorage.setItem(SAVE_KEY, JSON.stringify({
-        wallet, txns, errands, recurring, chatMsgs, booking, stack:custStack
+        wallet, txns, errands, recurring, chatMsgs, booking, stack:custStack, editingStop
       }));
     } catch(e){ /* private mode or full quota - the demo still works in memory */ }
   }
@@ -2129,6 +2380,10 @@ body.installed .list-row.install-row-item{display:none;}
       if (Array.isArray(s.chatMsgs)) chatMsgs = s.chatMsgs;
       if (Array.isArray(s.recurring)) s.recurring.forEach((r, i) => { if (recurring[i]) recurring[i].active = r.active; });
       if (s.booking) Object.assign(booking, s.booking);
+      if (!Array.isArray(booking.stops) || !booking.stops.length){
+        booking.stops = [ newStop(PLACES[0], CATEGORIES['one-off'].items) ];
+      }
+      if (typeof s.editingStop === 'number') editingStop = s.editingStop;
       // Only restore a screen that still exists in this build.
       if (Array.isArray(s.stack) && s.stack.every(id => document.getElementById(id))) custStack = s.stack;
     } catch(e){ /* a corrupt save should never block the app - start fresh */ }
