@@ -182,23 +182,14 @@ button{font:inherit;}
 .cat-body{min-width:0;flex:1;}
 .cat-body h3{margin:0 0 3px;font-size:15.5px;font-weight:700;}
 .cat-body p{margin:0;font-size:12.5px;color:var(--ink-soft);line-height:1.45;}
-.cat-meta{display:block;margin-top:6px;font-family:var(--font-mono);font-size:10.5px;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;
-  color:var(--navy);letter-spacing:.01em;}
 .cat-go{color:var(--ink-faint);display:flex;flex:none;}
 
-/* Specialist services: present and bookable, but visually secondary. */
-.spec-row{display:flex;align-items:center;gap:11px;background:transparent;
-  border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;
-  transition:background .15s ease, border-color .15s ease, transform .09s ease;}
-.spec-row:hover{background:var(--surface);border-color:var(--line-strong);}
-.spec-row:active{transform:scale(.985);}
-.spec-icon{width:30px;height:30px;flex:none;border-radius:10px;background:var(--gold-soft);
-  display:flex;align-items:center;justify-content:center;}
-.spec-body{flex:1;min-width:0;}
-.spec-body h4{margin:0;font-size:13px;font-weight:600;color:var(--ink);}
-.spec-body p{margin:2px 0 0;font-size:11.5px;color:var(--ink-soft);}
-.spec-note{font-size:11.5px;color:var(--ink-faint);line-height:1.5;margin-top:10px;}
+/* One quiet line out to the specialist services, rather than two more cards. */
+.spec-link{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-top:26px;padding:14px 4px;color:var(--ink-soft);font-size:13px;cursor:pointer;
+  border-top:1px solid var(--line);transition:color .15s ease;}
+.spec-link:hover{color:var(--navy);}
+.spec-link:active{opacity:.6;}
 .tier-tag{font-family:var(--font-mono);font-size:9.5px;font-weight:600;padding:3px 8px;
   border-radius:100px;background:var(--gold-soft);color:var(--gold-deep);margin-left:auto;
   white-space:nowrap;flex:none;}
@@ -575,6 +566,17 @@ button,.cat-card,.suggest-row,.act-card,.list-row,.addr-row,.faq-row,
 .again-row p{font-size:12px;color:var(--ink-soft);margin-top:3px;font-family:var(--font-mono);}
 .again-go{color:var(--ink-faint);display:flex;flex:none;}
 
+/* The home screen is the first thing anyone sees, so it gets real breathing
+   room: a tall, quiet header before the greeting and generous space before
+   the first card, rather than content starting hard against the status bar. */
+#c-home .topbar{padding-top:calc(52px + env(safe-area-inset-top,0px));padding-bottom:6px;align-items:flex-start;}
+#c-home .greet p{font-size:13px;}
+#c-home .greet h2{font-size:24px;line-height:1.25;margin-top:6px;max-width:15ch;}
+#c-home .wallet-pill{margin-top:2px;}
+.home-content{padding-top:30px;}
+.home-content .cat-card{margin-bottom:13px;}
+.home-content .section-label{margin-top:28px;}
+
 /* Already installed: nothing left to install. */
 body.installed .install-row,
 body.installed .list-row.install-row-item{display:none;}
@@ -724,56 +726,35 @@ body.installed .list-row.install-row-item{display:none;}
         <!-- HOME -->
         <div class="view active" id="c-home">
           <div class="topbar">
-            <div class="greet"><p id="c-greeting">Good afternoon, Sarah</p><h2>What can we run for you?</h2></div>
+            <div class="greet"><p id="c-greeting">Good afternoon, Julia</p><h2>What can we run for you?</h2></div>
             <div class="wallet-pill" id="c-home-balance">$86.40</div>
           </div>
-          <div class="content">
-            <p class="section-label">Everyday errands</p>
+          <div class="content home-content">
             <div class="cat-card" onclick="pickCategory('one-off')">
               <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg></div>
-              <div class="cat-body">
-                <h3>Simple errand</h3>
-                <p>One stop, sorted fast</p>
-                <span class="cat-meta">From $7.00 · under 30 min</span>
-              </div>
+              <div class="cat-body"><h3>Simple errand</h3><p>One stop, sorted fast</p></div>
               <span class="cat-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></span>
             </div>
             <div class="cat-card" onclick="pickCategory('multi')">
               <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.8 7.2 11 16.2M16.2 7.2 13 16.2"/></svg></div>
-              <div class="cat-body">
-                <h3>Multi-stop errand</h3>
-                <p>Several stops, one runner</p>
-                <span class="cat-meta">From $11.00 · one trip</span>
-              </div>
+              <div class="cat-body"><h3>Multi-stop errand</h3><p>Several stops, one runner</p></div>
               <span class="cat-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></span>
             </div>
             <div class="cat-card" onclick="pickCategory('recurring')">
               <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
-              <div class="cat-body">
-                <h3>Recurring errand</h3>
-                <p>Same errand, on repeat</p>
-                <span class="cat-meta">From $7.00 · pause anytime</span>
-              </div>
+              <div class="cat-body"><h3>Recurring errand</h3><p>Same errand, on repeat</p></div>
               <span class="cat-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></span>
             </div>
 
             <div id="c-home-again"></div>
 
-            <!-- Tier 2 work is a smaller slice of demand and needs a vetted
-                 runner, so it sits below the three everyday services rather
-                 than competing with them for the first screen. -->
-            <p class="section-label">Specialist care</p>
-            <div class="spec-row" onclick="pickCategory('care')">
-              <span class="spec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M12 21s-7-4.4-9.2-9C1.2 8.6 3 5 6.6 5c2 0 3.4 1.2 4.2 2.4C11.6 6.2 13 5 15 5c3.6 0 5.4 3.6 3.8 7-2.2 4.6-9.2 9-9.2 9Z"/></svg></span>
-              <div class="spec-body"><h4>Elderly &amp; disability support</h4><p>Verified doorstep drop-off</p></div>
-              <span class="tier-tag">Tier 2</span>
+            <!-- Specialist work needs a vetted runner and is a smaller slice of
+                 demand, so it is one quiet line here rather than two more cards
+                 competing with the three everyday services. -->
+            <div class="spec-link" onclick="cPush('c-specialist')">
+              <span>Something more specialised?</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
             </div>
-            <div class="spec-row" onclick="pickCategory('concierge')">
-              <span class="spec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M3 11 12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span>
-              <div class="spec-body"><h4>Concierge</h4><p>Errands plus the little home jobs</p></div>
-              <span class="tier-tag">Tier 2</span>
-            </div>
-            <p class="spec-note">Tier 2 runners clear additional background and care-sector checks.</p>
           </div>
           <div class="navbar">
             <div class="nav-item active" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
@@ -975,8 +956,8 @@ body.installed .list-row.install-row-item{display:none;}
           <div class="topbar"><div class="greet"><p>Account</p><h2>Profile</h2></div></div>
           <div class="content">
             <div class="profile-head">
-              <div class="profile-avatar">SM</div>
-              <div><h2>Sarah Mitchell</h2><p>Member since Mar 2025</p></div>
+              <div class="profile-avatar">JM</div>
+              <div><h2>Julia Mitchell</h2><p>Member since Mar 2025</p></div>
             </div>
             <p class="section-label">Manage</p>
             <div class="list-row" onclick="cPush('c-addresses')"><span>Saved addresses</span><span class="lr-sub" id="c-addr-count">3 saved</span></div>
@@ -995,6 +976,27 @@ body.installed .list-row.install-row-item{display:none;}
             <div class="nav-item" data-r="c-activity" onclick="cRoot('c-activity')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Activity</span></div>
             <div class="nav-item" data-r="c-wallet" onclick="cRoot('c-wallet')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 6V4H8v2"/></svg><span>Wallet</span></div>
             <div class="nav-item active" data-r="c-profile" onclick="cRoot('c-profile')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c1.4-3.6 4.4-5.4 7-5.4S17.6 16.4 19 20"/></svg><span>Profile</span></div>
+          </div>
+        </div>
+
+        <!-- SPECIALIST SERVICES -->
+        <div class="view" id="c-specialist">
+          <div class="back-row"><div class="back-btn" onclick="cPop()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#101B2D" stroke-width="2"><path d="M15 5 8 12l7 7"/></svg></div><h2>Specialist care</h2></div>
+          <div class="content">
+            <div class="cat-card" onclick="pickCategory('care')">
+              <div class="cat-icon gold"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M12 21s-7-4.4-9.2-9C1.2 8.6 3 5 6.6 5c2 0 3.4 1.2 4.2 2.4C11.6 6.2 13 5 15 5c3.6 0 5.4 3.6 3.8 7-2.2 4.6-9.2 9-9.2 9Z"/></svg></div>
+              <div class="cat-body"><h3>Elderly &amp; disability support</h3><p>Verified doorstep drop-off</p></div>
+              <span class="cat-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></span>
+            </div>
+            <div class="cat-card" onclick="pickCategory('concierge')">
+              <div class="cat-icon gold"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M3 11 12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></div>
+              <div class="cat-body"><h3>Concierge</h3><p>Errands plus the little home jobs</p></div>
+              <span class="cat-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></span>
+            </div>
+            <div class="tier-note" style="margin-top:18px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7.5 3.4v5.2c0 4.4-3.1 8-7.5 9.4-4.4-1.4-7.5-5-7.5-9.4V6.4L12 3Z"/><path d="M9 12l2 2 4-4"/></svg>
+              <span>These go only to Tier 2 runners, who clear additional background and care-sector checks.</span>
+            </div>
           </div>
         </div>
 
@@ -1094,7 +1096,7 @@ body.installed .list-row.install-row-item{display:none;}
               <svg viewBox="0 0 320 190"><path d="M30 150 Q120 40 290 60" stroke="#1F3A63" stroke-width="2.5" stroke-dasharray="6 7" fill="none"/><circle cx="30" cy="150" r="6" fill="#101B2D"/><circle cx="290" cy="60" r="6" fill="#A9843F"/></svg>
             </div>
             <p class="field-label">Task notes</p>
-            <div class="field">Pick up prescription under Sarah M., pay with the Erun card if there's a gap cover.</div>
+            <div class="field">Pick up prescription under Julia M., pay with the Erun card if there's a gap cover.</div>
             <p class="section-label">Duration breakdown</p>
             <div class="stage-list">
               <div class="stage-row"><span class="sname"><span class="sdot"></span>Travel to pickup</span><span class="sval">9 min</span></div>
@@ -1158,7 +1160,7 @@ body.installed .list-row.install-row-item{display:none;}
               <div class="sched-time">10:00 – 10:24 AM</div>
               <div class="sched-payout">$19.60</div>
               <h3>Chemist Warehouse pickup</h3>
-              <p>Camberwell · Sarah M.</p>
+              <p>Camberwell · Julia M.</p>
             </div>
             <div class="buffer-note">18 min drive buffer to next job</div>
             <div class="sched-block">
@@ -1392,7 +1394,7 @@ body.installed .list-row.install-row-item{display:none;}
   ];
 
   let chatMsgs = [
-    { from:'them', text:"Hi Sarah — heading to the chemist now, should be about 8 minutes.", t:'2:14 PM' }
+    { from:'them', text:"Hi Julia — heading to the chemist now, should be about 8 minutes.", t:'2:14 PM' }
   ];
 
   // ---------- pricing ----------
@@ -1528,7 +1530,7 @@ body.installed .list-row.install-row-item{display:none;}
     wallet.held = cents(wallet.held + total);
     booking.id = 'ER-' + (48200 + Math.floor(Math.random() * 99));
     booking.stage = 0; booking.approved = null; booking.rating = 0;
-    chatMsgs = [{ from:'them', text:"Hi Sarah — I've got your job, heading there now.", t:nowTime() }];
+    chatMsgs = [{ from:'them', text:"Hi Julia — I've got your job, heading there now.", t:nowTime() }];
     addTxn('Held — ' + booking.place.name, -total);
     renderFinding();
     cPush('c-finding');
@@ -1763,7 +1765,7 @@ body.installed .list-row.install-row-item{display:none;}
   function renderGreeting(){
     const h = new Date().getHours();
     const part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
-    el('c-greeting').textContent = part + ', Sarah';
+    el('c-greeting').textContent = part + ', Julia';
   }
 
   function renderHomeAgain(){
