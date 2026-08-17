@@ -169,16 +169,36 @@ button{font:inherit;}
 /* ============================================================
    CARDS / FIELDS / BUTTONS
    ============================================================ */
-.cat-card{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--radius-md);padding:15px;margin-bottom:10px;box-shadow:var(--shadow-1);cursor:pointer;
-  transition:transform .15s ease, box-shadow .15s ease;}
+/* The three everyday services carry the home screen, so their cards get room
+   to breathe, a price anchor, and an affordance that they lead somewhere. */
+.cat-card{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:17px 16px;margin-bottom:11px;box-shadow:var(--shadow-1);cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;}
+.cat-card:hover{border-color:var(--line-strong);box-shadow:var(--shadow-2);}
 .cat-card:active{transform:scale(.98);}
-.cat-icon{width:42px;height:42px;flex:none;border-radius:13px;background:var(--blue-soft);
+.cat-icon{width:46px;height:46px;flex:none;border-radius:14px;background:var(--blue-soft);
   display:flex;align-items:center;justify-content:center;}
 .cat-icon.gold{background:var(--gold-soft);}
-.cat-body{min-width:0;}
-.cat-body h3{margin:0 0 2px;font-size:14.5px;font-weight:700;}
-.cat-body p{margin:0;font-size:12.5px;color:var(--ink-soft);}
+.cat-body{min-width:0;flex:1;}
+.cat-body h3{margin:0 0 3px;font-size:15.5px;font-weight:700;}
+.cat-body p{margin:0;font-size:12.5px;color:var(--ink-soft);line-height:1.45;}
+.cat-meta{display:block;margin-top:6px;font-family:var(--font-mono);font-size:10.5px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+  color:var(--navy);letter-spacing:.01em;}
+.cat-go{color:var(--ink-faint);display:flex;flex:none;}
+
+/* Specialist services: present and bookable, but visually secondary. */
+.spec-row{display:flex;align-items:center;gap:11px;background:transparent;
+  border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer;
+  transition:background .15s ease, border-color .15s ease, transform .09s ease;}
+.spec-row:hover{background:var(--surface);border-color:var(--line-strong);}
+.spec-row:active{transform:scale(.985);}
+.spec-icon{width:30px;height:30px;flex:none;border-radius:10px;background:var(--gold-soft);
+  display:flex;align-items:center;justify-content:center;}
+.spec-body{flex:1;min-width:0;}
+.spec-body h4{margin:0;font-size:13px;font-weight:600;color:var(--ink);}
+.spec-body p{margin:2px 0 0;font-size:11.5px;color:var(--ink-soft);}
+.spec-note{font-size:11.5px;color:var(--ink-faint);line-height:1.5;margin-top:10px;}
 .tier-tag{font-family:var(--font-mono);font-size:9.5px;font-weight:600;padding:3px 8px;
   border-radius:100px;background:var(--gold-soft);color:var(--gold-deep);margin-left:auto;
   white-space:nowrap;flex:none;}
@@ -704,34 +724,56 @@ body.installed .list-row.install-row-item{display:none;}
         <!-- HOME -->
         <div class="view active" id="c-home">
           <div class="topbar">
-            <div class="greet"><p>Good afternoon</p><h2>What do you need done?</h2></div>
+            <div class="greet"><p id="c-greeting">Good afternoon, Sarah</p><h2>What can we run for you?</h2></div>
             <div class="wallet-pill" id="c-home-balance">$86.40</div>
           </div>
           <div class="content">
-            <p class="section-label">Choose a service</p>
+            <p class="section-label">Everyday errands</p>
             <div class="cat-card" onclick="pickCategory('one-off')">
-              <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg></div>
-              <div class="cat-body"><h3>One-off errand</h3><p>Single stop, sorted fast</p></div>
+              <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg></div>
+              <div class="cat-body">
+                <h3>Simple errand</h3>
+                <p>One stop, sorted fast</p>
+                <span class="cat-meta">From $7.00 · under 30 min</span>
+              </div>
+              <span class="cat-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></span>
             </div>
             <div class="cat-card" onclick="pickCategory('multi')">
-              <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.8 7.2 11 16.2M16.2 7.2 13 16.2"/></svg></div>
-              <div class="cat-body"><h3>Multi-stop errand</h3><p>Bundle a few tasks together</p></div>
+              <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.8 7.2 11 16.2M16.2 7.2 13 16.2"/></svg></div>
+              <div class="cat-body">
+                <h3>Multi-stop errand</h3>
+                <p>Several stops, one runner</p>
+                <span class="cat-meta">From $11.00 · one trip</span>
+              </div>
+              <span class="cat-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></span>
             </div>
             <div class="cat-card" onclick="pickCategory('recurring')">
-              <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
-              <div class="cat-body"><h3>Recurring errand</h3><p>Set it, we keep showing up</p></div>
+              <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F3A63" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
+              <div class="cat-body">
+                <h3>Recurring errand</h3>
+                <p>Same errand, on repeat</p>
+                <span class="cat-meta">From $7.00 · pause anytime</span>
+              </div>
+              <span class="cat-go"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg></span>
             </div>
-            <div class="cat-card" onclick="pickCategory('care')">
-              <div class="cat-icon gold"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M12 21s-7-4.4-9.2-9C1.2 8.6 3 5 6.6 5c2 0 3.4 1.2 4.2 2.4C11.6 6.2 13 5 15 5c3.6 0 5.4 3.6 3.8 7-2.2 4.6-9.2 9-9.2 9Z"/></svg></div>
-              <div class="cat-body"><h3>Elderly &amp; disability support</h3><p>Verified doorstep drop-off</p></div>
-              <div class="tier-tag">Tier 2 only</div>
-            </div>
-            <div class="cat-card" onclick="pickCategory('concierge')">
-              <div class="cat-icon gold"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M3 11 12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></div>
-              <div class="cat-body"><h3>Concierge</h3><p>Errands plus the little home jobs</p></div>
-              <div class="tier-tag">Tier 2 only</div>
-            </div>
+
             <div id="c-home-again"></div>
+
+            <!-- Tier 2 work is a smaller slice of demand and needs a vetted
+                 runner, so it sits below the three everyday services rather
+                 than competing with them for the first screen. -->
+            <p class="section-label">Specialist care</p>
+            <div class="spec-row" onclick="pickCategory('care')">
+              <span class="spec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M12 21s-7-4.4-9.2-9C1.2 8.6 3 5 6.6 5c2 0 3.4 1.2 4.2 2.4C11.6 6.2 13 5 15 5c3.6 0 5.4 3.6 3.8 7-2.2 4.6-9.2 9-9.2 9Z"/></svg></span>
+              <div class="spec-body"><h4>Elderly &amp; disability support</h4><p>Verified doorstep drop-off</p></div>
+              <span class="tier-tag">Tier 2</span>
+            </div>
+            <div class="spec-row" onclick="pickCategory('concierge')">
+              <span class="spec-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A9843F" stroke-width="1.8"><path d="M3 11 12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span>
+              <div class="spec-body"><h4>Concierge</h4><p>Errands plus the little home jobs</p></div>
+              <span class="tier-tag">Tier 2</span>
+            </div>
+            <p class="spec-note">Tier 2 runners clear additional background and care-sector checks.</p>
           </div>
           <div class="navbar">
             <div class="nav-item active" data-r="c-home" onclick="cRoot('c-home')"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span>Home</span></div>
@@ -1280,7 +1322,7 @@ body.installed .list-row.install-row-item{display:none;}
   const cents = n => Math.round(n * 100) / 100;
 
   const CATEGORIES = {
-    'one-off':   { title:'One-off errand',                base:7.00,  tier2:false,
+    'one-off':   { title:'Simple errand',                 base:7.00,  tier2:false,
                    task:"Pick up prescription under my name, pay with wallet if there's a gap cover." },
     'multi':     { title:'Multi-stop errand',             base:11.00, tier2:false,
                    task:"Post office parcel, then collect the dry cleaning on the same block." },
@@ -1718,6 +1760,12 @@ body.installed .list-row.install-row-item{display:none;}
 
   // Repeat bookings are the common case, so the home screen offers the last
   // couple of errands as one-tap re-books rather than leaving dead space.
+  function renderGreeting(){
+    const h = new Date().getHours();
+    const part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    el('c-greeting').textContent = part + ', Sarah';
+  }
+
   function renderHomeAgain(){
     const recent = errands.slice(0, 2);
     el('c-home-again').innerHTML = !recent.length ? '' :
@@ -1876,7 +1924,7 @@ body.installed .list-row.install-row-item{display:none;}
   // nothing on screen can drift out of sync with the booking or the wallet.
   function refreshCustomer(id){
     if (id === 'c-home' || id === 'c-wallet') renderWallet();
-    if (id === 'c-home') renderHomeAgain();
+    if (id === 'c-home'){ renderGreeting(); renderHomeAgain(); }
     if (id === 'c-location') renderSuggestions();
     if (id === 'c-book') renderBook();
     if (id === 'c-track') renderTrack();
